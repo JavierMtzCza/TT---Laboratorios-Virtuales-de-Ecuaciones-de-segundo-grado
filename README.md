@@ -21,16 +21,16 @@ para instalar las dependencias.
 
 ![Logo](https://www.prisma.io/docs/static/a3179ecce1bf20faddeb7f8c02fb2251/42cbc/mysql-connection-string.png)
 
-En el archivo .env deberia ir 
+En el archivo .env deberia ir (Database es el nombre que le queramos poner a la base de datos)
 ```bash
   DATABASE_URL=mysql://USER:PASSWORD@HOST:PORT/DATABASE
 ```
 
-5 . Finalmente, en el mismo backend, ejecutar el comando:
+5 . Finalmente, en el mismo backend, ejecutar el comando que nos crea la base.:
 ```bash
   npx prisma migrate dev --name init
 ```
-lo cual nos crea la base.
+
 
 
     
