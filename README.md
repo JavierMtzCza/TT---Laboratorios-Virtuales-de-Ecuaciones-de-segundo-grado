@@ -16,6 +16,7 @@ Aplicación web educativo para el aprendizaje de ecuaciones de segundo grado con
 para instalar las dependencias.
 
 3 . Meterse a la carpeta del backend y crear un archivo .env 
+
 4 . Configurar este archivo de forma que concuerde con la siguiente forma: 
 
 ![Logo](https://www.prisma.io/docs/static/a3179ecce1bf20faddeb7f8c02fb2251/42cbc/mysql-connection-string.png)
