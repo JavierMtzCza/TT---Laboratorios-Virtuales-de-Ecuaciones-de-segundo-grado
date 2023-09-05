@@ -1,5 +1,5 @@
 ##EDITOR
-.vscode/*
+.vscode
 
 ##FRONTEND
 frontend/node_modules

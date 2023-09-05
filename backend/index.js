@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"
 
 import usuarioRoutes from "./routes/usuarios.js";
 import grupoRoutes from "./routes/grupos.js";
@@ -9,13 +10,28 @@ import respuestas_alumnoRoutes from "./routes/respuestas_alumno.js";
 
 const app = express()
 app.use(express.json())
+app.use(cors({
+   origin: (origin, callback) => {
+      const ACCEPTED_ORIGINS = [
+         'http://localhost:5173'
+      ]
 
-app.use('/usuarios',usuarioRoutes)
-app.use('/grupos/',grupoRoutes)
-app.use('/actividades',actividadesRoutes)
-app.use('/preguntas',preguntasRoutes)
-app.use('/laboratorios',laboratoriosRoutes)
-app.use('/respuestas_alumno',respuestas_alumnoRoutes)
+      if (ACCEPTED_ORIGINS.includes(origin))
+         return callback(null, true)
+
+      if (!origin)
+         return callback(null, true)
+
+         return callback(new Error("Not Allowed by CORS"))
+   }
+}))
+
+app.use('/usuarios', usuarioRoutes)
+app.use('/grupos/', grupoRoutes)
+app.use('/actividades', actividadesRoutes)
+app.use('/preguntas', preguntasRoutes)
+app.use('/laboratorios', laboratoriosRoutes)
+app.use('/respuestas_alumno', respuestas_alumnoRoutes)
 
 app.listen(3000)
 console.log("Server on port", 3000)    
