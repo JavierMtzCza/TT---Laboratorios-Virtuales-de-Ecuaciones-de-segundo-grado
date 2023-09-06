@@ -1,49 +1,21 @@
 import { Router } from "express";
-import { prisma } from "../prisma/conexion.js";
+import { usuarioController } from "../controllers/usuarioController.js";
 
 const router = Router()
 
-// Consultar varios usuarios
-router.get("/listar", async (req, res) => {
-   const usuarios = await prisma.usuario.findMany()
-   res.json(usuarios)
-})
+// Consultar usuarios
+router.get("/", usuarioController.getAll)
 
-// Consultar un solo usuario
-router.get("/:id", async (req, res) => {
-   const usuario = await prisma.usuario.findFirst({
-      where: {
-         id: parseInt(req.params.id)
-      }
-   })
-   res.json(usuario)
-})
+// Consultar usuario por Correo
+router.get("/:correo", usuarioController.getByEmail)
 
 // Crear usuario
-router.post("/", async (req, res) => {
-   const usuario = await prisma.usuario.create({
-      data: req.body
-   })
-   res.json(usuario)
-})
+router.post("/", usuarioController.create)
+
+// Modificar usuario
+router.patch("/:correo", usuarioController.update)
 
 //Logeo de un usuario
-router.get("/login/:correo/:pass", async (req, res) => {
-
-   try {
-      const usuario = await prisma.usuario.findFirstOrThrow({
-         where: { correo: req.params.correo }
-      })
-
-      if (usuario.contrasena == req.params.pass)
-         res.json(usuario)
-      else
-         res.json({ error: "Contrasena no es correcta" })
-
-   } catch (e) {
-      res.json({ error: "Usuario no encontrado" })
-   }
-
-})
+router.get("/:correo/:contrasena", usuarioController.login)
 
 export default router
