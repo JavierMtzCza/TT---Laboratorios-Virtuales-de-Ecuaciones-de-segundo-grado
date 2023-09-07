@@ -23,6 +23,18 @@ export class usuarioController {
       res.json(usuario)
    }
 
+   static async getGroups(req, res) {
+      const respuesta = await usuarioModel.getGroups(parseInt(req.params.id))
+      var grupos = []
+
+      respuesta.grupos.forEach((elem) =>{
+         grupos.push(elem.grupo)
+      })
+
+      res.json(grupos)
+   }
+
+
    static async login(req, res) {
       const { correo, contrasena } = req.params
       const usuario = await usuarioModel.getByEmail(correo)

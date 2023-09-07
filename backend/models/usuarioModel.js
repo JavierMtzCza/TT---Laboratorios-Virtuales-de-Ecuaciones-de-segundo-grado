@@ -27,4 +27,22 @@ export class usuarioModel {
       const usuario = prisma.usuario.update({ where: { correo: emailUser }, data: dataUser })
       return usuario
    }
+
+   static getGroups = async (idUser) => {
+      const grupos = prisma.usuario.findFirst({
+         where: { id: idUser },
+         include: { grupos: { include: { grupo: true } } }
+      })
+      return grupos
+   }
+
+   //grupos mover
+   static getCount = async (idGrupo) => {
+      const integrantes = prisma.usuarios_Grupo.count({
+         where:{
+            grupoId: idGrupo
+         }
+      })
+      return integrantes
+   }
 }
