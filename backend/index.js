@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors"
 
-import usuarioRoutes from "./routes/usuarios.js";
-import grupoRoutes from "./routes/grupos.js";
-import actividadesRoutes from "./routes/actividades.js";
-import preguntasRoutes from "./routes/preguntas.js";
-import laboratoriosRoutes from "./routes/laboratorios.js";
-import respuestas_alumnoRoutes from "./routes/respuestas_alumno.js";
+import usuarioRoutes from "./src/routes/usuarios.js";
+import grupoRoutes from "./src/routes/grupos.js";
+import actividadesRoutes from "./src/routes/actividades.js";
+import preguntasRoutes from "./src/routes/preguntas.js";
+import laboratoriosRoutes from "./src/routes/laboratorios.js";
+import respuestas_alumnoRoutes from "./src/routes/respuestas_alumno.js";
 
 const app = express()
 app.use(express.json())
