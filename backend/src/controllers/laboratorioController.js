@@ -1,4 +1,4 @@
-import { laboratorioModel } from "models/laboratorioModel.js"
+import { laboratorioModel } from "../models/laboratorioModel.js"
 
 export class laboratorioController {
 

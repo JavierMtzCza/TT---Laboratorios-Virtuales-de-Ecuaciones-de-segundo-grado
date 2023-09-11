@@ -10,19 +10,21 @@ import respuestas_alumnoRoutes from "./src/routes/respuestas_alumno.js";
 
 const app = express()
 app.use(express.json())
-app.use(cors({
-   origin: (origin, callback) => {
-      const ACCEPTED_ORIGINS = ['http://localhost:5173']
+app.use(cors(
+   // {
+   //    origin: (origin, callback) => {
+   //       const ACCEPTED_ORIGINS = ['http://localhost:5173']
 
-      if (ACCEPTED_ORIGINS.includes(origin))
-         return callback(null, true)
+   //       if (ACCEPTED_ORIGINS.includes(origin))
+   //          return callback(null, true)
 
-      if (!origin)
-         return callback(null, true)
+   //       if (!origin)
+   //          return callback(null, true)
 
-      return callback(new Error("Not Allowed by CORS"))
-   }
-}))
+   //       return callback(new Error("Not Allowed by CORS"))
+   //    }
+   // }
+))
 
 app.use('/usuarios', usuarioRoutes)
 app.use('/grupos', grupoRoutes)

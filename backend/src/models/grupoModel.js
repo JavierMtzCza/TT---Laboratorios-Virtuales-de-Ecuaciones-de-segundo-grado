@@ -1,4 +1,4 @@
-import { prisma } from "../prisma/conexion.js";
+import { prisma } from "../conexion.js";
 import { v1 as uuidv1 } from 'uuid';
 
 export class grupoModel {

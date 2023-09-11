@@ -1,4 +1,4 @@
-import { prisma } from "../prisma/conexion.js";
+import { prisma } from "../conexion.js";
 
 export class preguntaModel {
 
