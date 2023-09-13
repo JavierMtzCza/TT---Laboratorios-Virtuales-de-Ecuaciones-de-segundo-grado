@@ -1,37 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Card, Dropdown, Input, Menu } from 'semantic-ui-react'
 import { Grupo } from '../components/Grupo'
+import { useMediaQuery } from 'react-responsive'
 
 const PA5Grupos = () => {
 
   const [data, setData] = useState([])
-  const [go, setGo] = useState(false)
 
   useEffect(() => {
-
     fetch(`http://localhost:3000/usuarios/grupos/${1}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data)
-        console.log(data)
-
-      })
-      .catch((error) => console.log(error))
-
-    setGo(true)
+      .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
   }, [])
 
+  const isDesktop = useMediaQuery({minWidth:1024})
+  const isTablet = useMediaQuery({maxWidth:1023, minWidth:426})
 
 
   return (
     <>
-      <Menu stackable borderless widths={3} style={{ margin: "1% 0% 1% 0%" }}>
+      <Menu stackable secondary widths={3} style={{ margin: "1% 0% 1% 0%" }}>
         <Menu.Item name='icono' />
         <Menu.Item>
           <Input className='icon' action={{ icon: 'search', content: 'buscar' }} placeholder='Buscar un grupo por codigo' />
         </Menu.Item>
         <Menu.Item>
-          <Dropdown text='Nombre de usuario' as={Button} color='yellow' icon='user circle' floating labeled button className='icon'>
+          <Dropdown text='Nombre de usuario' as={Button} color='yellow' icon='user circle' button className='icon'>
             <Dropdown.Menu>
               <Dropdown.Item icon='settings' text='Modificar perfil' />
               <Dropdown.Item icon='log out' text='Cerrar sesion' />
@@ -47,12 +40,11 @@ const PA5Grupos = () => {
           <Button color='green'>Crear Grupo</Button>
         </Menu.Item>
       </Menu>
-      <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={1}>
-        {go &&
-          data.map((grupo) => (
-            <Grupo key={grupo.id} alumnos={4} nombre={grupo.nombre} descripcion={grupo.descripcion}  />
-          ))}
-      </Card.Group >
+      {
+        <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={isDesktop ? 4 : isTablet ? 2 : 1}>
+          {data.map((grupo) => (<Grupo key={grupo.id} alumnos={4} nombre={grupo.nombre} descripcion={grupo.descripcion} />))}
+        </Card.Group >
+      }
 
     </>
   )

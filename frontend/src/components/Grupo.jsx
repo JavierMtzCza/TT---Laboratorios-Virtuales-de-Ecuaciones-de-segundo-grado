@@ -1,5 +1,4 @@
-import { Button, Card, Dropdown, Icon } from "semantic-ui-react"
-
+import { Button, Card, Dropdown, Header, Icon, Label } from "semantic-ui-react"
 
 export const Grupo = ({ nombre, alumnos, descripcion }) => {
 
@@ -10,18 +9,18 @@ export const Grupo = ({ nombre, alumnos, descripcion }) => {
    }
 
    return (
-      <Card color={randomColor()}>
+      <Card fluid color={randomColor()}>
          <Card.Content>
-            <Dropdown icon='bars' labeled as={Button} floated='right' >
+            <Dropdown icon='bars' direction="left" labeled as={Button} floated='right' >
                <Dropdown.Menu>
                   <Dropdown.Item icon='settings' text='Modificar' />
                   <Dropdown.Item icon='sign out' text='Salir del grupo' />
                   <Dropdown.Item icon='delete' text='Eliminar' />
                </Dropdown.Menu>
             </Dropdown>
-            <Card.Header content={nombre} />
-            <Card.Meta content={<div><Icon name='user' /> {alumnos} alumnos </div>} />
-            <Card.Description content={descripcion} />
+            <Card.Header as={Header} size='tiny' floated='left' content={nombre} />
+            <Card.Meta textAlign="left" content={<Label as='a'><Icon name='user' /> {alumnos} </Label>} />
+            <Card.Description style={{ fontSize: "16px" }} textAlign="left" content={descripcion} />
          </Card.Content>
          <Card.Content extra>
             <Button fluid color="green" content="Entrar" />
