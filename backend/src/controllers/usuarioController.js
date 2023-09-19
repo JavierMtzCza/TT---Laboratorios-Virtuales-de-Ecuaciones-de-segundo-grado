@@ -34,6 +34,12 @@ export class usuarioController {
       res.json(grupos)
    }
 
+   //eliminar un grupo de un usuario
+   static async deleteGroup(req,res){
+      const {idGrupo,idUsuario} = req.params
+      const group = await usuarioModel.deleteGroup(parseInt(idGrupo),parseInt(idUsuario))
+      res.json(group)
+   }
 
    static async login(req, res) {
       const { correo, contrasena } = req.params

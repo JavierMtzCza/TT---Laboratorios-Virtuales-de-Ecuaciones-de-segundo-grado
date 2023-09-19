@@ -7,6 +7,7 @@ import actividadesRoutes from "./src/routes/actividades.js";
 import preguntasRoutes from "./src/routes/preguntas.js";
 import laboratoriosRoutes from "./src/routes/laboratorios.js";
 import respuestas_alumnoRoutes from "./src/routes/respuestas_alumno.js";
+import rols from "./src/routes/rols.js"
 
 const app = express()
 app.use(express.json())
@@ -32,6 +33,7 @@ app.use('/actividades', actividadesRoutes)
 app.use('/preguntas', preguntasRoutes)
 app.use('/laboratorios', laboratoriosRoutes)
 app.use('/respuestas_alumno', respuestas_alumnoRoutes)
+app.use('/rols',rols)
 
 app.listen(3000)
 console.log("Server on port", 3000)    

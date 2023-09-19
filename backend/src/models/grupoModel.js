@@ -8,7 +8,7 @@ export class grupoModel {
       const grupo = prisma.grupo.create({
          data: {
             clave: claveGrupo,
-            usuarios: { create: { usuarioId: idAlumno, rol: true } },
+            usuarios: { create: { usuario: { connect: { id: idAlumno } }, rol: { connect: { id: 1 } } } },
             ...data
          }
       })
@@ -21,19 +21,21 @@ export class grupoModel {
    }
 
    static inscripcion = async (idGrupo, idUser) => {
-      const inscripcion = prisma.usuarios_Grupo.create({
+      const inscripcion = prisma.usuarioEnGrupo.create({
          data: {
-            grupoId: parseInt(idGrupo),
-            usuarioId: parseInt(idUser)
+            grupoId: idGrupo,
+            usuarioId: idUser,
+            rolId: 2
          }
       })
       return inscripcion
    }
 
    static getUsers = async (idGrupo) => {
-      const integrantes = prisma.usuarios_Grupo.findMany({
+      const integrantes = prisma.usuarioEnGrupo.findMany({
          where: { grupoId: idGrupo },
-         include: { usuario: true }
+        // include: {  rol:true },
+         //select:{usuarioId}
       })
       return integrantes
    }
