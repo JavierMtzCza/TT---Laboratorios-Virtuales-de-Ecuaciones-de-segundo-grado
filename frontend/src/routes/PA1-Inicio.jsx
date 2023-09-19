@@ -19,7 +19,7 @@ const PA1Inicio = () => {
                   <NavBarMobile image={imagen1} />
                </Grid.Column>
             </Grid.Row>
-            <GridRow  textAlign='center'>
+            <GridRow textAlign='center'>
                <GridColumn verticalAlign='middle' width={6}>
                   <Header as='h2' icon>
                      <Icon name='settings' />
@@ -30,7 +30,7 @@ const PA1Inicio = () => {
                   </Header>
                </GridColumn>
                <Grid.Column width={10}>
-                  <Image src={imagen2} fluid/>
+                  <Image src={imagen2} fluid />
                </Grid.Column>
             </GridRow>
          </Grid>

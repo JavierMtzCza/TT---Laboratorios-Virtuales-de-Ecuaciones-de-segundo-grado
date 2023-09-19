@@ -1,0 +1,86 @@
+comando =   npx prisma migrate dev --name init
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id               Int                 @id @default(autoincrement())
+  nombre           String              @db.VarChar(20)
+  apellido_paterno String              @db.VarChar(25)
+  apellido_materno String              @db.VarChar(25)
+  correo           String              @unique @db.VarChar(50)
+  contrasena       String //Bytes               @db.Blob
+  createAt         DateTime            @default(now())
+  estado           Boolean             @default(true) //TRUE: activo, FALSE:inactivo
+  grupos           Usuarios_Grupo[]
+  pregunta         Respuestas_Alumno[]
+}
+
+model Grupo {
+  id          Int              @id @default(autoincrement())
+  nombre      String           @db.VarChar(50)
+  descripcion String
+  clave       String           @unique
+  createAt    DateTime         @default(now())
+  actividades Actividad[]
+  usuarios    Usuarios_Grupo[]
+}
+
+model Usuarios_Grupo {
+  grupoId   Int
+  usuarioId Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  grupo     Grupo   @relation(fields: [grupoId], references: [id])
+
+  rol Boolean @default(false) //FALSE: estudiante, TRUE: profesor
+
+  @@id([usuarioId, grupoId]) //CLAVE PRIMARIA COMPUESTA POR EL ID_GRUPO Y ID_USUARIO
+}
+
+model Actividad {
+  id          Int        @id @default(autoincrement())
+  descripcion String
+  grupoId     Int?
+  grupo       Grupo?     @relation(fields: [grupoId], references: [id])
+  preguntas   Pregunta[]
+}
+
+model Pregunta {
+  id         Int    @id @default(autoincrement())
+  pregunta   String
+  respuesta  String
+  multimedia Bytes  @db.LongBlob
+  consejo    String
+
+  actividadId Int
+  actividad   Actividad @relation(fields: [actividadId], references: [id])
+
+  laboratorio   Laboratorio? @relation(fields: [laboratorioId], references: [id])
+  laboratorioId Int?
+
+  respuestas_Alumno Respuestas_Alumno[]
+}
+
+model Laboratorio {
+  id          Int        @id @default(autoincrement())
+  nombre      String     @db.VarChar(25)
+  descripcion String
+  imagen      Bytes      @db.LongBlob
+  pregunta    Pregunta[]
+}
+
+model Respuestas_Alumno {
+  preguntaId Int
+  usuarioId  Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+  respuesta  String
+  acierto    Boolean
+
+  @@id([preguntaId, usuarioId])
+}
