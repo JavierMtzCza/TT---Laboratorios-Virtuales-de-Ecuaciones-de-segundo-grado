@@ -7,5 +7,4 @@ export class rolController {
         res.json(rol)
     }
 
-
 }

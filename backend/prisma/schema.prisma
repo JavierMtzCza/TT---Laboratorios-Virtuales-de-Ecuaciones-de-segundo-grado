@@ -18,7 +18,7 @@ model Usuario {
     estado           Boolean                 @default(true)
     Grupos           UsuarioEnGrupo[]
     Respuestas       RespuestasAlumno[]
-    Calificaciones   CalificacionActividad[]
+    Calificaciones   CalificacionesActividad[]
 }
 
 model Rol {
@@ -28,7 +28,6 @@ model Rol {
 }
 
 model UsuarioEnGrupo {
-    id        Int     @id @default(autoincrement())
     usuarioId Int
     grupoId   Int
     rolId     Int
@@ -36,7 +35,7 @@ model UsuarioEnGrupo {
     Grupo     Grupo   @relation(fields: [grupoId], references: [id], onDelete: Cascade)
     Rol       Rol     @relation(fields: [rolId], references: [id])
 
-    @@unique([usuarioId, grupoId])
+    @@id(fields: [usuarioId, grupoId])
 }
 
 model Grupo {
@@ -50,32 +49,31 @@ model Grupo {
 }
 
 model Actividad {
-    id               Int                     @id @default(autoincrement())
-    descripcion      String?
-    creadoEl         DateTime                @default(now())
-    fechaVencimiento DateTime?
-    grupoId          Int
-    Grupo            Grupo                   @relation(fields: [grupoId], references: [id])
-    Preguntas        Pregunta[]
-    Calificaciones   CalificacionActividad[]
+    id             Int                     @id @default(autoincrement())
+    descripcion    String?
+    creadoEl       DateTime                @default(now())
+    fechaLimite    DateTime?
+    grupoId        Int
+    Grupo          Grupo                   @relation(fields: [grupoId], references: [id])
+    Preguntas      Pregunta[]
+    Calificaciones CalificacionesActividad[]
 }
 
-model CalificacionActividad {
-    id           Int       @id @default(autoincrement())
+model CalificacionesActividad {
     calificacion Float
     usuarioId    Int
     actividadId  Int
     Usuario      Usuario   @relation(fields: [usuarioId], references: [id])
     Actividad    Actividad @relation(fields: [actividadId], references: [id])
 
-    @@unique([usuarioId, actividadId])
+    @@id([usuarioId, actividadId])
 }
 
 model Pregunta {
-    id          Int    @id @default(autoincrement())
+    id          Int     @id @default(autoincrement())
     pregunta    String
     respuesta   String
-    intentos    Int?   @default(4)
+    intentos    Int?    @default(4)
     multimedia  Bytes?  @db.LongBlob
     observacion String?
     enlace      String?
@@ -84,6 +82,8 @@ model Pregunta {
     Actividad   Actividad @relation(fields: [actividadId], references: [id], onDelete: Cascade)
 
     Respuestas_Alumno RespuestasAlumno[]
+
+    @@unique([pregunta, actividadId])
 }
 
 model RespuestasAlumno {

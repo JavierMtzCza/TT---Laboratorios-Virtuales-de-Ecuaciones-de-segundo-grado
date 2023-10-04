@@ -1,28 +1,25 @@
 import { Router } from "express";
 import { usuarioController } from "../controllers/usuarioController.js";
+import { esCorreo, validarEsquema, validaErrores, existeCorreo, existeUsuario } from "../middlewares/middlewaresUsuario.js";
 
 const router = Router()
 
-// Consultar usuarios
+//PASS: Consultar usuarios
 router.get("/", usuarioController.getAll)
 
-// Consultar usuario por Correo
-router.get("/:correo", usuarioController.getByEmail)
+//PASS: Consultar usuario por Correo
+router.get("/:correo", esCorreo, validaErrores, existeCorreo, usuarioController.getByEmail)
 
-// Crear usuario
-router.post("/", usuarioController.create)
+//PASS: Crear usuario
+router.post("/", validarEsquema, validaErrores, existeUsuario, usuarioController.create)
 
-// Modificar usuario
-router.patch("/:correo", usuarioController.update)
+//PASS: Modificar usuario
+router.patch("/:correo", esCorreo, validaErrores, existeCorreo, usuarioController.update)
 
-// Consultar los grupos a los que pertenece ese usuario
-router.get("/grupos/:id", usuarioController.getGroups)
+//PASS: Consultar los grupos a los que pertenece ese usuario
+router.get("/grupos/:correo", esCorreo, validaErrores, existeCorreo, usuarioController.getGroups)
 
-//Usuario elimina un grupo
-router.delete("/grupo/:idGrupo/:idUsuario", usuarioController.deleteGroup)
-
-//Logeo de un usuario
-router.get("/:correo/:contrasena", usuarioController.login)
-
+//PASS: Logeo de un usuario
+router.get("/:correo/:contrasena", esCorreo, validaErrores, existeCorreo, usuarioController.login)
 
 export default router
