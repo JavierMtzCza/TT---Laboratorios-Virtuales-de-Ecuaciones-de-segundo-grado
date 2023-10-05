@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Form, Grid, Input, Item, Label, Message } from 'semantic-ui-react';
+import { Button, Form, Grid, Input, Item, Label } from 'semantic-ui-react';
 import Grafica from '../components/Grafica';
 import imagen from '../images/newplot (1).png';
 

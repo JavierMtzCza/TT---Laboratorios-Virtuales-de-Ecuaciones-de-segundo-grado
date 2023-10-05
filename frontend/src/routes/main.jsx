@@ -13,14 +13,14 @@ import PA8Pruebas from "./PA8-Pruebas";
 const router = createBrowserRouter([
    {
       path: "/",
-      element: <PA1Inicio />,
+      element: <PA1Inicio/>,
    },
    {
-      path: "/SingIn",
+      path: "/InicioSesion",
       element: <PA2InicioSesion />
    },
    {
-      path: "/SingUp",
+      path: "/Registro",
       element: <PA3Registro />
    },
    {

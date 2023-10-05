@@ -8,7 +8,7 @@ import PA6JuegoMemo from "../routes/PA6-JuegoMemo"
 
 ReactDOM.render(
     <React.StrictMode>
-        <PA6JuegoMemo/>
+        <PA6JuegoMemo />
     </React.StrictMode>,
     document.getElementById('root')
 )

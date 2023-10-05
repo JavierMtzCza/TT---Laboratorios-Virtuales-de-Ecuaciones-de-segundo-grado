@@ -1,38 +1,35 @@
-import { Grid, GridColumn, GridRow, Header, Icon, Image } from 'semantic-ui-react'
-import NavBarMobile from '../components/NavBarMobile.jsx'
-import NavBar from '../components/NavBar.jsx'
+import { useMediaQuery } from 'react-responsive'
 
-import imagen1 from "../images/matematicas.png"
-import imagen2 from "../images/Group 1 (2).svg"
+import logo from '../images/matematicas.png'
+import imagen from '../images/Group 1 (2).svg'
+import school from '../images/school.png'
+
+import { Grid, Header, Image } from 'semantic-ui-react'
+import NavbarLg from '../components/NavbarLg.jsx'
+import NavbarMb from '../components/NavbarMb.jsx'
 
 const PA1Inicio = () => {
+
+   const laptopOrDesktop = useMediaQuery({ query: "(min-width:1024px)" })
+
    return (
       <>
-         <Grid style={{ height: "105vh" }}>
-            <Grid.Row only='computer'>
-               <Grid.Column>
-                  <NavBar image={imagen1} />
-               </Grid.Column>
-            </Grid.Row>
-            <Grid.Row only='tablet mobile'>
-               <Grid.Column>
-                  <NavBarMobile image={imagen1} />
-               </Grid.Column>
-            </Grid.Row>
-            <GridRow textAlign='center'>
-               <GridColumn verticalAlign='middle' width={6}>
-                  <Header as='h2' icon>
-                     <Icon name='settings' />
-                     Account Settings
-                     <Header.Subheader>
-                        Manage your account settings and set e-mail preferences.
-                     </Header.Subheader>
-                  </Header>
-               </GridColumn>
-               <Grid.Column width={10}>
-                  <Image src={imagen2} fluid />
-               </Grid.Column>
-            </GridRow>
+         {laptopOrDesktop ? <NavbarLg imagen={logo} /> : <NavbarMb imagen={logo} />}
+         <Grid centered>
+            <Grid.Column width={laptopOrDesktop ? 6 : 16} verticalAlign='middle'>
+               <Header as='h1' image={school} content='MateLab' />
+               <Header as='h2' content='Pon a prueba tus conocimientos y desarrolla tus habilidades!!' />
+               {laptopOrDesktop ? <button className='button1'>Prueba los laboratorios</button> : <></>}
+            </Grid.Column>
+            {laptopOrDesktop ?
+               <Grid.Column width={10}><Image fluid src={imagen} alt="Logo" /></Grid.Column> :
+               <>
+                  <img src={imagen} alt="Logo" height={250} />
+                  <br />
+                  <br />
+                  <button className='button1'>Prueba los laboratorios</button>
+               </>
+            }
          </Grid>
       </>
    )
