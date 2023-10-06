@@ -37,10 +37,6 @@ const PA8Pruebas = () => {
       
    };
 
-<<<<<<< HEAD
-   
-=======
-
    const resolverEcuacionCuadratica = () => {
       const a = parseFloat(document.getElementById('a').value);
       const b = parseFloat(document.getElementById('b').value);
@@ -133,7 +129,6 @@ const PA8Pruebas = () => {
       document.getElementById('pasos').innerHTML = '';
     };
      
->>>>>>> ramaErick
 
    return (
       <Grid columns={2} stackable>
