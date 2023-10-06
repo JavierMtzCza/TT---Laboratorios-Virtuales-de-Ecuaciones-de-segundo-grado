@@ -12,7 +12,7 @@ const PA2InicioSesion = () => {
 
   const onSubmit = handleSubmit((formData) => {
 
-    fetch(`http://localhost:3000/usuarios/login/${formData.correo}/${formData.contrasena}`)
+    fetch(`http://localhost:3000/usuario/${formData.correo}/${formData.contrasena}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {

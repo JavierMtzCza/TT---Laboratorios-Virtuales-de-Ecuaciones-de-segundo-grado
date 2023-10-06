@@ -8,12 +8,12 @@ const PA5Grupos = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch(`http://localhost:3000/usuarios/grupos/${1}`)
+    fetch(`http://localhost:3000/usuario/grupo/4@gmail.com`)
       .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
   }, [])
 
-  const isDesktop = useMediaQuery({minWidth:1024})
-  const isTablet = useMediaQuery({maxWidth:1023, minWidth:426})
+  const isDesktop = useMediaQuery({ minWidth: 1024 })
+  const isTablet = useMediaQuery({ maxWidth: 1023, minWidth: 426 })
 
 
   return (

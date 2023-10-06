@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { grupoController } from "../controllers/grupoController.js";
+import { existeGrupo, existeCorreo, existeRegistro } from "../middlewares/middlewaresGrupo.js";
+import { esCorreo, validaErrores } from "../middlewares/middlewaresUsuario.js";
 
 const router = Router()
 
@@ -7,12 +9,13 @@ const router = Router()
 router.get("/", grupoController.getAll)
 
 //Listar integrantes de un grupo
-router.get("/:idGrupo", grupoController.getUsers)
+router.get("/:idGrupo", existeGrupo, grupoController.getUsers)
 
 // Creacion de un grupo
-router.post('/:idAlumno', grupoController.create)
+router.post('/:correo', esCorreo, validaErrores, existeCorreo, grupoController.create)
 
 // Inscripcion de un usuario a un grupo
-router.post("/:idGrupo/:idAlumno", grupoController.inscripcion )
+router.post("/:idGrupo/:correo", existeGrupo, esCorreo, existeCorreo, validaErrores, existeRegistro, grupoController.inscripcion)
+
 
 export default router
