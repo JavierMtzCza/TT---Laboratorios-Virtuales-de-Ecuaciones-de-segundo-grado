@@ -22,19 +22,7 @@ const PA8Pruebas = () => {
       });
    };
 
-   useEffect(() => {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
-      script.async = true;
-      script.onload = () => {
-         MathJax.Hub.Config({
-            tex2jax: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-         });
-      };
-      document.head.appendChild(script);
-      
-   }, []);
+   
 
    return (
       <Grid columns={2} stackable>
