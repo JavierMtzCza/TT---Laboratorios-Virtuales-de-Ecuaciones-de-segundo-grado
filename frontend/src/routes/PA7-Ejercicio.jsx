@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Button, Form, Grid, Input, Item, Label } from 'semantic-ui-react';
-import Grafica from '../components/Grafica';
+import Grafica from '../components/Plotly';
 import imagen from '../images/newplot (1).png';
 
 const PA8Pruebas = () => {
@@ -228,6 +228,7 @@ const PA8Pruebas = () => {
 
             </Grid.Column>
             <Grid.Column>
+               
                <Grafica
                   termCuadratico={terminos.terminoCuadratico}
                   termLinear={terminos.terminoLineal}

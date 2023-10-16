@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Plot from 'react-plotly.js';
 import { Grid, Input, Label } from 'semantic-ui-react';
 
-const Grafica = ({ termCuadratico, termLinear, termIndependiente }) => {
+const Plotly = ({ termCuadratico, termLinear, termIndependiente }) => {
 
    const [dominio, setDominio] = useState(25)
    const [color, setColor] = useState('#68FF33')
@@ -49,7 +49,21 @@ const Grafica = ({ termCuadratico, termLinear, termIndependiente }) => {
                      layout={{
                         title: termCuadratico + "x^2 " + termLinear + "x + " + termIndependiente,
                         showlegend: false,
-                        modebar: { remove: ['lasso2d', 'hoverClosestGl2d', 'select2d', 'resetScale2d'] }
+                        modebar: { remove: ['lasso2d', 'hoverClosestGl2d', 'select2d', 'resetScale2d'] },
+                        xaxis: {
+                           showspikes: true,
+                           spikecolor: 'black',
+                           spikethickness: 1,
+                           spikemode: 'end',
+                           spikelabel: '>',
+                        },
+                        yaxis: {
+                           showspikes: true,
+                           spikecolor: 'black',
+                           spikethickness: 1,
+                           spikemode: 'end',
+                           spikelabel: '>',
+                        },
                      }}
 
                      config={{ responsive: true, scrollZoom: true, displayModeBar: true, displaylogo: false }}
@@ -82,4 +96,4 @@ const Grafica = ({ termCuadratico, termLinear, termIndependiente }) => {
    )
 }
 
-export default Grafica
+export default Plotly

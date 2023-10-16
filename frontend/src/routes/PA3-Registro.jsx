@@ -96,6 +96,7 @@ const PA3Registro = () => {
                   <input {...register("contrasena", {
                     minLength: { value: 4, message: "La `Contrasena` debe tener por lo menos 4 caractres" },
                     maxLength: { value: 25, message: "La `Contrasena` debe tener menos de 25 caractres" },
+                    pattern: { value: /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=-])[A-Za-z0-9@#$%^&+=]{4,24}$/, message: "La contrasena debe tener por lo menos 1 caracter especial, una mayuscula y un numero" }
                   })
                   } />
                 </Form.Input>
@@ -115,7 +116,7 @@ const PA3Registro = () => {
             </Grid.Row>
             <Grid.Row>
               <Segment style={{ margin: "0 10% 0 10%" }} basic textAlign='center'>
-                <Link to="/SingIn">
+                <Link to="/InicioSesion">
                   <Header as='h4' content="Ya tienes una cuenta?" />
                 </Link>
                 <Divider horizontal> o </Divider>

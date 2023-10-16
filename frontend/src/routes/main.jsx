@@ -6,14 +6,14 @@ import PA3Registro from "./PA3-Registro"
 import PA4Laboratorios from "./PA4-Laboratorios"
 import PA5Grupos from "./PA5-Grupos"
 import PA6JuegoMemo from "./PA6-JuegoMemo"
-import PA7Graficar from "./PA7-Graficar";
-import PA8Pruebas from "./PA8-Pruebas";
+import PA7Ejercicio from "./PA7-Ejercicio.jsx";
+import PA8Grupo from "./PA8-Grupo.jsx";
 
 
 const router = createBrowserRouter([
    {
       path: "/",
-      element: <PA1Inicio/>,
+      element: <PA1Inicio />,
    },
    {
       path: "/InicioSesion",
@@ -37,7 +37,11 @@ const router = createBrowserRouter([
    },
    {
       path: "/Graficar",
-      element: <PA8Pruebas />
+      element: <PA7Ejercicio />
+   },
+   {
+      path: "/Grupo",
+      element: <PA8Grupo />
    }
 ]);
 

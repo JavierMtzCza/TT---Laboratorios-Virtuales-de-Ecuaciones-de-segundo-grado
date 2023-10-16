@@ -17,6 +17,7 @@ const PA2InicioSesion = () => {
       .then((data) => {
         if (data.error) {
           setNoUser(true)
+          console.log(data)
         }
         else {
           setNoUser(false)
@@ -74,7 +75,7 @@ const PA2InicioSesion = () => {
             </Grid.Row>
             <Grid.Row>
               <Segment style={{ margin: "0 20% 0 20%" }} basic textAlign='center'>
-                <Link to="/SingUp">
+                <Link to="/Registro">
                   <Header as='h4'>No tienes una cuenta?</Header>
                 </Link>
                 <Divider horizontal>O</Divider>

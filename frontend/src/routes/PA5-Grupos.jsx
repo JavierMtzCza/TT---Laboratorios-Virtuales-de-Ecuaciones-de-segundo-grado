@@ -8,8 +8,10 @@ const PA5Grupos = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch(`http://localhost:3000/usuario/grupo/4@gmail.com`)
+    fetch(`http://localhost:3000/usuario/grupos/4@gmail.com`)
       .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
+
+    console.log(data)
   }, [])
 
   const isDesktop = useMediaQuery({ minWidth: 1024 })
