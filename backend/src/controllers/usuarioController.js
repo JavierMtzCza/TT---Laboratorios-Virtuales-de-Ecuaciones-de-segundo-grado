@@ -1,5 +1,6 @@
 import { usuarioModel } from "../models/usuarioModel.js"
 
+
 export class usuarioController {
 
    // Consultar usuarios
@@ -42,5 +43,7 @@ export class usuarioController {
       else
          res.json({ error: 'la contrasena no coincide' })
    }
+
+   
 
 }

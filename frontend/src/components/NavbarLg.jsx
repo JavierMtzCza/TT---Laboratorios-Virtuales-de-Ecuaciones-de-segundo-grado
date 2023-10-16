@@ -13,6 +13,7 @@ const NavbarLg = ({imagen}) => {
                 <Menu.Item name='Ayuda'>
                     <Link to={"/"}>Ayuda</Link>
                 </Menu.Item>
+                
                 <Menu.Item name='JuegoMemo'>
                     <Link to={"/GamesMemo"}>
                         <Button size='medium' color='blue' content="Memorama" />

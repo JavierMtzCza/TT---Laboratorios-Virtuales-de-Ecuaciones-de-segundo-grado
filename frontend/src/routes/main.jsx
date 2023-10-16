@@ -6,8 +6,8 @@ import PA3Registro from "./PA3-Registro"
 import PA4Laboratorios from "./PA4-Laboratorios"
 import PA5Grupos from "./PA5-Grupos"
 import PA6JuegoMemo from "./PA6-JuegoMemo"
-import PA7Graficar from "./PA7-Graficar";
 import PA8Pruebas from "./PA8-Pruebas";
+import PA9Cuestionario from "./PA9-Cuestionario.jsx";
 
 
 const router = createBrowserRouter([
@@ -38,6 +38,10 @@ const router = createBrowserRouter([
    {
       path: "/Graficar",
       element: <PA8Pruebas />
+   },
+   {
+      path: "/Cuestionario",
+      element: <PA9Cuestionario/>
    }
 ]);
 

@@ -3,7 +3,7 @@ import imagen from "../images/undraw_login_re_4vu2 1.svg"
 import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
-;
+
 
 const PA3Registro = () => {
 
