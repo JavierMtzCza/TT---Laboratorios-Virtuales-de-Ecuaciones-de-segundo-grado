@@ -1,5 +1,5 @@
 import { usuarioModel } from "../models/usuarioModel.js"
-
+import bcrypt from 'bcrypt'
 
 export class usuarioController {
 
@@ -37,13 +37,15 @@ export class usuarioController {
    static async login(req, res) {
       const { correo, contrasena } = req.params
       const usuario = await usuarioModel.getByEmail(correo)
-      
-      if (usuario.contrasena == contrasena)
+
+      const valido = await bcrypt.compare(contrasena,usuario.contrasena)
+
+      if (valido)
          res.json(usuario)
       else
          res.json({ error: 'la contrasena no coincide' })
    }
 
-   
+
 
 }

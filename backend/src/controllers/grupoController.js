@@ -1,4 +1,5 @@
 import { grupoModel } from "../models/grupoModel.js";
+import { v1 as uuidv1 } from 'uuid';
 
 export class grupoController {
 
@@ -17,7 +18,8 @@ export class grupoController {
 
    // Creacion de un grupo
    static async create(req, res) {
-      const grupo = await grupoModel.create(req.params.correo, req.body)
+      const claveGrupo = uuidv1().split("-")[0] //Generamos una clave unica para el grupo
+      const grupo = await grupoModel.create(req.params.correo, claveGrupo, req.body)
       res.json(grupo)
    }
 

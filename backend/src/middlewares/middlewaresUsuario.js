@@ -46,8 +46,7 @@ export const validarEsquema = checkSchema({
     in: ['body'],
     errorMessage: 'La contraseña no es válida',
     isString: true,
-    trim: true,
-
+    trim: true
   }
 });
 

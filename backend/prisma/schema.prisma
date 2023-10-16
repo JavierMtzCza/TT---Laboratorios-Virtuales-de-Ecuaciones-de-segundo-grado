@@ -8,30 +8,28 @@ datasource db {
 }
 
 model Usuario {
-    id               Int                     @id @default(autoincrement())
-    nombre           String                  @db.VarChar(20)
-    apellido_paterno String                  @db.VarChar(25)
-    apellido_materno String                  @db.VarChar(25)
-    correo           String                  @unique @db.VarChar(50)
-    hash             String                  @db.VarChar(191)
-    salt             String                  @db.VarChar(50)
-    creadoEl         DateTime                @default(now())
-    estado           Boolean                 @default(true)
+    id               Int                       @id @default(autoincrement())
+    nombre           String                    @db.VarChar(20)
+    apellido_paterno String                    @db.VarChar(25)
+    apellido_materno String                    @db.VarChar(25)
+    correo           String                    @unique @db.VarChar(50)
+    contrasena       String                    @db.VarChar(191)
+    creadoEl         DateTime                  @default(now())
+    estado           Boolean                   @default(true)
     Grupos           UsuarioEnGrupo[]
     Respuestas       RespuestasAlumno[]
     Calificaciones   CalificacionesActividad[]
-
-    
-    
+    CambioContrasena CambioContrasena?
 }
 
 model CambioContrasena {
-  id        Int       @id @default(autoincrement())
-  usuarioId Int     
-  codigo   String    @db.VarChar(191)
-  creadoEl DateTime  @default(now()) @db.DateTime(3)
-  @@unique([codigo])
-
+    id             Int       @id @default(autoincrement())
+    usuarioId      Int       @unique
+    codigo         String    @unique @db.VarChar(191)
+    creadoEl       DateTime  @default(now())
+    fechaCaducidad DateTime?
+    estado         Boolean   @default(true)
+    Usuario        Usuario   @relation(fields: [usuarioId], references: [id])
 }
 
 model Rol {
@@ -62,12 +60,12 @@ model Grupo {
 }
 
 model Actividad {
-    id             Int                     @id @default(autoincrement())
+    id             Int                       @id @default(autoincrement())
     descripcion    String?
-    creadoEl       DateTime                @default(now())
+    creadoEl       DateTime                  @default(now())
     fechaLimite    DateTime?
     grupoId        Int
-    Grupo          Grupo                   @relation(fields: [grupoId], references: [id])
+    Grupo          Grupo                     @relation(fields: [grupoId], references: [id])
     Preguntas      Pregunta[]
     Calificaciones CalificacionesActividad[]
 }
@@ -110,4 +108,3 @@ model RespuestasAlumno {
 
     @@id([preguntaId, usuarioId])
 }
-

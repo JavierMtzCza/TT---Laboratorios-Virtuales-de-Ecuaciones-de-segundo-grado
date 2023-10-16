@@ -1,4 +1,5 @@
 import { prisma } from "../conexion.js";
+import bcrypt from 'bcrypt'
 
 export class usuarioModel {
 
@@ -16,37 +17,12 @@ export class usuarioModel {
 
    // Crear usuario
    static create = async (datosUsuario) => {
+      const saltGenerado = await bcrypt.genSalt(10); // Generar un salt aleatorio
+      datosUsuario.contrasena = await bcrypt.hash(datosUsuario.contrasena, saltGenerado); // Hashear la contraseña usando el salt
+
       const usuario = prisma.usuario.create({ data: datosUsuario })
       return usuario
    }
-
-   static async login(req, res) {
-      try {
-        const { nombre, apellido_paterno, apellido_materno, correo, contrasena } = req.body;
-    
-        // Generar un salt aleatorio
-        const salt = await bcrypt.genSalt(saltRounds);
-    
-        // Hashear la contraseña usando el salt
-        const hash = await bcrypt.hash(contrasena, salt);
-    
-        // Crear el usuario en la base de datos
-        const nuevoUsuario = await usuarioModel.create({
-          id,
-          nombre,
-          apellido_paterno,
-          apellido_materno,
-          correo,
-          hash,
-          salt,
-        });
-    
-        res.json({ mensaje: 'Usuario registrado con éxito', usuario: nuevoUsuario });
-      } catch (error) {
-        console.error('Error al registrar usuario:', error);
-        res.status(500).json({ error: 'Error al registrar usuario' });
-      }
-    }
 
    // Modificar usuario
    static update = async (correoUsuario, datosUsuario) => {
@@ -58,7 +34,7 @@ export class usuarioModel {
    static getGroups = async (correoUsuario) => {
       const usuario = await prisma.usuario.findUnique({
          where: { correo: correoUsuario },
-         include:{Grupos:{include:{Grupo:true}}}
+         include: { Grupos: { include: { Grupo: true } } }
       });
 
       const grupos = usuario.Grupos.map(grupo => grupo.Grupo);

@@ -20,9 +20,6 @@ router.patch("/:correo", esCorreo, validaErrores, existeCorreo, usuarioControlle
 router.get("/grupos/:correo", esCorreo, validaErrores, existeCorreo, usuarioController.getGroups)
 
 //PASS: Logeo de un usuario
-//router.get("/:correo/:contrasena", esCorreo, validaErrores, existeCorreo, usuarioController.login)
-router.get("/:correo/:hash", esCorreo, validaErrores, existeCorreo, usuarioController.login)
-router.get("/:correo/:salt", esCorreo, validaErrores, existeCorreo, usuarioController.login)
-
+router.get("/:correo/:contrasena", esCorreo, validaErrores, existeCorreo, usuarioController.login)
 
 export default router

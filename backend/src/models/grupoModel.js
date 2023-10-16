@@ -1,5 +1,4 @@
 import { prisma } from "../conexion.js";
-import { v1 as uuidv1 } from 'uuid';
 
 export class grupoModel {
 
@@ -20,8 +19,7 @@ export class grupoModel {
    }
 
    // Creacion de un grupo
-   static create = async (correoUsuario, data) => {
-      const claveGrupo = uuidv1().split("-")[0] //Generamos una clave unica para el grupo
+   static create = async (correoUsuario, claveGrupo, data) => {
       const grupo = prisma.grupo.create({
          data: {
             clave: claveGrupo,
