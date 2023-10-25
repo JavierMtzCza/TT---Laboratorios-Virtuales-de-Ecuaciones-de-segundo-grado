@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Input,Container,Header,Segment,Icon,Image,Button,Select} from 'semantic-ui-react';
+  Input, Container, Header, Segment, Icon, Image, Button, Select
+} from 'semantic-ui-react';
 
 const PA9Cuestionario = () => {
   const [preguntas, setPreguntas] = useState([]);
@@ -26,7 +27,7 @@ const PA9Cuestionario = () => {
   const handleImagenChange = (e, indexPregunta, indexOpcion) => {
     const file = e.target.files[0];
     const nuevasPreguntas = [...preguntas];
-    
+
     if (indexOpcion !== undefined) {
       // Si se proporciona el índice de opción, estamos cambiando una imagen de opción.
       nuevasPreguntas[indexPregunta].opciones[indexOpcion].imagen = file;
@@ -34,7 +35,7 @@ const PA9Cuestionario = () => {
       // Si no se proporciona el índice de opción, estamos cambiando una imagen de pregunta.
       nuevasPreguntas[indexPregunta].imagen = file;
     }
-    
+
     setPreguntas(nuevasPreguntas);
   };
 
@@ -146,8 +147,8 @@ const PA9Cuestionario = () => {
                     }}
                   />
                   <Input
-                  type="file"
-                  onChange={(e) => handleImagenChange(e, index)}
+                    type="file"
+                    onChange={(e) => handleImagenChange(e, index)}
                   />
                   <Button primary onClick={guardarEdicion}>Guardar</Button>
                   <Button secondary onClick={cancelarEdicion}>Cancelar</Button>
@@ -162,9 +163,9 @@ const PA9Cuestionario = () => {
                         negative
                         onClick={() => handleImagenChange({ target: { files: [] } }, index)}
                       >
-                      Eliminar Imagen
-                    </Button>
-                  </div>
+                        Eliminar Imagen
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}
@@ -216,7 +217,7 @@ const PA9Cuestionario = () => {
                       <Button primary onClick={guardarEdicion}>Guardar</Button>
                       <Button secondary onClick={cancelarEdicion}>Cancelar</Button>
                     </div>
-                    
+
                   ) : (
                     <Input
                       placeholder={`Opción ${i + 1}`}
@@ -229,7 +230,7 @@ const PA9Cuestionario = () => {
                         setPreguntas(nuevasPreguntas);
                       }}
                     />
-                    
+
                   )}
                   <Input
                     type="file"
@@ -243,15 +244,15 @@ const PA9Cuestionario = () => {
                   />
                   {opcion.imagen && (
                     <div>
-                    <Image src={URL.createObjectURL(opcion.imagen)} size="medium" />
-                    <Button
-                      negative
-                      onClick={() => handleImagenChange({ target: { files: [] } }, index, i)}
-                    >
-                      Eliminar Imagen
-                    </Button>
-                  </div>
-                  
+                      <Image src={URL.createObjectURL(opcion.imagen)} size="medium" />
+                      <Button
+                        negative
+                        onClick={() => handleImagenChange({ target: { files: [] } }, index, i)}
+                      >
+                        Eliminar Imagen
+                      </Button>
+                    </div>
+
                   )}
                   <Icon
                     name="trash"

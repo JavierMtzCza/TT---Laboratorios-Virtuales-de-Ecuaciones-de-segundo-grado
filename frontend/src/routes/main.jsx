@@ -15,7 +15,7 @@ import PA10Formulario from "./PA10-Formulario.jsx";
 const router = createBrowserRouter([
    {
       path: "/",
-      element: <PA1Inicio/>,
+      element: <PA1Inicio />,
    },
    {
       path: "/InicioSesion",
@@ -43,11 +43,11 @@ const router = createBrowserRouter([
    },
    {
       path: "/Cuestionario",
-      element: <PA9Cuestionario/>
+      element: <PA9Cuestionario />
    },
    {
-      path: "Formulario",
-      element: <PA10Formulario/>
+      path: "/Formulario",
+      element: <PA10Formulario />
    }
 ]);
 
