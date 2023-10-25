@@ -1,6 +1,6 @@
 import { Button, Container, Grid, Header, Menu, Segment } from 'semantic-ui-react'
 
-const GrupoMenu = () => {
+const GrupoMenuProfe = () => {
   return (
     <>
       <Segment style={{ borderRadius: "1rem", background: "#00C193", color: "#ffffff", margin: "1% 5% 1% 5%" }}>
@@ -42,4 +42,4 @@ const GrupoMenu = () => {
   )
 }
 
-export default GrupoMenu
+export default GrupoMenuProfe

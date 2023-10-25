@@ -1,31 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Plot from 'react-plotly.js';
 import { Grid, Input, Label } from 'semantic-ui-react';
 
-const Plotly = ({ termCuadratico, termLinear, termIndependiente }) => {
+const Plotly = ({ a1, b1, c1 }) => {
 
    const [dominio, setDominio] = useState(25)
    const [color, setColor] = useState('#68FF33')
-   var xs = []
-   var ys = []
-   var raices
-   const a = eval(termCuadratico)
-   const b = eval(termLinear)
-   const c = eval(termIndependiente)
-   var discriminante = (b * b) - (4 * a * c)
+   const [data, setData] = useState({ xss: [], yss: [], rais: [] })
 
-   for (var x = -dominio; x <= dominio; x += .4) {
-      xs.push(x)
-      ys.push((a * x * x) + (b * x) + (c))
-   }
+   useEffect(() => {
+      var xs = []
+      var ys = []
+      var raices = []
+      const a = parseFloat(a1);
+      const b = parseFloat(b1);
+      const c = parseFloat(c1);
+      var discriminante = (b * b) - (4 * a * c)
 
-   if (discriminante > 0) { //Dos soluciones
-      raices = [((-b + Math.sqrt(discriminante)) / (2 * a)), 0, ((-b - Math.sqrt(discriminante)) / (2 * a)), 0]
-   } else if (discriminante == 0) { //Una solucion
-      raices = [((-b + Math.sqrt(discriminante)) / (2 * a)), 0, null, null]
-   } else if (discriminante < 0) {
-      raices = [null, null, null, null]
-   }
+      for (var x = -dominio; x <= dominio; x += .3) {
+         xs.push(x)
+         ys.push((a * x * x) + (b * x) + (c))
+      }
+
+      if (discriminante > 0) { //Dos soluciones
+         raices = [((-b + Math.sqrt(discriminante)) / (2 * a)), 0, ((-b - Math.sqrt(discriminante)) / (2 * a)), 0]
+      } else if (discriminante == 0) { //Una solucion
+         raices = [((-b + Math.sqrt(discriminante)) / (2 * a)), 0, null, null]
+      } else if (discriminante < 0) {
+         raices = [null, null, null, null]
+      }
+      setData({ xss: xs, yss: ys, rais: raices })
+      console.log('cambio')
+
+   }, [a1, b1, c1, dominio])
+
 
    return (
       <>
@@ -36,18 +44,18 @@ const Plotly = ({ termCuadratico, termLinear, termIndependiente }) => {
                      data={[
                         {
                            name: 'Ecuacion', type: 'scatter', mode: 'lines+markers', marker: { color: color },
-                           x: xs,
-                           y: ys,
+                           x: data.xss,
+                           y: data.yss,
                         },
                         {
                            name: 'Raices', mode: 'markers', marker: { size: [18, 18] },
-                           x: [raices[0], raices[2]],
-                           y: [raices[1], raices[3]],
+                           x: [data.rais[0], data.rais[2]],
+                           y: [data.rais[1], data.rais[3]],
                         }
                      ]}
 
                      layout={{
-                        title: termCuadratico + "x^2 " + termLinear + "x + " + termIndependiente,
+                        //title: termCuadratico + "x^2 " + termLinear + "x + " + termIndependiente,
                         showlegend: false,
                         modebar: { remove: ['lasso2d', 'hoverClosestGl2d', 'select2d', 'resetScale2d'] },
                         xaxis: {
@@ -66,7 +74,7 @@ const Plotly = ({ termCuadratico, termLinear, termIndependiente }) => {
                         },
                      }}
 
-                     config={{ responsive: true, scrollZoom: true, displayModeBar: true, displaylogo: false }}
+                     config={{ responsive: true, displayModeBar: true, displaylogo: false }}
                      style={{ width: "100%", height: "90vh" }}
                   />
                   <Grid columns={2}>

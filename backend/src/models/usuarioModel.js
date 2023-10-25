@@ -10,8 +10,25 @@ export class usuarioModel {
 
    // Consultar usuario por Correo
    static getByEmail = async (correoUsuario) => {
-      const usuario = prisma.usuario.findUnique({ where: { correo: correoUsuario } })
+      const usuario = prisma.usuario.findUnique({
+         where: { correo: correoUsuario, estado: true }, select: {
+            id: true,
+            nombre: true,
+            apellido_paterno: true,
+            apellido_materno: true,
+            correo: true,
+            contrasena: true //TODO: quitar contra
+         },
+      })
       return usuario
+   }
+
+   // Consultar usuario por Correo
+   static getPassword = async (correoUsuario) => {
+      const password = prisma.usuario.findUnique({
+         where: { correo: correoUsuario }, select: { contrasena: true },
+      })
+      return password
    }
 
    // Crear usuario
@@ -30,7 +47,7 @@ export class usuarioModel {
    static getGroups = async (correoUsuario) => {
       const usuario = await prisma.usuario.findUnique({
          where: { correo: correoUsuario },
-         include:{Grupos:{include:{Grupo:true}}}
+         include: { Grupos: { include: { Grupo: true } } }
       });
 
       const grupos = usuario.Grupos.map(grupo => grupo.Grupo);

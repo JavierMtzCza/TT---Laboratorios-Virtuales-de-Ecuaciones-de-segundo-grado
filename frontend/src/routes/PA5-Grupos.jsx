@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { Button, Card, Dropdown, Input, Menu } from 'semantic-ui-react'
 import { Grupo } from '../components/Grupo'
 import { useMediaQuery } from 'react-responsive'
+import GrupoModalCreacion, {  } from "../components/GrupoModalCreacion";
 
 const PA5Grupos = () => {
 
   const [data, setData] = useState([])
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
     fetch(`http://localhost:3000/usuario/grupos/4@gmail.com`)
@@ -18,7 +20,7 @@ const PA5Grupos = () => {
   const isTablet = useMediaQuery({ maxWidth: 1023, minWidth: 426 })
 
 
-  return (
+  return (    
     <>
       <Menu stackable secondary widths={3} style={{ margin: "1% 0% 1% 0%" }}>
         <Menu.Item name='icono' />
@@ -39,7 +41,7 @@ const PA5Grupos = () => {
           <Input className='icon' action={{ icon: 'search', content: 'buscar' }} placeholder='Buscar grupo' />
         </Menu.Item>
         <Menu.Item>
-          <Button color='green'>Crear Grupo</Button>
+          <Button color='green' onClick={()=>{setShow(true)}} >Crear Grupo</Button>
         </Menu.Item>
       </Menu>
       {
@@ -47,7 +49,7 @@ const PA5Grupos = () => {
           {data.map((grupo) => (<Grupo key={grupo.id} alumnos={4} nombre={grupo.nombre} descripcion={grupo.descripcion} />))}
         </Card.Group >
       }
-
+      <GrupoModalCreacion propShow={show} propSetShow={setShow}/>
     </>
   )
 }

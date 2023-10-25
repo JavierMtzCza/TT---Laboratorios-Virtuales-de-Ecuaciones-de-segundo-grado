@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       element: <PA4Laboratorios />
    },
    {
-      path: "/Groups",
+      path: "/Grupos",
       element: <PA5Grupos />
    },
    {

@@ -1,7 +1,7 @@
 import { Button, Card, Image } from 'semantic-ui-react'
 import Avatar from '../images/user_1144709.png'
 
-const Actividad = () => {
+const GrupoCardActividad = () => {
     return (
         <Card>
             <Card.Content>
@@ -14,4 +14,4 @@ const Actividad = () => {
     )
 }
 
-export default Actividad
+export default GrupoCardActividad

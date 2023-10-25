@@ -1,4 +1,5 @@
 import { usuarioModel } from "../models/usuarioModel.js"
+import jsonwebtoken from "jsonwebtoken";
 
 export class usuarioController {
 
@@ -36,9 +37,9 @@ export class usuarioController {
    static async login(req, res) {
       const { correo, contrasena } = req.params
       const usuario = await usuarioModel.getByEmail(correo)
-      
+
       if (usuario.contrasena == contrasena)
-         res.json(usuario)
+         res.json({ token: jsonwebtoken.sign(usuario, "contrasena") })
       else
          res.json({ error: 'la contrasena no coincide' })
    }

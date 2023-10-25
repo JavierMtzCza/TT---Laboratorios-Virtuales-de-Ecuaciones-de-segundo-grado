@@ -3,12 +3,14 @@ import { useForm } from "react-hook-form";
 import imagen from "../images/undraw_login_re_4vu2 1.svg"
 import { Link } from 'react-router-dom'
 import { useState } from 'react';
-
+import { useUsuarioStore } from "../stores/UsuarioStore";
 
 const PA2InicioSesion = () => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [noUser, setNoUser] = useState(false)
+  const logearUsuario = useUsuarioStore(state => state.setUsuario)
+  const usuario = useUsuarioStore(state => state.usuario)
 
   const onSubmit = handleSubmit((formData) => {
 
@@ -21,7 +23,8 @@ const PA2InicioSesion = () => {
         }
         else {
           setNoUser(false)
-          console.log('entro')
+          logearUsuario(data)
+          console.log(usuario)
         }
       })
       .catch((error) => console.log(error))
@@ -43,8 +46,8 @@ const PA2InicioSesion = () => {
           </Grid.Column>
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a</Header>
-              <Header as='h1' style={{ margin: "0 0 15% 10%" }}> Math Learn Lab</Header>
+              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a MateLab</Header>
+              <Header as='h1' style={{ margin: "2% 0 10% 5%" }}> Inicio de Sesion</Header>
             </Grid.Row>
             <Grid.Row>
 
@@ -52,9 +55,7 @@ const PA2InicioSesion = () => {
 
                 <Form.Input required iconPosition='left' fluid label="Correo" placeholder="Ingrese su correo" type='email'>
                   <Icon name='at' />
-                  <input {...register("correo", {
-                    pattern: { value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: "Correo no valido" }
-                  })} />
+                  <input {...register("correo", { pattern: { value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: "Correo no valido" } })} />
                 </Form.Input>
                 {errors.correo && <Message size='tiny' error content={errors.correo.message} />}
 

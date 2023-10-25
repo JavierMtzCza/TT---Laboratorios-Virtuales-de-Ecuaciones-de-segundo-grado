@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import NavBarActividad from "../components/NavBarActividad.jsx";
-import Card from 'semantic-ui-react'
-import Actividad from "../components/Actividad.jsx";
-import GrupoMenu from "../components/GrupoMenu.jsx";
+import { Card } from 'semantic-ui-react'
+import GrupoNavBarProfe from "../components/GrupoNavBarProfe.jsx";
+import GrupoMenuProfe from "../components/GrupoMenuProfe.jsx";
+import GrupoMenuAlumno from '../components/GrupoMenuAlumno.jsx';
+import GrupoNavBarAlumno from '../components/GrupoNavBarAlumno.jsx';
+import GrupoCardActividad from "../components/GrupoCardActividad.jsx";
 
 const PA8Grupo = () => {
 
@@ -10,12 +12,12 @@ const PA8Grupo = () => {
 
   return (
     <>
-      <NavBarActividad stateActivo={activo} stateSetActivo={setActivo} />
-      <GrupoMenu />
+      <GrupoNavBarAlumno stateActivo={activo} stateSetActivo={setActivo} />
+      <GrupoMenuProfe />
       <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={1}  >
-        <Actividad />
-        <Actividad />
-        <Actividad />
+        <GrupoCardActividad />
+        <GrupoCardActividad />
+        <GrupoCardActividad />
       </Card.Group >
     </>
   )
