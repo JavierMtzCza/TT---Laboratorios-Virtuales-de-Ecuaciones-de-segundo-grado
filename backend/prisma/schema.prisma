@@ -84,8 +84,11 @@ model Pregunta {
     id          Int     @id @default(autoincrement())
     pregunta    String
     respuesta   String
+    tipo        String?  // Tipo de pregunta: opción múltiple, verdadero/falso, respuesta corta, etc.
     intentos    Int?    @default(4)
-    multimedia  Bytes?  @db.LongBlob
+    multimedia  Bytes?  @db.LongBlob // Datos binarios de la imagen
+    descripcionMultimedia String? // Descripción de la imagen
+    formatoMultimedia String? // Formato de archivo de la imagen (por ejemplo, jpg, png, etc.)
     observacion String?
     enlace      String?
 
@@ -97,6 +100,7 @@ model Pregunta {
     @@unique([pregunta, actividadId])
 }
 
+
 model RespuestasAlumno {
     preguntaId      Int
     usuarioId       Int
@@ -107,4 +111,22 @@ model RespuestasAlumno {
     correcto        Boolean
 
     @@id([preguntaId, usuarioId])
+}
+
+
+model OpcionesPregunta {
+  id          Int       @id @default(autoincrement())
+  textoOpcion String
+  multimedia  Bytes?    @db.LongBlob
+  correcta    Boolean   @default(false) 
+  preguntaId  Int
+  pregunta    Pregunta  @relation(fields: [preguntaId], references: [id])
+}
+
+
+model Opciones {
+  id          Int     @id @default(autoincrement())
+  clave       String  @unique
+  valor       String
+  multimedia  Bytes?  @db.LongBlob
 }
