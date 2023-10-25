@@ -12,7 +12,7 @@ router.get("/", grupoController.getAll)
 router.get("/:idGrupo", existeGrupo, grupoController.getUsers)
 
 // Creacion de un grupo
-router.post('/:correo', esCorreo, validaErrores, exiscleateCorreo, grupoController.create)
+router.post('/:correo', esCorreo, validaErrores, existeCorreo, grupoController.create)
 
 // Inscripcion de un usuario a un grupo
 router.post("/:idGrupo/:correo", existeGrupo, esCorreo, existeCorreo, validaErrores, existeRegistro, grupoController.inscripcion)
