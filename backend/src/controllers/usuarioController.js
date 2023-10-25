@@ -1,5 +1,6 @@
 import { usuarioModel } from "../models/usuarioModel.js"
 import bcrypt from 'bcrypt'
+import jsonwebtoken from "jsonwebtoken";
 
 export class usuarioController {
 
@@ -38,10 +39,8 @@ export class usuarioController {
       const { correo, contrasena } = req.params
       const usuario = await usuarioModel.getByEmail(correo)
 
-      const valido = await bcrypt.compare(contrasena,usuario.contrasena)
-
-      if (valido)
-         res.json(usuario)
+      if (usuario.contrasena == contrasena)
+         res.json({ token: jsonwebtoken.sign(usuario, "contrasena") })
       else
          res.json({ error: 'la contrasena no coincide' })
    }
