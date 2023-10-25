@@ -8,7 +8,6 @@ import PA5Grupos from "./PA5-Grupos"
 import PA6JuegoMemo from "./PA6-JuegoMemo"
 import PA7Ejercicio from "./PA7-Ejercicio.jsx";
 import PA8Grupo from "./PA8-Grupo.jsx";
-import PA8Pruebas from "./PA8-Pruebas";
 import PA9Cuestionario from "./PA9-Cuestionario.jsx";
 import PA10Formulario from "./PA10-Formulario.jsx";
 

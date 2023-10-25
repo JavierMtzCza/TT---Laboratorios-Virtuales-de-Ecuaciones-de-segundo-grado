@@ -1,5 +1,4 @@
 import { usuarioModel } from "../models/usuarioModel.js"
-import bcrypt from 'bcrypt'
 import jsonwebtoken from "jsonwebtoken";
 
 export class usuarioController {
