@@ -8,34 +8,42 @@ datasource db {
 }
 
 model Usuario {
-    id               Int                       @id @default(autoincrement())
-    nombre           String                    @db.VarChar(20)
-    apellido_paterno String                    @db.VarChar(25)
-    apellido_materno String                    @db.VarChar(25)
-    correo           String                    @unique @db.VarChar(50)
-    contrasena       String                    @db.VarChar(191)
-    creadoEl         DateTime                  @default(now())
-    estado           Boolean                   @default(true)
-    Grupos           UsuarioEnGrupo[]
-    Respuestas       RespuestasAlumno[]
-    Calificaciones   CalificacionesActividad[]
-    CambioContrasena CambioContrasena?
+    id                      Int                       @id @default(autoincrement())
+    nombre                  String                    @db.VarChar(20)
+    apellido_paterno        String                    @db.VarChar(25)
+    apellido_materno        String                    @db.VarChar(25)
+    correo                  String                    @unique @db.VarChar(50)
+    contrasena              String                    @db.VarChar(191)
+    creadoEl                DateTime                  @default(now())
+    estado                  Boolean                   @default(true)
+    UsuarioEnGrupo          UsuarioEnGrupo[]
+    CambioContrasena        CambioContrasena?
+    CalificacionesActividad CalificacionesActividad[]
 }
 
 model CambioContrasena {
     id             Int       @id @default(autoincrement())
-    usuarioId      Int       @unique
     codigo         String    @unique @db.VarChar(191)
-    creadoEl       DateTime  @default(now())
     fechaCaducidad DateTime?
     estado         Boolean   @default(true)
-    Usuario        Usuario   @relation(fields: [usuarioId], references: [id])
+    Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
+    usuarioCorreo  String    @unique
 }
 
 model Rol {
     id          Int              @id @default(autoincrement())
     nombre      String           @unique
     rolEnGrupos UsuarioEnGrupo[]
+}
+
+model Grupo {
+    id          Int              @id @default(autoincrement())
+    nombre      String           @db.VarChar(50)
+    descripcion String?
+    clave       String           @unique
+    creadoEl    DateTime         @default(now())
+    Usuarios    UsuarioEnGrupo[]
+    Actividad   Actividad[]
 }
 
 model UsuarioEnGrupo {
@@ -49,84 +57,71 @@ model UsuarioEnGrupo {
     @@id(fields: [usuarioId, grupoId])
 }
 
-model Grupo {
-    id          Int              @id @default(autoincrement())
-    nombre      String           @db.VarChar(50)
-    descripcion String?
-    clave       String           @unique
-    creadoEl    DateTime         @default(now())
-    Usuarios    UsuarioEnGrupo[]
-    Actividad   Actividad[]
-}
-
 model Actividad {
-    id             Int                       @id @default(autoincrement())
-    descripcion    String?
-    creadoEl       DateTime                  @default(now())
-    fechaLimite    DateTime?
-    grupoId        Int
-    Grupo          Grupo                     @relation(fields: [grupoId], references: [id])
-    Preguntas      Pregunta[]
-    Calificaciones CalificacionesActividad[]
+    id          Int       @id @default(autoincrement())
+    descripcion String?
+    creadoEl    DateTime  @default(now())
+    fechaLimite DateTime?
+    grupoId     Int
+    Grupo       Grupo     @relation(fields: [grupoId], references: [id])
+    tipo        String
+
+    Calificaciones       CalificacionesActividad[]
+    PreguntaCuestionario PreguntaCuestionario[]
+    PreguntaEjercicio    PreguntaEjercicio[]
 }
 
-model CalificacionesActividad {
-    calificacion Float
-    usuarioId    Int
-    actividadId  Int
-    Usuario      Usuario   @relation(fields: [usuarioId], references: [id])
-    Actividad    Actividad @relation(fields: [actividadId], references: [id])
+model PreguntaCuestionario {
+    id       Int    @id @default(autoincrement())
+    pregunta String
 
-    @@id([usuarioId, actividadId])
+    actividadId        Int
+    Actividad          Actividad            @relation(fields: [actividadId], references: [id], onDelete: Cascade)
+    OpcionCuestionario OpcionCuestionario[]
 }
 
-model Pregunta {
-    id          Int     @id @default(autoincrement())
-    pregunta    String
-    respuesta   String
-    tipo        String?  // Tipo de pregunta: opción múltiple, verdadero/falso, respuesta corta, etc.
-    intentos    Int?    @default(4)
-    multimedia  Bytes?  @db.LongBlob // Datos binarios de la imagen
-    descripcionMultimedia String? // Descripción de la imagen
-    formatoMultimedia String? // Formato de archivo de la imagen (por ejemplo, jpg, png, etc.)
-    observacion String?
-    enlace      String?
+model OpcionCuestionario {
+    id         Int     @id @default(autoincrement())
+    textOpcion String
+    multimedia Bytes?  @db.LongBlob
+    correcta   Boolean
 
-    actividadId Int
-    Actividad   Actividad @relation(fields: [actividadId], references: [id], onDelete: Cascade)
+    PreguntaCuestionario   PreguntaCuestionario? @relation(fields: [preguntaCuestionarioId], references: [id])
+    preguntaCuestionarioId Int?
+}
 
-    Respuestas_Alumno RespuestasAlumno[]
+model PreguntaEjercicio {
+    id         Int     @id @default(autoincrement())
+    pregunta   String
+    multimedia Bytes?  @db.LongBlob // Datos binarios de la imagen
+    consejo    String?
+    ClaveVideo String?
+
+    actividadId     Int
+    Actividad       Actividad         @relation(fields: [actividadId], references: [id], onDelete: Cascade)
+    OpcionEjercicio OpcionEjercicio[]
 
     @@unique([pregunta, actividadId])
 }
 
+model OpcionEjercicio {
+    id Int   @id @default(autoincrement())
+    a  Float
+    b  Float
+    c  Float
+    r1 Float
+    r2 Float
 
-model RespuestasAlumno {
-    preguntaId      Int
-    usuarioId       Int
-    Usuario         Usuario  @relation(fields: [usuarioId], references: [id])
-    Pregunta        Pregunta @relation(fields: [preguntaId], references: [id])
-    respuestaAlumno String
-    intentosAlumno  Int
-    correcto        Boolean
-
-    @@id([preguntaId, usuarioId])
+    preguntaEjercicioId Int
+    Pregunta            PreguntaEjercicio @relation(fields: [preguntaEjercicioId], references: [id], onDelete: Cascade)
 }
 
+model CalificacionesActividad {
+    usuarioId    Int
+    actividadId  Int
+    calificacion Float
+    Usuario      Usuario   @relation(fields: [usuarioId], references: [id])
+    Actividad    Actividad @relation(fields: [actividadId], references: [id])
 
-model OpcionesPregunta {
-  id          Int       @id @default(autoincrement())
-  textoOpcion String
-  multimedia  Bytes?    @db.LongBlob
-  correcta    Boolean   @default(false) 
-  preguntaId  Int
-  pregunta    Pregunta  @relation(fields: [preguntaId], references: [id])
-}
-
-
-model Opciones {
-  id          Int     @id @default(autoincrement())
-  clave       String  @unique
-  valor       String
-  multimedia  Bytes?  @db.LongBlob
+    @@id([usuarioId, actividadId])
 }
