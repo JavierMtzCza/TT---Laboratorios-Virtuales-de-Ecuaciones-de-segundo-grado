@@ -1,43 +1,18 @@
-/* Estilos para las preguntas */
-.pregunta-label {
-  font-size: 20px;
-  color: black;
+/* Estilo para el fondo del cuestionario */
+.container-background {
+  background-color: rgb(183, 224, 217); /* Fondo más suave */
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid #dcdcdc; /* Borde más claro */
 }
 
-.pregunta-text {
-  font-size: 18px;
-  color: black;
+.tiempo-cuestionario {
+  width: 200px;
+  margin-top: 10px;
 }
 
-/* Estilos para las opciones */
-.opciones-list {
-  list-style-type: none;
-  padding: 0;
+.tiempo-cuestionario-label {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-/* Estilos para los segmentos (contenedores de preguntas) */
-.pregunta-segment {
-  background-color: #cce5ff; /* Fondo azul claro */
-  border: 1px solid #9933cc; /* Borde morado */
-  margin: 10px 0;
-  padding: 10px; /* Agregamos un poco de espacio para mostrar los botones */
-}
-
-/* Añade otros estilos según tus preferencias */
-
-/* Estilos para los botones de agregar opción y eliminar opción */
-.opcion-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.opcion-buttons button {
-  background-color: #9933cc; /* Botón morado */
-  color: white;
-  margin-right: 5px;
-}
-
-.opcion-buttons button:last-child {
-  margin-right: 0;
-}

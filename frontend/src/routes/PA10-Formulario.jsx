@@ -1,64 +1,76 @@
-import React, { useState } from 'react';
-import { Container, Header, Form, Button, Grid, Radio } from 'semantic-ui-react';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Header,
+  Segment,
+  Form,
+  Input,
+  Icon,
+  Image,
+} from "semantic-ui-react";
 
-const TuComponente = () => {
-  const [nombreAlumno, setNombreAlumno] = useState('');
-  const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
+const ExamenAlumno = ({ preguntas, idCuestionario }) => {
+  const [respuestas, setRespuestas] = useState([]);
+  const [tiempoRestante, setTiempoRestante] = useState(0);
 
-  const opciones = [
-    'Opción 1',
-    'Opción 2',
-    'Opción 3',
-    'Opción 4',
-    'Opción 5',
-  ];
+  useEffect(() => {
+    // Obtener el tiempo del cuestionario
+    const getTiempoCuestionario = async () => {
+      const res = await fetch(`/api/cuestionarios/${idCuestionario}`);
+      const data = await res.json();
+      setTiempoRestante(data.tiempo_cuestionario);
+    };
+    getTiempoCuestionario();
 
-  const handleNombreChange = (e) => {
-    setNombreAlumno(e.target.value);
-  };
+    // Actualizar el tiempo restante cada segundo
+    const interval = setInterval(() => {
+      setTiempoRestante(tiempoRestante - 1);
+    }, 1000);
 
-  const handleRespuestaChange = (e, { value }) => {
-    setRespuestaSeleccionada(value);
-  };
+    return () => {
+      clearInterval(interval);
+    };
+  }, [idCuestionario]);
 
-  const evaluarRespuesta = () => {
-    if (respuestaSeleccionada !== null) {
-      // Aquí puedes agregar lógica para evaluar la respuesta seleccionada.
-      console.log('Respuesta seleccionada:', opciones[respuestaSeleccionada]);
-    }
+  const evaluarRespuestas = () => {
+    // Evaluar las respuestas del cuestionario
+    // ...
   };
 
   return (
-    <Container text>
+    <Container text className="container-background">
       <Header as="h1">Cuestionario</Header>
-      <Form>
-        <Form.Field>
-          <label>Nombre del Alumno</label>
-          <input
-            placeholder="Escribe tu nombre"
-            value={nombreAlumno}
-            onChange={handleNombreChange}
-          />
-        </Form.Field>
-        <Header as="h2">Pregunta</Header>
-        <p>Aquí iría la pregunta</p>
-        <Header as="h3">Opciones</Header>
-        {opciones.map((opcion, index) => (
-          <Form.Field key={index}>
-            <Radio
-              label={opcion}
-              value={index}
-              checked={respuestaSeleccionada === index}
-              onChange={handleRespuestaChange}
+      <Segment key={0} style={{ color: "black" }} >
+        <Form>
+          <Form.Field>
+            <label className="pregunta-label">Pregunta 1</label>
+            <p>¿Cuál es la capital de España?</p>
+            <Input
+              type="radio"
+              name="pregunta-1"
+              value="Madrid"
+              checked={respuestas[0] === "Madrid"}
+              onChange={(e) => {
+                setRespuestas([...respuestas, e.target.value]);
+              }}
             />
+            <label htmlFor="pregunta-1">Madrid</label>
+            <Input
+              type="radio"
+              name="pregunta-1"
+              value="Barcelona"
+              checked={respuestas[0] === "Barcelona"}
+              onChange={(e) => {
+                setRespuestas([...respuestas, e.target.value]);
+              }}
+            />
+            <label htmlFor="pregunta-1">Valencia</label>
           </Form.Field>
-        ))}
-        <Button primary onClick={evaluarRespuesta}>
-          Evaluar
-        </Button>
-      </Form>
-    </Container>
+          </Form>
+        </Segment>
+      </Container>
+    
   );
 };
 
-export default TuComponente;
+export default ExamenAlumno;

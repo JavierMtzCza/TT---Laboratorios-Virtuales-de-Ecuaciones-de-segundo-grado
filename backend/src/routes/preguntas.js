@@ -10,6 +10,10 @@ const router = Router()
 //Creando preguntas de actividad
 router.post("/:idActividad", upload.single('multimedia'), preguntaController.create)
 
+router.post("/jaj", (req,res)=>{
+ console.log(req.body);
+})
+
 //Creando preguntas de actividad
 // router.post("/:idActividad/:idLaboratorio", upload.single('multimedia'), async (req, res) => {
 //    const actividad = await prisma.pregunta.create({

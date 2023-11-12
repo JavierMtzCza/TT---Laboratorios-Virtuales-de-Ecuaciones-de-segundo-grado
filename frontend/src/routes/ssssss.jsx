@@ -10,8 +10,6 @@ const PA9Cuestionario = () => {
   const [editandoIndex, setEditandoIndex] = useState(null); // Índice de la pregunta en edición
   const [editandoOpcionIndex, setEditandoOpcionIndex] = useState(null); // Índice de la opción en edición
   const [opcionesCorrectasPorPregunta, setOpcionesCorrectasPorPregunta] = useState([]);
-  const [tiempoCuestionario, setTiempoCuestionario] = useState(0);
-
 
   const options = [];
 
@@ -21,9 +19,6 @@ const PA9Cuestionario = () => {
 
   const handlePreguntaChange = (e) => {
     setPreguntaActual(e.target.value);
-  };
-  const handleTiempoChange = (e) => {
-    setTiempoCuestionario(e.target.value);
   };
 
   const handleImagenChange = (e, indexPregunta, indexOpcion) => {
@@ -101,6 +96,10 @@ const PA9Cuestionario = () => {
     setPreguntas(nuevasPreguntas);
   };
 
+  const evaluarRespuestas = () => {
+    // Agregar lógica para evaluar respuestas aquí si es necesario.
+  };
+
   const activarModoEdicion = (index, editandoPregunta, opcionIndex) => {
     setEditandoPregunta(editandoPregunta);
     setEditandoIndex(index);
@@ -128,15 +127,7 @@ const PA9Cuestionario = () => {
   return (
     <Container text className="container-background">
       <Header as="h1">Cuestionario</Header>
-        <label for="tiempo-cuestionario">Tiempo del cuestionario (en minutos)</label>
-        <Input
-          type="number"
-          placeholder="Tiempo del cuestionario (en minutos)"
-          id="tiempo-cuestionario"
-          value={tiempoCuestionario}
-          onChange={handleTiempoChange}
-/>
-      <Icon name="check" size="large" color="blue" onClick='' />
+      <Icon name="check" size="large" color="blue" onClick={evaluarRespuestas} />
       {preguntas.map((pregunta, index) => (
         <Segment key={index} style={{ color: "black" }} >
           <Form>

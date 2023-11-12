@@ -22,4 +22,6 @@ router.get("/grupos/:correo", esCorreo, validaErrores, existeCorreo, usuarioCont
 //PASS: Logeo de un usuario
 router.get("/:correo/:contrasena", esCorreo, validaErrores, existeCorreo, usuarioController.login)
 
+//
+
 export default router

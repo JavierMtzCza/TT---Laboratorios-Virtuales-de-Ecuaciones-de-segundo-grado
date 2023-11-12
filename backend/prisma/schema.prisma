@@ -74,7 +74,8 @@ model Actividad {
 model PreguntaCuestionario {
     id       Int    @id @default(autoincrement())
     pregunta String
-
+    multimedia Bytes?  @db.LongBlob
+    fechaLimite DateTime?
     actividadId        Int
     Actividad          Actividad            @relation(fields: [actividadId], references: [id], onDelete: Cascade)
     OpcionCuestionario OpcionCuestionario[]
