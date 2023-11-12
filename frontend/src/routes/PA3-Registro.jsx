@@ -9,6 +9,7 @@ const PA3Registro = () => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [open, setOpen] = useState(false)
+  const [noCoinicide, setNoCoinicide] = useState(false)
 
   const postData = async (data) => {
     try {
@@ -27,24 +28,27 @@ const PA3Registro = () => {
   }
 
   const onSubmit = handleSubmit((data) => {
-    postData({
-      nombre: data.nombre,
-      apellido_paterno: data.ap_paterno,
-      apellido_materno: data.ap_materno,
-      correo: data.correo,
-      contrasena: data.contrasena,
-
-    })
-
-    reset({
-      nombre: '',
-      correo: '',
-      ap_paterno: '',
-      ap_materno: '',
-      contrasena: '',
-      confir_contrasena: ''
-    })
-
+    if (data.confir_contrasena != data.contrasena) {
+      setNoCoinicide(true)
+    } else {
+      setNoCoinicide(false)
+      console.log(data)
+      postData({
+        nombre: data.nombre,
+        apellido_paterno: data.ap_paterno,
+        apellido_materno: data.ap_materno,
+        correo: data.correo,
+        contrasena: data.contrasena,
+      })
+      reset({
+        nombre: '',
+        correo: '',
+        ap_paterno: '',
+        ap_materno: '',
+        contrasena: '',
+        confir_contrasena: ''
+      })
+    }
   })
 
   return (
@@ -96,7 +100,7 @@ const PA3Registro = () => {
                   <input {...register("contrasena", {
                     minLength: { value: 4, message: "La `Contrasena` debe tener por lo menos 4 caractres" },
                     maxLength: { value: 25, message: "La `Contrasena` debe tener menos de 25 caractres" },
-                    pattern: { value: /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=-])[A-Za-z0-9@#$%^&+=]{4,24}$/, message: "La contrasena debe tener por lo menos 1 caracter especial, una mayuscula y un numero" }
+                    pattern: { value: /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{4,24}$/, message: "La contrasena debe tener por lo menos 1 caracter especial (?<>+=!@#$%&*()\"\'), una mayuscula y un numero" }
                   })
                   } />
                 </Form.Input>
@@ -110,6 +114,7 @@ const PA3Registro = () => {
                   } />
                 </Form.Input>
                 {errors.confir_contrasena && <Message size='tiny' error content={errors.confir_contrasena.message} />}
+                {noCoinicide && <Message size='tiny' error content="Las contraseñas no coinciden" />}
 
                 <Button type='submit' icon='right arrow' labelPosition='right' fluid content="Registrarme" />
               </Form>

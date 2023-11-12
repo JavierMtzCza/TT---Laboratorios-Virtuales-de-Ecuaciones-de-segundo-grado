@@ -4,11 +4,14 @@ import { persist } from "zustand/middleware";
 export const useUsuarioStore = create(persist((set) => {
 	return {
 		usuario: {
-			"id": 0,
-			"nombre": "",
-			"apellido_paterno": "",
-			"apellido_materno": "",
-			"correo": ""
+			"token": "",
+			"perfil": {
+				"id": 0,
+				"nombre": "",
+				"apellido_paterno": "",
+				"apellido_materno": "",
+				"correo": ""
+			}
 		},
 
 		setUsuario: (usuarioLogeado) => set({ usuario: usuarioLogeado })
@@ -19,7 +22,6 @@ export const useUsuarioStore = create(persist((set) => {
 export const useGrupoStore = create(persist((set) => {
 	return {
 		grupo: {
-			"id": 0,
 			"nombre": "",
 			"descripcion": "",
 			"clave": "",

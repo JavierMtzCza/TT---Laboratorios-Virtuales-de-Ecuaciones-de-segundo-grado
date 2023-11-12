@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Container, Embed, Grid, Item, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
 import Divisor from '../components/Divisor';
 import imagen1 from '../images/newplot (1).png';
 import EjercicioFormEc from '../components/EjercicioFormEc';
-import EjercicioFormRa from '../components/EjercicioFormRa';
 import ModalEjercicio from '../components/ModalEjercicio';
 import { useForm } from 'react-hook-form';
 
@@ -13,6 +12,7 @@ const PA8Pruebas = () => {
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	const [showModal, setShowModal] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
+	const [enable, setEnable] = useState(false)
 	const [multimedia, setMultimedia] = useState('image')
 
 	useEffect(() => {
@@ -31,7 +31,13 @@ const PA8Pruebas = () => {
 
 	const onSubmit = handleSubmit((formData) => {
 		console.log(formData)
-		resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
+
+		if (true) {
+			obtenerEcuacionCuadratica(formData.r1, formData.r2)
+		} else {
+			resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
+		}
+
 		setData({ tc: formData.a, tl: formData.b, ti: formData.c })
 	})
 
@@ -44,17 +50,18 @@ const PA8Pruebas = () => {
 		const disc2 = (4 * a * c);
 		const discriminante = disc1 - disc2;
 		const raizDiscriminante = Math.sqrt(discriminante);
+		//const arriba = -1*b+raizDiscriminante
 		const paso1 = `<p>Paso 1: La ecuación cuadrática es:</p><span class="math">\\(${a}x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)<br></span>`;
 		const paso2 = `<p>Paso 2: Aplicamos la fórmula general:</p><span class="math2"> \\(x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\\)<br></span>`;
 		const paso3 = `<p>Paso 3: Sustituimos los valores de a, b y c para obtener el discriminante:</p><span class="math">\\(\\sqrt{b^2 - 4ac} = \\sqrt{(${b})^2 - 4(${a})(${c})} = \\sqrt{(${disc1}) - (${disc2})} = \\sqrt{${discriminante}}\\)</br></span>`;
 		let pasosHTML = `<br>${paso1}<br>${paso2}<br>${paso3}<br>`;
 
 		if (discriminante > 0) {
-			const x1 = (-b + raizDiscriminante) / (2 * a);
-			const x2 = (-b - raizDiscriminante) / (2 * a);
+			const x1 = (-1*(b)+(raizDiscriminante)) / (2 * a);
+			const x2 = (-1*(b)-(raizDiscriminante)) / (2 * a);
 			const paso4 = `<p>Paso 4: Analizamos el discriminante para saber cuantas raices tiene:</p><span class="math2">\\(\\sqrt{${discriminante}} = {${raizDiscriminante.toFixed(2)}} \\therefore {${raizDiscriminante.toFixed(2)}} > 0\\)</br></span>`;
-			const paso5 = `<p>Paso 5: Como el discriminante es mayor que 0, sabemos que esta ecuación tiene dos raices:</p><span class="math">\\(x_1 = \\frac{-(${b}) + \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})}  = \\frac{-(${b}) + \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-b + raizDiscriminante.toFixed(3)}}{${2 * a}} = ${x1.toFixed(2)}\\)<br>\\(x_2 = \\frac{-(${b}) - \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})} = \\frac{-(${b}) - \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-b - raizDiscriminante.toFixed(3)}}{${2 * a}} = ${x2.toFixed(2)}\\)</br></span>`;
-			const paso6 = `<p>Paso 6: Simplificamos las fracciones:</p><span class="math"> \\(x_1 = ${x1.toFixed(2)}\\) y \\(x_2 = ${x2.toFixed(2)}\\)</br></span>`;
+			const paso5 = `<p>Paso 5: Como el discriminante es mayor que 0, sabemos que esta ecuación tiene dos raices:</p><span class="math">\\(x_1 = \\frac{-(${b}) + \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})}  = \\frac{-(${b}) + \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-1*b+(raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x1.toFixed(4)}\\)<br>\\(x_2 = \\frac{-(${b}) - \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})} = \\frac{-(${b}) - \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-b-(raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x2.toFixed(4)}\\)</br></span>`;
+			const paso6 = `<p>Paso 6: Simplificamos las fracciones:</p><span class="math"> \\(x_1 = ${x1.toFixed(4)}\\) y \\(x_2 = ${x2.toFixed(4)}\\)</br></span>`;
 			// const paso7 = `Paso 7: Verificamos las soluciones: <br> <span class="math">  \\(${a}(${x1.toFixed(2)})^2 + ${b}(${x1.toFixed(2)}) + ${c} = ${(a * x1 * x1 + b * x1 + c).toFixed(2)} \\approx 0\\) y \\(${a}(${x2.toFixed(2)})^2 + ${b}(${x2.toFixed(2)}) + ${c} = ${(a * x2 * x2 + b * x2 + c).toFixed(2)} \\approx 0\\) </span>`;
 			pasosHTML += `${paso4}<br>${paso5}<br>${paso6}`;
 		} else if (discriminante === 0) {
@@ -73,10 +80,12 @@ const PA8Pruebas = () => {
 			window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
 	};
 
-	const obtenerEcuacionCuadratica = () => {
+	const obtenerEcuacionCuadratica = (raiz1, raiz2) => {
 
-		const r1 = parseFloat(document.getElementById('r1').value);
-		const r2 = parseFloat(document.getElementById('r2').value);
+		const r1 = parseFloat(raiz1);
+		const r2 = parseFloat(raiz2);
+
+		console.log(((1-r1)*(1-r2)))
 
 		const paso1 = `<br>Paso 1: Las raíces de la ecuación cuadrática son: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
 
@@ -93,19 +102,19 @@ const PA8Pruebas = () => {
          <br> <span className="math">\\(c = ${productoRaices}\\)</span>`;
 
 		const paso4 = `<br>Paso 4: La ecuación cuadrática es: <br> <span className="math">\\(x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
-		let resultadoHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso4}`;
+		let pasosHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso4}`;
 
-		document.getElementById('resultado').innerHTML = resultadoHTML;
+		document.getElementById('pasos').innerHTML = pasosHTML;
 
 		if (window.MathJax)
 			window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
 
 	};
 
-	const limpiarPantalla = () => {
-		document.getElementById('resultado').innerHTML = '';
-		document.getElementById('pasos').innerHTML = '';
-	};
+	// const limpiarPantalla = () => {
+	// 	document.getElementById('resultado').innerHTML = '';
+	// 	document.getElementById('pasos').innerHTML = '';
+	// };
 
 
 	return (
@@ -119,7 +128,7 @@ const PA8Pruebas = () => {
 								{
 									multimedia == 'image'
 										?
-										<Item.Image as={Button} floated='left' size='small' src={imagen1} onClick={() => setShow(true)} />
+										<Item.Image as={Button} floated='left' size='small' src={imagen1} onClick={() => setShowModal(true)} />
 										:
 										multimedia == 'video'
 											?
@@ -156,7 +165,6 @@ const PA8Pruebas = () => {
 								resolver={resolverEcuacionCuadratica}
 							/>
 							<Divisor tamano='h3' horizontal={true} icono='sort numeric down' descripcion='Pasos' />
-							{/* <div id="resultado"></div> */}
 							<div id="pasos"></div>
 						</Grid.Row>
 					</Grid.Column>

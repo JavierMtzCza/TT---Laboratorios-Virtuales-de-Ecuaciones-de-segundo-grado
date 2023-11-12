@@ -7,5 +7,12 @@ export class rolModel {
         return rol
     }
 
+    static getRol = async (correoUsuario, claveGrupo) => {
+        const rol = prisma.usuarioEnGrupo.findFirst({
+            where: { Usuario: { correo: correoUsuario }, Grupo: { clave: claveGrupo } },
+            select: { rolId: true }
+        })
+        return rol
+    }
 
 }

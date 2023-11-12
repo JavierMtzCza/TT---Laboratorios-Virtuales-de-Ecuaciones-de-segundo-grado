@@ -1,7 +1,7 @@
 import { Button, Divider, Form, Grid, Header, Icon, Image, Message, Segment } from 'semantic-ui-react'
 import { useForm } from "react-hook-form";
 import imagen from "../images/undraw_login_re_4vu2 1.svg"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { useUsuarioStore } from "../stores/UsuarioStore";
 
@@ -9,8 +9,11 @@ const PA2InicioSesion = () => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [noUser, setNoUser] = useState(false)
+  const navigate = useNavigate();
+  //Estado global
   const logearUsuario = useUsuarioStore(state => state.setUsuario)
   const usuario = useUsuarioStore(state => state.usuario)
+
 
   const onSubmit = handleSubmit((formData) => {
 
@@ -20,14 +23,13 @@ const PA2InicioSesion = () => {
         if (data.error) {
           setNoUser(true)
           console.log(data)
-        }
-        else {
+        } else {
           setNoUser(false)
           logearUsuario(data)
+          navigate("/Grupos");
           console.log(usuario)
         }
       })
-      .catch((error) => console.log(error))
       .finally(() => {
         reset({
           correo: '',

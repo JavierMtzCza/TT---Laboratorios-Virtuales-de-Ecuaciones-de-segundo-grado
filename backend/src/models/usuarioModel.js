@@ -51,10 +51,11 @@ export class usuarioModel {
    static getGroups = async (correoUsuario) => {
       const usuario = await prisma.usuario.findUnique({
          where: { correo: correoUsuario },
-         include: { Grupos: { include: { Grupo: true } } }
-      });
+         include: { UsuarioEnGrupo: { include: { Grupo: true } } }
+      })
 
-      const grupos = usuario.Grupos.map(grupo => grupo.Grupo);
+      console.log(usuario)
+      const grupos = usuario.UsuarioEnGrupo.map(grupo => grupo.Grupo);
       return grupos;
    }
 
