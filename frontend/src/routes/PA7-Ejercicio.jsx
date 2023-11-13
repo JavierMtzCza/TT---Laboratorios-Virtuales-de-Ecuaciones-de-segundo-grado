@@ -13,7 +13,7 @@ const PA8Pruebas = () => {
 	const [showModal, setShowModal] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
 	const [enable, setEnable] = useState(false)
-	const [multimedia, setMultimedia] = useState('image')
+	const [multimedia, setMultimedia] = useState('imagen')
 
 	useEffect(() => {
 		// Cargar MathJax después de que el componente esté montado
@@ -32,7 +32,7 @@ const PA8Pruebas = () => {
 	const onSubmit = handleSubmit((formData) => {
 		console.log(formData)
 
-		if (true) {
+		if (false) {
 			obtenerEcuacionCuadratica(formData.r1, formData.r2)
 		} else {
 			resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
