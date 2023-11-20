@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react'
-import { Button, Card, Dropdown, Grid, Header, Icon, Image, Input, Menu, Segment } from 'semantic-ui-react'
+import { useEffect, useRef, useState } from 'react'
+import { Button, Card, Dropdown, Grid, Header, Icon, Image, Input, Menu, Modal, Segment } from 'semantic-ui-react'
 import { Grupo } from '../components/Grupo'
 import { useMediaQuery } from 'react-responsive'
 import GrupoModalCreacion from "../components/GrupoModalCreacion";
 import { useUsuarioStore } from '../stores/UsuarioStore';
-import iamge from '../images/Group 1 (2).svg'
+import iamge from '../images/matematicas.png'
+import GrupoModalInscripcion from '../components/GrupoModalInscripcion';
 
 const PA5Grupos = () => {
 
-
   const isDesktop = useMediaQuery({ minWidth: 1024 })
   const isTablet = useMediaQuery({ maxWidth: 1023, minWidth: 426 })
-  const [data, setData] = useState([])
-  const [show, setShow] = useState(false)
+  const [data, setData] = useState([])    //Para la info que consultamos de los grupos del usuario
+  const [show, setShow] = useState(false) //Para mostrar el modal de crear frupo
+  const [open, setOpen] = useState(false) //Para mostrar el modal de unirse a un grupo
   //Estado global
   const usuario = useUsuarioStore(state => state.usuario)
 
@@ -44,7 +45,7 @@ const PA5Grupos = () => {
           <Image src={iamge} size='mini' />
         </Menu.Item>
         <Menu.Item>
-          <Button animated='vertical' color='teal'>
+          <Button animated='vertical' color='teal' onClick={() => setOpen(true)}>
             <Button.Content visible>Entrar a un grupo</Button.Content>
             <Button.Content hidden>
               <Icon name='plus' />
@@ -68,16 +69,13 @@ const PA5Grupos = () => {
           </Menu.Item>
         </Menu.Menu>
       </Menu>
-      <Grid columns={1} centered stackable  >
-        {
-          <Segment raised compact secondary>
-            <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={isDesktop ? 4 : isTablet ? 2 : 1}>
-              {data.map((grupo) => (<Grupo key={grupo.id} alumnos={4} nombreGrupo={grupo.nombre} descripcionGrupo={grupo.descripcion} claveGrupo={grupo.clave} />))}
-            </Card.Group >
-          </Segment>
-        }
-      </Grid>
+      {
+        <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={isDesktop ? 4 : isTablet ? 2 : 1}>
+          {data.map((grupo) => (<Grupo key={grupo.id} alumnos={4} nombreGrupo={grupo.nombre} descripcionGrupo={grupo.descripcion} claveGrupo={grupo.clave} />))}
+        </Card.Group >
+      }
       <GrupoModalCreacion propShow={show} propSetShow={setShow} actualizarGrupos={obtenerGrupos} />
+      <GrupoModalInscripcion propOpen={open} propSetOpen={setOpen} actualizarGrupos={obtenerGrupos} />
     </>
   )
 }

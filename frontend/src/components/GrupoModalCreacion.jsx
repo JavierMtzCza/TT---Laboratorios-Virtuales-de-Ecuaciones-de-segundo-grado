@@ -9,10 +9,14 @@ const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 
 	const postGrupo = async (data) => {
 		try {
-			const response = await fetch(`http://localhost:3000/grupo/${usuario.perfil.correo}`, {
+			const response = await fetch(`http://localhost:3000/grupo/crear`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
+				body: JSON.stringify({
+					token: usuario.token,
+					nombre: data.nombre,
+					descripcion: data.descripcion
+				}),
 			})
 			if (response.ok) {
 				await alert("Creado correctamente")

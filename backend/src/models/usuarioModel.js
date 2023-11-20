@@ -53,8 +53,6 @@ export class usuarioModel {
          where: { correo: correoUsuario },
          include: { UsuarioEnGrupo: { include: { Grupo: true } } }
       })
-
-      console.log(usuario)
       const grupos = usuario.UsuarioEnGrupo.map(grupo => grupo.Grupo);
       return grupos;
    }

@@ -6,8 +6,8 @@ const GrupoCardActividad = () => {
         <Card>
             <Card.Content>
                 <Image floated='left' src={Avatar} avatar bordered />
-                <Card.Header content="Steve Sanders" />
-                <Card.Description content={<>Steve wants to add you to the group <strong>best friends</strong></>} />
+                <Card.Header content="Actividad" />
+                <Card.Description content={<>Resuleve las <strong>ecuaciones de segundo grado</strong></>} />
                 <Button style={{ borderRadius: "1rem" }} color='yellow' content="Resolver" />
             </Card.Content>
         </Card>

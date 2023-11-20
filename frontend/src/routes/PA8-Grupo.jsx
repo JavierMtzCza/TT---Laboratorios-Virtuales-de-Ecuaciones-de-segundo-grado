@@ -32,7 +32,7 @@ const PA8Grupo = () => {
         :
         <>
           <GrupoNavBarAlumno stateActivo={activo} stateSetActivo={setActivo} />
-          <GrupoMenuAlumno></GrupoMenuAlumno>
+          <GrupoMenuAlumno/>
         </>
       }
       <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={1}  >

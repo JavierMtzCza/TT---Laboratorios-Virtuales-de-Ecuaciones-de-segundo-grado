@@ -18,19 +18,29 @@ export class grupoController {
 
    // Creacion de un grupo
    static async create(req, res) {
+      const { idUsuario } = req
       const claveGrupo = uuidv1().split("-")[0] //Generamos una clave unica para el grupo
-      const grupo = await grupoModel.create(req.params.correo, claveGrupo, req.body)
+      const grupo = await grupoModel.create(claveGrupo, Number(idUsuario), req.body)
       res.json(grupo)
    }
 
    // Inscripcion de un usuario a un grupo
    static async inscripcion(req, res) {
-      const { idGrupo } = req.params
-      const { usuarioId } = req;
-      const inscripcion = await grupoModel.inscripcion(Number(idGrupo), Number(usuarioId))
+      const { idGrupo, idUsuario } = req
+      const inscripcion = await grupoModel.inscripcion(Number(idGrupo), Number(idUsuario))
       res.json(inscripcion)
    }
 
+   static async delete(req, res) {
+      const { claveGrupo } = req.params
+      const grupoEliminado = await grupoModel.eliminarGrupo(claveGrupo)
+      res.json(grupoEliminado)
+   }
 
+   static async update(req, res) {
+      const { claveGrupo } = req.params
+      const grupoActualizado = await grupoModel.actualizarGrupo(claveGrupo, req.body)
+      res.json(grupoActualizado)
+   }
 
 }
