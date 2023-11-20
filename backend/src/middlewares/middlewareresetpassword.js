@@ -1,16 +1,24 @@
 import { CambioContrasenaModel } from "../models/resetpasswordModel.js";
 
-function verifyResetPasswordCode(req, res, next) {
+async function verifyResetPasswordCode(req, res, next) {
   const { correo, codigoVerificacion } = req.body;
 
-  const cambioContrasena = CambioContrasenaModel.verifyCode(correo, codigoVerificacion);
+  try {
+    const cambioContrasena = await CambioContrasenaModel.verifyCode(correo, codigoVerificacion);
 
-  if (!cambioContrasena) {
-    res.status(403).json({ error: "Código de verificación no válido" });
-    return;
+    if (!cambioContrasena) {
+      return res.status(403).json({ error: "Código de verificación no válido" });
+    }
+
+    // Puedemos agregar la información de cambioContrasena al request por  si es necesario para otros middleware
+    // o controladores
+    req.cambioContrasena = cambioContrasena;
+
+    next();
+  } catch (error) {
+    console.error("Error en verificar el Codigo:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
-
-  next();
 }
 
-module.exports = verifyResetPasswordCode;
+export default verifyResetPasswordCode;

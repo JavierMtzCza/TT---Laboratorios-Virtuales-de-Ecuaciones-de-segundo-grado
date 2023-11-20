@@ -3,7 +3,6 @@ import { resetpasswordController } from "../controllers/resetpasswordController.
 
 const router = express.Router();
 
-router.post("/resetpassword", resetpasswordController);
+router.post("/", resetpasswordController);
 
 export default router;
-
