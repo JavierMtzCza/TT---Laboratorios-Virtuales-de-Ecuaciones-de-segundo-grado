@@ -139,3 +139,68 @@ export class CambioContrasenaModel {
     return usuario;
   }
 }
+
+
+
+//PreguntacuesModel.js 
+
+import { prisma } from "../conexion.js";
+
+export class PreguntaCuesModel {
+  constructor(data) {
+    this.id = data.id;
+    this.pregunta = data.pregunta;
+    this.multimedia = data.multimedia;
+    this.actividadId = data.actividadId;
+  }
+
+  static async create(data) {
+    const pregunta = await prisma.preguntaCuestionario.create({
+      data: {
+        pregunta: data.pregunta,
+        multimedia: data.multimedia,
+        Actividad: {
+          connect: { id: data.actividadId }, 
+        },
+      },
+    });
+
+    return pregunta;
+  }
+
+  static async findById(id) {
+    const pregunta = await prisma.preguntaCuestionario.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        Actividad: true,
+      },
+    });
+
+    return pregunta;
+  }
+
+  static async findAll() {
+    const preguntas = await prisma.preguntaCuestionario.findMany();
+
+    return preguntas;
+  }
+
+  static async createCuestionarioConFechaLimite(data) {
+    const { pregunta, multimedia, actividadId, fechaLimite } = data;
+
+    const cuestionario = await prisma.preguntaCuestionario.create({
+      data: {
+        pregunta,
+        multimedia,
+        fechaLimite,
+        Actividad: {
+          connect: { id: actividadId },
+        },
+      },
+    });
+
+    return cuestionario;
+  }
+}

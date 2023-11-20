@@ -1,26 +1,95 @@
 import { prisma } from "../conexion.js";
 
-export class actividadModel {
+export class ActividadModel {
 
-   static create = async (idGrupo, description) => {
+   // Crear Actividad 
+   static create = async (idGrupo, descripcion, fechaLimite, tipo) => {
       const actividad = prisma.actividad.create({
          data: {
-            grupoId: idGrupo,
-            descripcion: description
-         }
-      })
-      return actividad
+            grupoId: idGrupo, //Funciones que estan en Prisma
+            descripcion: descripcion,
+            fechaLimite: fechaLimite,
+            tipo: tipo,
+         },
+      });
+      return actividad;
    }
 
+   // Obtener las actividades 
    static getAll = async (idGrupo) => {
       const actividades = prisma.actividad.findMany({
          where: { grupoId: idGrupo },
          include: {
             grupo: true,
-            preguntas: true
-         }
-      })
-      return actividades
+            preguntasCuestionario: {
+               include: {
+                  OpcionCuestionario: true,
+               },
+            },
+            preguntasEjercicio: {
+               include: {
+                  OpcionEjercicio: true,
+               },
+            },
+            calificaciones: true,
+         },
+      });
+      return actividades;
    }
 
+   static getById = async (actividadId) => {
+      const actividad = prisma.actividad.findUnique({
+         where: { id: actividadId },
+         include: {
+            grupo: true,
+            preguntasCuestionario: {
+               include: {
+                  OpcionCuestionario: true,
+               },
+            },
+            preguntasEjercicio: {
+               include: {
+                  OpcionEjercicio: true,
+               },
+            },
+            calificaciones: true,
+         },
+      });
+      return actividad;
+   }
+
+   // Actualizar Actividad 
+   static update = async (actividadId, nuevaInformacion) => {
+      const actividadActualizada = prisma.actividad.update({
+         where: { id: actividadId },
+         data: {
+            descripcion: nuevaInformacion.descripcion,
+            fechaLimite: nuevaInformacion.fechaLimite,
+            tipo: nuevaInformacion.tipo,
+         },
+         include: {
+            grupo: true,
+            preguntasCuestionario: {
+               include: {
+                  OpcionCuestionario: true,
+               },
+            },
+            preguntasEjercicio: {
+               include: {
+                  OpcionEjercicio: true,
+               },
+            },
+            calificaciones: true,
+         },
+      });
+      return actividadActualizada;
+   }
+
+   //Eliminar Actividad 
+   static delete = async (actividadId) => {
+      const actividadEliminada = await prisma.actividad.delete({
+         where: { id: actividadId },
+      });
+      return actividadEliminada;
+   }
 }

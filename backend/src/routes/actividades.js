@@ -1,13 +1,16 @@
 import { Router } from "express";
-import { actividadController } from "../controllers/actividadController.js";
+import { ActividadController } from "../controllers/actividadController.js";
 
-const router = Router()
+const router = Router();
 
-//Crear actividad
-router.post("/:idGrupo", actividadController.create)
-
-//Listar actividad por medio de un grupo
-router.get("/:idGrupo", actividadController.getAll)
+// Se utilizará para crear una nueva actividad en el grupo especificado.
+router.post("/:idGrupo/actividad", ActividadController.create);
 
 
-export default router
+// Ruta para obtener todas las actividades de un grupo
+router.get("/:idGrupo/actividades", ActividadController.getAll);
+
+// Ruta para obtener una actividad específica por su ID
+router.get("/:idGrupo/actividad/:idActividad", ActividadController.getById);
+
+export default router;
