@@ -4,12 +4,12 @@ import cors from "cors"
 import usuarioRoutes from "./src/routes/usuarios.js";
 import grupoRoutes from "./src/routes/grupos.js";
 import actividadesRoutes from "./src/routes/actividades.js";
-//import preguntasRoutes from "./src/routes/preguntas.js";
 import rols from "./src/routes/rol.js";
 //import preguntascuesRoutes from "./src/routes/preguntacues.js";
 //import respuestascuesRoutes from "./src/routes/respuestas_cues.js";
 import cambiocontraseñaRoutes from "./src/routes/resetpassword.js";
 import actividadRoutes from "./src/routes/actividades.js"; 
+import preguntaEjercicioRoutes from "./src/routes/preguntas.js";  
 
 
 const app = express()
@@ -40,6 +40,8 @@ app.use('/rol', rols)
 //app.use('/respuestacues', respuestascuesRoutes)
 app.use('/cambiocontrasena',cambiocontraseñaRoutes)
 app.use('/actividad', actividadRoutes);
+app.use('/preguntaejercicio', preguntaEjercicioRoutes);  // Agregar esta línea
+
 
 
 app.listen(puerto)

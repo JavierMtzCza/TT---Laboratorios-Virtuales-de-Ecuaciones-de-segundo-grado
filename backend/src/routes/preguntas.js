@@ -1,32 +1,21 @@
-import { Router } from "express";
-import multer from "multer";
-import { preguntaController } from "../controllers/preguntaController.js";
+import express from "express";
+import { PreguntaEjercicioController } from "../controllers/preguntaController.js";
 
+const router = express.Router();
 
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
-const router = Router()
+// Crear una nueva pregunta de ejercicio
+router.post("/:actividadId", PreguntaEjercicioController.create);
 
-//Creando preguntas de actividad
-router.post("/:idActividad", upload.single('multimedia'), preguntaController.create)
+// Obtener una pregunta de ejercicio por ID
+router.get("/:idPreguntaEjercicio", PreguntaEjercicioController.getById);
 
-router.post("/jaj", (req,res)=>{
- console.log(req.body);
-})
+// Actualizar una pregunta de ejercicio por ID
+router.put("/:idPreguntaEjercicio", PreguntaEjercicioController.update);
 
-//Creando preguntas de actividad
-// router.post("/:idActividad/:idLaboratorio", upload.single('multimedia'), async (req, res) => {
-//    const actividad = await prisma.pregunta.create({
-//       data: {
-//          pregunta: req.body.pregunta,
-//          respuesta: req.body.respuesta,
-//          consejo: req.body.consejo,
-//          actividad: { connect: { id: parseInt(req.params.idActividad) } },
-//          laboratorio: { connect: { id: parseInt(req.params.idLaboratorio) } },
-//          multimedia: req.file.buffer
-//       }
-//    })
-//    res.json(actividad)
-// })
+// Eliminar una pregunta de ejercicio por ID
+router.delete("/:idPreguntaEjercicio", PreguntaEjercicioController.delete);
 
-export default router
+// Obtener la actividad asociada a una pregunta de ejercicio por ID
+router.get("/:idPreguntaEjercicio/actividad", PreguntaEjercicioController.getActividadByPreguntaEjercicio);
+
+export default router;

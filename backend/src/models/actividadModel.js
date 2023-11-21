@@ -8,7 +8,7 @@ export class ActividadModel {
          data: {
             grupoId: idGrupo, //Funciones que estan en Prisma
             descripcion: descripcion,
-            fechaLimite: fechaLimite,
+            fechaLimite: new Date(fechaLimite),
             tipo: tipo,
          },
       });
