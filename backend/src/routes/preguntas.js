@@ -1,10 +1,13 @@
-import express from "express";
+import { Router } from "express";
 import { PreguntaEjercicioController } from "../controllers/preguntaController.js";
+import multer from "multer";
 
-const router = express.Router();
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+const router = Router()
 
 // Crear una nueva pregunta de ejercicio
-router.post("/:actividadId", PreguntaEjercicioController.create);
+router.post("/:actividadId", upload.single('multimedia'), PreguntaEjercicioController.create);
 
 // Obtener una pregunta de ejercicio por ID
 router.get("/:idPreguntaEjercicio", PreguntaEjercicioController.getById);

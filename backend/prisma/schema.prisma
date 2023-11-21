@@ -21,8 +21,7 @@ model Usuario {
     CalificacionesActividad CalificacionesActividad[]
 
     ultimoIntentoCambioContrasena DateTime?
-    intentosCambioContrasena Int       @default(0)
-
+    intentosCambioContrasena      Int       @default(0)
 }
 
 model CambioContrasena {
@@ -32,9 +31,9 @@ model CambioContrasena {
     estado         Boolean   @default(true)
     Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
     usuarioCorreo  String    @unique
-    
-    intentos      Int    @default(0)
-    fechaIntento  DateTime?
+
+    intentos     Int       @default(0)
+    fechaIntento DateTime?
 }
 
 model Rol {
@@ -79,10 +78,10 @@ model Actividad {
 }
 
 model PreguntaCuestionario {
-    id       Int    @id @default(autoincrement())
-    pregunta String
-    multimedia Bytes?  @db.LongBlob
-    fechaLimite DateTime?
+    id                 Int                  @id @default(autoincrement())
+    pregunta           String
+    multimedia         Bytes?               @db.LongBlob
+    fechaLimite        DateTime?
     actividadId        Int
     Actividad          Actividad            @relation(fields: [actividadId], references: [id], onDelete: Cascade)
     OpcionCuestionario OpcionCuestionario[]
@@ -109,7 +108,7 @@ model PreguntaEjercicio {
     Actividad       Actividad         @relation(fields: [actividadId], references: [id], onDelete: Cascade)
     OpcionEjercicio OpcionEjercicio[]
 
-    @@unique([pregunta, actividadId])
+    @@unique([id, actividadId])
 }
 
 model OpcionEjercicio {

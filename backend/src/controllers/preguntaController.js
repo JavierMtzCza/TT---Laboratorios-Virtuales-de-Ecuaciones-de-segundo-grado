@@ -3,15 +3,17 @@ import { ActividadController } from "./actividadController.js";
 
 export class PreguntaEjercicioController {
 
-  // Funcion para crear una nueva pregunta de ejercicio
+   // Funcion para crear una nueva pregunta de ejercicio
    // Primero obtenemos el ID de la actividad desde los parámetros de la solicitud
-    // Obtener datos de la solicitud (pregunta, multimedia, consejo, claveVideo,opciones)
-    // Crear la pregunta de ejercicio usando el modelo
+   // Obtener datos de la solicitud (pregunta, multimedia, consejo, claveVideo,opciones)
+   // Crear la pregunta de ejercicio usando el modelo
    static async create(req, res) {
       try {
          const actividadId = parseInt(req.params.actividadId);
-         const { pregunta, multimedia, consejo, claveVideo, opciones } = req.body;
-         const preguntaEjercicio = await PreguntaEjercicioModel.create(actividadId, pregunta, multimedia, consejo, claveVideo, opciones);
+         const multimedia = req.file.buffer
+         const { pregunta, consejo, claveVideo, opciones } = req.body;
+         const opcion = JSON.parse(opciones)
+         const preguntaEjercicio = await PreguntaEjercicioModel.create(actividadId, pregunta, multimedia, consejo, claveVideo, opcion);
          res.json({ mensaje: 'Pregunta de ejercicio creada con éxito', preguntaEjercicio });
       } catch (error) {
          console.error('Error al crear la pregunta de ejercicio:', error);
@@ -19,9 +21,9 @@ export class PreguntaEjercicioController {
       }
    }
 
-  // Obtener una pregunta de ejercicio específica por su ID
+   // Obtener una pregunta de ejercicio específica por su ID
    // Obtenemos el ID de la pregunta del ejercicio con los parametros de la pregunta
-    // Obtener la pregunta de ejercicio usando el modelo
+   // Obtener la pregunta de ejercicio usando el modelo
    static async getById(req, res) {
       try {
          const preguntaEjercicioId = parseInt(req.params.idPreguntaEjercicio);
@@ -34,9 +36,9 @@ export class PreguntaEjercicioController {
    }
 
    // Actualizar una pregunta de ejercicio existente
-    // Obtenemos su  ID de la pregunta de ejercicio desde el Model
-    // Obtenemos los nuevos datos de la pregunta y el opciones del ejercicio desde la solicitud
-    // Actualizamos todo
+   // Obtenemos su  ID de la pregunta de ejercicio desde el Model
+   // Obtenemos los nuevos datos de la pregunta y el opciones del ejercicio desde la solicitud
+   // Actualizamos todo
 
    static async update(req, res) {
       try {
@@ -67,11 +69,11 @@ export class PreguntaEjercicioController {
 
 
 
-//Funciones para verificar si la pregunta de ejercicio existe y si tiene un ID de actividad asociado.
-//Se obtiene primero el ID de la pregunta de ejercicio 
-//Si existe, se utiliza el controlador de Actividad para obtener la actividad asociada.
- //Si no tiene nada asociado se responde con el error 404 indicando que no se encontró ni madres
- 
+   //Funciones para verificar si la pregunta de ejercicio existe y si tiene un ID de actividad asociado.
+   //Se obtiene primero el ID de la pregunta de ejercicio 
+   //Si existe, se utiliza el controlador de Actividad para obtener la actividad asociada.
+   //Si no tiene nada asociado se responde con el error 404 indicando que no se encontró ni madres
+
    static async getActividadByPreguntaEjercicio(req, res) {
       try {
          const preguntaEjercicioId = parseInt(req.params.idPreguntaEjercicio);

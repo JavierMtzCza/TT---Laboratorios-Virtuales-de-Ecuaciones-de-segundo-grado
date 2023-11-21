@@ -17,23 +17,7 @@ export class ActividadModel {
 
    // Obtener las actividades 
    static getAll = async (idGrupo) => {
-      const actividades = prisma.actividad.findMany({
-         where: { grupoId: idGrupo },
-         include: {
-            grupo: true,
-            preguntasCuestionario: {
-               include: {
-                  OpcionCuestionario: true,
-               },
-            },
-            preguntasEjercicio: {
-               include: {
-                  OpcionEjercicio: true,
-               },
-            },
-            calificaciones: true,
-         },
-      });
+      const actividades = prisma.actividad.findMany({ where: { grupoId: idGrupo } })
       return actividades;
    }
 
