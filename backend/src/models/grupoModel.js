@@ -11,10 +11,18 @@ export class grupoModel {
    //Listar integrantes de un grupo
    static getUsers = async (idGrupo) => {
       const usuarios = prisma.usuarioEnGrupo.findMany({
-         where: { grupoId: idGrupo },
-         include: { Usuario: true }
+         where: { grupoId: idGrupo, rolId: 2 },
+         include: {
+            Usuario: {
+               select: {
+                  nombre: true,
+                  apellido_materno: true,
+                  apellido_paterno: true,
+                  correo: true
+               }
+            }
+         }
       })
-
       return usuarios
    }
 
@@ -47,7 +55,7 @@ export class grupoModel {
    }
 
    static existeGrupo = async (claveGrupo) => {
-      const grupo = prisma.grupo.findUnique({ where: { clave: claveGrupo } })
+      const grupo = prisma.grupo.findFirst({ where: { clave: claveGrupo } })
       return grupo
    }
 

@@ -12,8 +12,16 @@ export class grupoController {
    //Listar integrantes de un grupo
    static async getUsers(req, res) {
       const idGrupo = parseInt(req.params.idGrupo)
-      const alumnos = await grupoModel.getUsers(idGrupo)
-      res.json(alumnos)
+      const data = await grupoModel.getUsers(idGrupo)
+      const alumnos = []
+
+      if (data.length == 0) {
+         res.json({ error: "No hay alumnos inscritos" })
+      } else {
+         data.forEach((alumno) => { alumnos.push(alumno.Usuario) })
+         res.json(alumnos)
+      }
+
    }
 
    // Creacion de un grupo

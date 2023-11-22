@@ -9,21 +9,26 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
   const setGrupo = useGrupoStore(state => state.setGrupo)
 
   const editarGrupo = (formData) => {
-    fetch(`http://localhost:3000/grupo/${grupo.clave}`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nombre: formData.nombre,
-        descripcion: formData.descripcion
-      })
-    }).then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          console.log(error)
-        } else {
-          console.log(data)
-        }
-      })
-      .catch((error) => console.log(error))
+    if (formData.nombre == "" && formData.descripcion == "") {
+      alert("no se mpuede modificar le grupo")
+    }
+    else {
+      fetch(`http://localhost:3000/grupo/${grupo.clave}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          descripcion: formData.descripcion
+        })
+      }).then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            console.log(error)
+          } else {
+            console.log(data)
+          }
+        })
+        .catch((error) => console.log(error))
+    }
   }
 
 
