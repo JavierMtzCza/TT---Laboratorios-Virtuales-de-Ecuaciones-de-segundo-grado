@@ -1,11 +1,14 @@
-import React from 'react'
 import { Dropdown, Icon, Menu } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
-const GrupoNavBarAlumno = ({stateActivo, stateSetActivo}) => {
+
+const GrupoNavBarAlumno = ({ stateActivo, stateSetActivo }) => {
   return (
     <Menu pointing secondary size='massive'>
       <Menu.Item>
-        <Icon link name='arrow left' circular />
+        <Link to="/Grupos">
+          <Icon link name='arrow left' circular />
+        </Link>
       </Menu.Item>
       <Menu.Item position='right'
         name='Novedades'

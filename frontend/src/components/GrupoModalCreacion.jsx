@@ -1,13 +1,42 @@
-import { Button, Form, Header, Icon, Modal } from 'semantic-ui-react'
+import { Button, Form, Modal } from 'semantic-ui-react'
 import { useForm } from "react-hook-form";
+import { useUsuarioStore } from '../stores/UsuarioStore';
 
-const GrupoModalCreacion = ({ propShow, propSetShow }) => {
+const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
+	const usuario = useUsuarioStore(state => state.usuario)
+
+	const postGrupo = async (data) => {
+		try {
+			const response = await fetch(`http://localhost:3000/grupo/crear`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					token: usuario.token,
+					nombre: data.nombre,
+					descripcion: data.descripcion
+				}),
+			})
+			if (response.ok) {
+				await alert("Creado correctamente")
+				actualizarGrupos()
+				propSetShow(false)
+				reset({
+					nombre: "",
+					descripcion: ""
+				})
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 	const onSubmit = handleSubmit((formData) => {
-		//reset({})
-		alert("dsdsd")
+		postGrupo({
+			nombre: formData.nombre,
+			descripcion: formData.descripcion
+		})
 	})
 
 	return (
@@ -15,12 +44,13 @@ const GrupoModalCreacion = ({ propShow, propSetShow }) => {
 			onClose={() => propSetShow(false)}
 			onOpen={() => propSetShow(true)}
 			open={propShow}
+			size='tiny'
 		>
 			<Modal.Header>Crear de un grupo</Modal.Header>
 			<Modal.Content>
 				<Form style={{ margin: "0 1% 15% 1%" }} error onSubmit={onSubmit}>
 					<Form.Input required fluid label="Nombre" placeholder="Ingrese el nombre del Grupo">
-						<input {...register("Nombre")} />
+						<input {...register("nombre")} />
 					</Form.Input>
 					<Form.Input required fluid label="Descripción" placeholder="Descripcion del grupo">
 						<input {...register("descripcion")} />

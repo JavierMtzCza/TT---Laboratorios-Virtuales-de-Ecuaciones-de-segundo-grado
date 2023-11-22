@@ -1,5 +1,6 @@
 import { usuarioModel } from "../models/usuarioModel.js"
 import jsonwebtoken from "jsonwebtoken";
+import bcrypt from 'bcrypt'
 
 export class usuarioController {
 
@@ -18,6 +19,7 @@ export class usuarioController {
    // Crear usuario
    static async create(req, res) {
       const usuario = await usuarioModel.create(req.body)
+      console.log(req.body)
       res.json(usuario)
    }
 
@@ -37,9 +39,10 @@ export class usuarioController {
    static async login(req, res) {
       const { correo, contrasena } = req.params
       const usuario = await usuarioModel.getByEmail(correo)
+      const passwordMatch = await bcrypt.compare(contrasena, usuario.contrasena);
 
-      if (usuario.contrasena == contrasena)
-         res.json({ token: jsonwebtoken.sign(usuario, "contrasena") })
+      if (passwordMatch)
+         res.json({ token: jsonwebtoken.sign(usuario, "contrasena"), perfil: { id: usuario.id, nombre: usuario.nombre, apellido_paterno: usuario.apellido_paterno, apellido_materno: usuario.apellido_materno, correo: usuario.correo } })
       else
          res.json({ error: 'la contrasena no coincide' })
    }

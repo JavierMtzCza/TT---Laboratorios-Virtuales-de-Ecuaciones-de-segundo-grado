@@ -11,22 +11,31 @@ export class grupoModel {
    //Listar integrantes de un grupo
    static getUsers = async (idGrupo) => {
       const usuarios = prisma.usuarioEnGrupo.findMany({
-         where: { grupoId: idGrupo },
-         include: { Usuario: true }
+         where: { grupoId: idGrupo, rolId: 2 },
+         include: {
+            Usuario: {
+               select: {
+                  nombre: true,
+                  apellido_materno: true,
+                  apellido_paterno: true,
+                  correo: true
+               }
+            }
+         }
       })
-
       return usuarios
    }
 
    // Creacion de un grupo
-   static create = async (correoUsuario, claveGrupo, data) => {
+   static create = async (claveGrupo, idUsuario, data) => {
       const grupo = prisma.grupo.create({
          data: {
             clave: claveGrupo,
             Usuarios: {
-               create: { Rol: { connect: { id: 1 } }, Usuario: { connect: { correo: correoUsuario } } }
+               create: { Rol: { connect: { id: 1 } }, Usuario: { connect: { id: idUsuario } } }
             },
-            ...data
+            descripcion: data.descripcion,
+            nombre: data.nombre
          }
       })
       return grupo
@@ -45,8 +54,8 @@ export class grupoModel {
       return inscripcion;
    }
 
-   static existeGrupo = async (idGrupo) => {
-      const grupo = prisma.grupo.findUnique({ where: { id: idGrupo } })
+   static existeGrupo = async (claveGrupo) => {
+      const grupo = prisma.grupo.findFirst({ where: { clave: claveGrupo } })
       return grupo
    }
 
@@ -57,5 +66,22 @@ export class grupoModel {
       return registro
    }
 
+   static eliminarGrupo = async (claveGrupo) => {
+      const grupo = await prisma.grupo.delete({
+         where: { clave: claveGrupo }
+      })
+
+      return grupo
+   }
+
+   static actualizarGrupo = async (claveGrupo, dataGrupo) => {
+      const grupo = await prisma.grupo.update({
+         where: { clave: claveGrupo },
+         data: {
+            ...dataGrupo
+         }
+      })
+      return grupo
+   }
 
 }
