@@ -5,11 +5,12 @@ import usuarioRoutes from "./src/routes/usuarios.js";
 import grupoRoutes from "./src/routes/grupos.js";
 import actividadesRoutes from "./src/routes/actividades.js";
 import rols from "./src/routes/rol.js";
-//import preguntascuesRoutes from "./src/routes/preguntacues.js";
+import preguntascuesRoutes from "./src/routes/preguntacues.js";
 //import respuestascuesRoutes from "./src/routes/respuestas_cues.js";
 import cambiocontraseñaRoutes from "./src/routes/resetpassword.js";
 import actividadRoutes from "./src/routes/actividades.js"; 
 import preguntaEjercicioRoutes from "./src/routes/preguntas.js";  
+import calificacionesRoutes from "./src/routes/calificaciones.js";
 
 
 const app = express()
@@ -36,11 +37,12 @@ app.use('/grupo/', grupoRoutes)
 app.use('/actividad/', actividadesRoutes)
 //app.use('/pregunta/', preguntasRoutes)
 app.use('/rol', rols)
-//app.use('/preguntacues', preguntascuesRoutes)
+app.use('/preguntacues', preguntascuesRoutes)
 //app.use('/respuestacues', respuestascuesRoutes)
 app.use('/cambiocontrasena',cambiocontraseñaRoutes)
 app.use('/actividad', actividadRoutes);
 app.use('/preguntaejercicio', preguntaEjercicioRoutes);  // Agregar esta línea
+app.use('/calificaciones',calificacionesRoutes);
 
 
 
