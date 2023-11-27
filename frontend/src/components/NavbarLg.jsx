@@ -14,10 +14,8 @@ const NavbarLg = ({imagen}) => {
                     <Link to={"/"}>Ayuda</Link>
                 </Menu.Item>
                 
-                <Menu.Item name='JuegoMemo'>
-                    <Link to={"/GamesMemo"}>
-                        <Button size='medium' color='blue' content="Memorama" />
-                    </Link>
+                <Menu.Item name='Condiciones'>
+                    <Link to={"/Condiciones"}>Terminos y Condiciones</Link>
                 </Menu.Item>
 
                 <Menu.Item name='Grafcar'>

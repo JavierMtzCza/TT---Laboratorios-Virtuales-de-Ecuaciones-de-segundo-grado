@@ -1,32 +1,18 @@
 import { PreguntaCuestionarioModel } from "../models/preguntacuesModel.js";
+//import { OpcionCuestionarioController } from "./opcioncuesController.js";
 
 export class PreguntaCuestionarioController {
   static async create(req, res) {
     try {
       const actividadId = parseInt(req.params.actividadId);
-      const { pregunta, multimedia, fechaLimite, opciones } = req.body;
-
-      // Obtener las opciones de la pregunta
-      const opcionesValidas = opciones.map((opcion) => ({
-        textOpcion: opcion.textOpcion,
-        multimedia: opcion.multimedia,
-        correcta: opcion.correcta,
-      }));
-
-      // Validar las opciones de la pregunta
-      if (!opcionesValidas.length) {
-        throw new Error('Debe haber al menos una opción');
-      }
-
-      // Crear la pregunta de cuestionario
+      const multimedia = req.file.buffer;
+      const { pregunta, fechaLimite } = req.body;
       const preguntaCuestionario = await PreguntaCuestionarioModel.create(
         actividadId,
         pregunta,
         multimedia,
-        fechaLimite,
-        opcionesValidas
+        fechaLimite
       );
-
       res.json({
         mensaje: 'Pregunta de cuestionario creada con éxito',
         preguntaCuestionario,
@@ -40,22 +26,9 @@ export class PreguntaCuestionarioController {
   static async getById(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
-
-      // Obtener la pregunta de cuestionario
-      const preguntaCuestionario = await PreguntaCuestionarioModel.findOne({
-        where: { id: preguntaCuestionarioId },
-        include: {
-          OpcionCuestionario: true,
-          Actividad: true,
-        },
-      });
-
-      if (!preguntaCuestionario) {
-        return res.status(404).json({
-          mensaje: 'La pregunta de cuestionario no existe',
-        });
-      }
-
+      const preguntaCuestionario = await PreguntaCuestionarioModel.getById(
+        preguntaCuestionarioId
+      );
       res.json(preguntaCuestionario);
     } catch (error) {
       console.error('Error al obtener la pregunta de cuestionario:', error);
@@ -63,41 +36,25 @@ export class PreguntaCuestionarioController {
     }
   }
 
-
   static async update(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
-      const { pregunta, multimedia, fechaLimite, opciones } = req.body;
+      const { pregunta, multimedia, fechaLimite } = req.body;
 
-      // Obtener las opciones de la pregunta
-      const opcionesActualizadas = opciones.map((opcion) => ({
-        id: opcion.id || -1,
-        textOpcion: opcion.textOpcion,
-        multimedia: opcion.multimedia,
-        correcta: opcion.correcta,
-      }));
-
-      // Validar las opciones de la pregunta
-      if (!opcionesActualizadas.length) {
-        throw new Error('Debe haber al menos una opción');
-      }
+      // Obtener la pregunta de cuestionario existente
+      const preguntaCuestionarioExistente = await PreguntaCuestionarioModel.getById(preguntaCuestionarioId);
+      
+      // Verificar si se proporciona una nueva imagen
+      const nuevaMultimedia = multimedia || preguntaCuestionarioExistente.multimedia;
 
       // Actualizar la pregunta de cuestionario
       const preguntaCuestionarioActualizada = await PreguntaCuestionarioModel.update(
         preguntaCuestionarioId,
-        {
-          pregunta,
-          multimedia,
-          fechaLimite,
-          opciones: {
-            upsert: opcionesActualizadas,
-          },
-        }
+        { pregunta, multimedia: nuevaMultimedia, fechaLimite }
       );
-
       res.json({
         mensaje: 'Pregunta de cuestionario actualizada con éxito',
-        preguntaCuestionarioActualizada,
+        preguntaCuestionario: preguntaCuestionarioActualizada,
       });
     } catch (error) {
       console.error('Error al actualizar la pregunta de cuestionario:', error);
@@ -105,20 +62,21 @@ export class PreguntaCuestionarioController {
     }
   }
 
-  // Eliminar
   static async delete(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
-
-      // Antes de eliminar, obtenemos la pregunta de cuestionario para poder retornarla
       const preguntaCuestionarioEliminada = await PreguntaCuestionarioModel.delete(
         preguntaCuestionarioId
       );
-
-      res.json(preguntaCuestionarioEliminada);
+      res.json({
+        mensaje: 'Pregunta de cuestionario eliminada con éxito',
+        preguntaCuestionario: preguntaCuestionarioEliminada,
+      });
     } catch (error) {
       console.error('Error al eliminar la pregunta de cuestionario:', error);
       res.status(500).json({ mensaje: 'Error interno del servidor' });
     }
   }
+
+  
 }

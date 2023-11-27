@@ -6,19 +6,18 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const router = Router();
 
-// Crear una nueva pregunta de ejercicio
+
+// Crear una nueva pregunta de cuestionario
 router.post("/:actividadId", upload.single('multimedia'), PreguntaCuestionarioController.create);
 
-// Obtener una pregunta de ejercicio por ID
-router.get("/:idPreguntaEjercicio", PreguntaCuestionarioController.getById);
+// Obtener una pregunta de cuestionario por ID
+router.get("/:idPreguntaCuestionario", PreguntaCuestionarioController.getById);
 
-// Actualizar una pregunta de ejercicio por ID
-router.put("/:idPreguntaEjercicio", upload.single('multimedia'), PreguntaCuestionarioController.update);
+// Actualizar una pregunta de cuestionario por ID
+router.put("/:idPreguntaCuestionario", upload.single('multimedia'), PreguntaCuestionarioController.update);
 
-// Eliminar una pregunta de ejercicio por ID
-router.delete("/:idPreguntaEjercicio", PreguntaCuestionarioController.delete);
-
-// Obtener la actividad asociada a una pregunta de ejercicio por ID
-//router.get("/:idPreguntaEjercicio/actividad", PreguntaCuestionarioController.getActividadByPreguntaCuestionario);
+// Eliminar una pregunta de cuestionario por ID
+router.delete("/:idPreguntaCuestionario", PreguntaCuestionarioController.delete);
 
 export default router;
+

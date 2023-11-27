@@ -5,13 +5,14 @@ import PA2InicioSesion from "./PA2-InicioSesion"
 import PA3Registro from "./PA3-Registro"
 import PA4Laboratorios from "./PA4-Laboratorios"
 import PA5Grupos from "./PA5-Grupos"
-import PA6JuegoMemo from "./PA6-JuegoMemo"
+import PA6Condiciones from "./PA6-Terminos.jsx";
 import PA7Ejercicio from "./PA7-Ejercicio.jsx";
 import PA8Grupo from "./PA8-Grupo.jsx";
 import PA9Cuestionario from "./PA9-Cuestionario.jsx";
 import PA10Formulario from "./PA10-Formulario.jsx";
 import PA11MiGrupo from "./PA11-MiGrupo";
 import PA12RecuperarContraseña from "./PA12-RecuperarCuenta.jsx";
+
 
 
 const router = createBrowserRouter([
@@ -36,8 +37,8 @@ const router = createBrowserRouter([
       element: <PA5Grupos />
    },
    {
-      path: "/GamesMemo",
-      element: <PA6JuegoMemo />
+      path: "/Condiciones",
+      element: <PA6Condiciones/>
    },
    {
       path: "/Graficar",
