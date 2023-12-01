@@ -20,8 +20,7 @@ model Usuario {
     CambioContrasena        CambioContrasena?
     CalificacionesActividad CalificacionesActividad[]
 
-    ultimoIntentoCambioContrasena DateTime?
-    intentosCambioContrasena      Int       @default(0)
+   
 }
 
 model CambioContrasena {
@@ -32,8 +31,7 @@ model CambioContrasena {
     Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
     usuarioCorreo  String    @unique
 
-    intentos     Int       @default(0)
-    fechaIntento DateTime?
+   
 }
 
 model Rol {

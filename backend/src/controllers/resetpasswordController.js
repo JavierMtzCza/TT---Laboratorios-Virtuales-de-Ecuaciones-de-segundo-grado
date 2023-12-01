@@ -1,79 +1,125 @@
-import nodemailer from "nodemailer";
+// cambioContrasenaController.js
 import { CambioContrasenaModel } from "../models/resetpasswordModel.js";
+import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 
-export const resetpasswordController = async (req, res) => {
-  const { correo } = req.body;
+export class CambioContrasenaController {
+  // Buscar un usuario por su correo
+  static async buscarUsuarioPorCorreo(req, res) {
+    try {
+      const { correo } = req.body;
+      const usuario = await CambioContrasenaModel.getUserByEmail(correo);
 
-  try {
-    // Obtener el usuario por correo electrónico
-    const usuario = await CambioContrasenaModel.getUserByEmail(correo);
-    
-    if (!usuario) {
-      return res.status(400).json({ error: "Correo electrónico no válido" });
+      if (usuario) {
+        // Generar un código único y guardarlo en la base de datos
+        const { cambioContrasena, codigo } = await CambioContrasenaModel.createSolicitud(usuario.correo);
+
+        // Enviar el código al correo del usuario usando nodemailer
+        await CambioContrasenaController.enviarCodigoPorCorreo(usuario.correo, codigo);
+
+        res.json({ mensaje: "Código enviado exitosamente al correo del usuario." });
+      } else {
+        res.status(404).json({ mensaje: "Usuario no encontrado." });
+      }
+    } catch (error) {
+      console.error("Error al buscar usuario por correo:", error);
+      res.status(500).json({ mensaje: "Error interno del servidor." });
     }
-
-    // Obtener el registro de cambio de contraseña asociado al correo
-    const cambioContrasena = await CambioContrasenaModel.getCode(correo);
-
-    if (cambioContrasena && cambioContrasena.estado) {
-      // El usuario ya tiene un código válido sin usar, reenviar ese código
-      const codigoVerificacion = CambioContrasenaModel.generateRandomCode(); // Función para generar el código 
-
-      // Enviar el código de verificación por correo
-      const transport = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "ikinnegameplays@gmail.com", // Cambiar por tu usuario de Gmail
-          pass: "ndwchcufsgttqmza", // Cambiar por tu contraseña de Gmail
-        },
-      });
-
-      await transport.sendMail({
-        to: correo,
-        subject: "Código de Restablecimiento de Contraseña",
-        text: `Su código de restablecimiento es: ${codigoVerificacion}`,
-      });
-
-      // Actualizar el código y la fecha de caducidad en la base de datos
-      await CambioContrasenaModel.update({
-        correo,
-        codigo: codigoVerificacion,
-        fechaCaducidad: new Date(Date.now() + 60 * 1000 * 10), // Actualizar la fecha de caducidad a 10 minutos
-        estado: true, // Establecer el estado como verdadero
-      });
-
-      res.json({ message: "Se ha reenviado un código de verificación a su correo electrónico." });
-    } else {
-      // El usuario no tiene un código válido sin usar, proceder a generar uno nuevo
-      const codigoVerificacion = CambioContrasenaModel.generateRandomCode();
-
-      // Enviar el código de verificación por correo
-      const transport = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "ikinnegameplays@gmail.com", // Cambiar por tu usuario de Gmail
-          pass: "ndwchcufsgttqmza", // Cambiar por tu contraseña de Gmail
-        },
-      });
-
-      await transport.sendMail({
-        to: correo,
-        subject: "Código de Restablecimiento de Contraseña",
-        text: `Su código de restablecimiento es: ${codigoVerificacion}`,
-      });
-
-      // Crear la solicitud de cambio de contraseña
-      await CambioContrasenaModel.create({ correo });
-
-      res.json({ message: "Se ha enviado un código de verificación a su correo electrónico." });
-    }
-  } catch (error) {
-    console.error("Error en resetpasswordController:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
   }
-};
 
+  // Nueva configuración de nodemailer en el controlador
+  static transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "@gmail.com", // <- Cambia aquí
+      pass: "", // <- Cambia aquí
+    },
+  });
 
+  // Nueva función enviarCodigoPorCorreo con credenciales pasadas como parámetros
+  static async enviarCodigoPorCorreo(correoDestino, codigo) {
+    try {
+      // Configurar el correo
+      const mailOptions = {
+        from: "@gmail.com", // <- Cambia aquí
+        to: correoDestino,
+        subject: "Código de Cambio de Contraseña",
+        text: `Tu código de cambio de contraseña es: ${codigo}. Este código caducará en 10 minutos.`,
+      };
+
+      // Enviar el correo
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error("Error al enviar el código por correo:", error);
+    }
+  }
+
+  // Verificar si el código es válido y actualizar la contraseña
+  static async verificarCodigo(req, res) {
+    try {
+      const { correo, codigo, nuevaContrasena, confirmarContrasena } = req.body;
+  
+      // Verificar que la nueva contraseña y la confirmación coincidan
+      if (nuevaContrasena !== confirmarContrasena) {
+        return res.status(400).json({ mensaje: "La nueva contraseña y la confirmación no coinciden." });
+      }
+  
+      // Obtener el usuario y verificar que el código sea válido
+      const esCodigoValido = await CambioContrasenaModel.verificarCodigo(correo, codigo);
+  
+      if (esCodigoValido) {
+        // Obtener el usuario para comparar con la contraseña actual
+        const usuario = await CambioContrasenaModel.getUserByEmail(correo);
+  
+        // Verificar que la contraseña actual coincida
+        const passwordMatch = await bcrypt.compare(nuevaContrasena, usuario.contrasena);
+  
+        if (passwordMatch) {
+          return res.status(400).json({ mensaje: "La nueva contraseña no puede ser igual a la contraseña actual." });
+        }
+  
+        // Actualizar la contraseña del usuario
+        const contrasenaHasheada = await bcrypt.hash(nuevaContrasena, 10);
+        await CambioContrasenaModel.actualizarContrasena(correo, codigo, contrasenaHasheada);
+  
+        // Desactivar el código para que no pueda ser utilizado nuevamente
+        await CambioContrasenaModel.desactivarCodigo(correo, codigo);
+  
+        res.json({ mensaje: "Contraseña actualizada con éxito" });
+      } else {
+        res.status(400).json({ mensaje: "Código no válido o expirado" });
+      }
+    } catch (error) {
+      console.error("Error al verificar el código y actualizar la contraseña:", error);
+      res.status(500).json({ mensaje: "Error interno del servidor" });
+    }
+  }
+
+  // Método para reenviar el código
+  static async reenviarCodigo(req, res) {
+    try {
+      const { correo } = req.body;
+
+      const usuario = await CambioContrasenaModel.getUserByEmail(correo);
+
+      if (usuario) {
+        const { cambioContrasena, codigo } = await CambioContrasenaModel.createSolicitud(usuario.correo);
+
+        // Envía el código al correo del usuario
+        await CambioContrasenaController.enviarCodigoPorCorreo(usuario.correo, codigo); // <- Cambio aquí
+
+        res.json({ mensaje: "Código reenviado exitosamente al correo del usuario." });
+      } else {
+        res.status(404).json({ mensaje: "Usuario no encontrado." });
+      }
+    } catch (error) {
+      console.error("Error al reenviar el código:", error);
+      res.status(500).json({ mensaje: "Error interno del servidor." });
+    }
+  }
+}
 
 
 //ndwchcufsgttqmza
+
+

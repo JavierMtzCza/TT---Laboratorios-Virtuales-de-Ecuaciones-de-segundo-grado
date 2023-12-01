@@ -1,17 +1,53 @@
+// cambioContrasenaModel.js
 import { prisma } from "../conexion.js";
-import bcrypt from 'bcrypt';
+
+import { addMinutes } from "date-fns";
+import bcrypt from "bcrypt"; // Agrega esta línea
 
 export class CambioContrasenaModel {
-  // Consultar código de verificación por correo
-  static getCode = async (correoUsuario) => {
-    const cambioContrasena = await prisma.cambioContrasena.findUnique({
+  
+  static createSolicitud = async (correoUsuario) => {
+    const codigo = this.generarCodigo();
+  
+    // Buscar cualquier registro (activo o desactivado) con el mismo usuarioCorreo
+    const registroExistente = await prisma.cambioContrasena.findFirst({
       where: { usuarioCorreo: correoUsuario },
     });
-    return cambioContrasena;
-  }
+  
+    if (registroExistente) {
+      // Si existe un registro, actualizamos el código y la fecha de caducidad
+      const fechaCaducidad = addMinutes(new Date(), 10); // Fecha de vencimiento en 10 minutos
+  
+      const cambioContrasenaActualizado = await prisma.cambioContrasena.update({
+        where: { id: registroExistente.id },
+        data: {
+          codigo: codigo,
+          fechaCaducidad: fechaCaducidad,
+          estado: true, // Activamos el código nuevamente
+        },
+      });
+  
+      return { cambioContrasena: cambioContrasenaActualizado, codigo };
+    } else {
+      // Si no existe un registro, creamos uno nuevo
+      const fechaCaducidad = addMinutes(new Date(), 10); // Fecha de vencimiento en 10 minutos
+  
+      const cambioContrasenaNuevo = await prisma.cambioContrasena.create({
+        data: {
+          codigo: codigo,
+          fechaCaducidad: fechaCaducidad,
+          estado: true,
+          usuarioCorreo: correoUsuario,
+        },
+        include: {
+          Usuario: true,
+        },
+      });
+  
+      return { cambioContrasena: cambioContrasenaNuevo, codigo };
+    }
+  };
 
-
-  //Consultar usuario por su correo
   static getUserByEmail = async (correoUsuario) => {
     const usuario = await prisma.usuario.findUnique({
       where: { correo: correoUsuario },
@@ -19,81 +55,89 @@ export class CambioContrasenaModel {
     return usuario;
   }
 
-  // Generar código de verificación aleatorio con letras mayúsculas, minúsculas y números
-  static generateRandomCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const codeLength = 8;
-    let code = '';
-
-    for (let i = 0; i < codeLength; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      code += characters.charAt(randomIndex);
+  // Verificar si un código de cambio de contraseña es válido
+  static verificarCodigo = async (correoUsuario, codigoIngresado) => {
+    try {
+      const solicitud = await prisma.cambioContrasena.findFirst({
+        where: {
+          usuarioCorreo: correoUsuario,
+          codigo: codigoIngresado,
+          estado: true,
+          fechaCaducidad: {
+            gte: new Date(),
+          },
+        },
+      });
+  
+      return solicitud !== null;
+    } catch (error) {
+      return false;
     }
-
-    return code;
   };
 
-  // Crear solicitud de cambio de contraseña con código hasheado
-  static create = async (datos) => {
-    const codigo = this.generateRandomCode(); // Generar un código de verificación aleatorio
-    const fechaCaducidad = new Date(Date.now() + (60 * 1000 * 10)); // Establecer la fecha de caducidad a 10 minutos
 
-    const codigoHasheado = await bcrypt.hash(codigo, 10); // Hashear el código antes de guardarlo
+  // Generar un código aleatorio con mayúsculas, minúsculas y números
+  static generarCodigo = () => {
+    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let codigo = "";
+    for (let i = 0; i < 9; i++) {
+      const indice = Math.floor(Math.random() * caracteres.length);
+      codigo += caracteres.charAt(indice);
+    }
+    return codigo;
+  };
 
-    const cambioContrasena = prisma.cambioContrasena.create({
-      data: {
-        codigo: codigoHasheado,
-        fechaCaducidad,
-        estado: true, // Establecer el estado como verdadero
-        usuarioCorreo: datos.correo,
-        intentos: 0, // Inicializar el número de intentos
-        fechaIntento: null, // Inicializar la fecha del último intento
-      }
-    });
-    return cambioContrasena;
-  }
+  static actualizarContrasena = async (correoUsuario, codigoIngresado, nuevaContrasena) => {
+    const esCodigoValido = await this.verificarCodigo(correoUsuario, codigoIngresado);
 
-  // Comprobar código de verificación y estado
-  static verifyCode = async (correoUsuario, codigoVerificacion) => {
-    const cambioContrasena = await prisma.cambioContrasena.findUnique({
-      where: {
-        usuarioCorreo: correoUsuario,
-      },
-    });
+    if (esCodigoValido) {
+      // Hashear la nueva contraseña con bcrypt y un salt
+      const saltGenerado = await bcrypt.genSalt(10);
+      const nuevaContrasenaHashed = await bcrypt.hash(nuevaContrasena, saltGenerado);
 
-    if (!cambioContrasena || !cambioContrasena.estado) {
-      return null; // Si el código no existe o el estado no es verdadero, retornar nulo
+      // Actualizar la contraseña del usuario
+      await prisma.usuario.update({
+        where: { correo: correoUsuario },
+        data: {
+          contrasena: nuevaContrasenaHashed,
+        },
+      });
+
+      // Desactivar el código de cambio de contraseña utilizado
+      await prisma.cambioContrasena.updateMany({
+        where: { usuarioCorreo: correoUsuario, codigo: codigoIngresado },
+        data: { estado: false },
+      });
+
+      return true; // La contraseña se actualizó correctamente
     }
 
-    const codigoValido = await bcrypt.compare(codigoVerificacion, cambioContrasena.codigo); // Comparar el código ingresado con el hasheado
+    return false; // El código no es válido o ha expirado
+  };
 
-    if (codigoValido) {
-      return cambioContrasena; // Retornar el registro si el código es válido
+  static desactivarCodigo = async (correoUsuario, codigo) => {
+    try {
+      await prisma.cambioContrasena.updateMany({
+        where: {
+          usuarioCorreo: correoUsuario,
+          codigo: codigo,
+        },
+        data: {
+          estado: false,
+        },
+      });
+      console.log(`Código desactivado para el usuario ${correoUsuario} y código ${codigo}`);
+    } catch (error) {
+      console.error("Error al desactivar el código:", error);
     }
+  };
 
-    // Incrementar el número de intentos y actualizar la fecha del último intento
-    await prisma.cambioContrasena.update({
-      where: { usuarioCorreo: correoUsuario },
-      data: {
-        intentos: cambioContrasena.intentos + 1,
-        fechaIntento: new Date(),
-      },
-    });
-
-    return null;
-  }
-
-  // Actualizar información de cambio de contraseña
-  static update = async ({ correo, codigo, fechaCaducidad, estado }) => {
-  const cambioContrasena = await prisma.cambioContrasena.update({
-    where: { usuarioCorreo: correo }, // Hay que usar "usuarioCorreo" en lugar de "correo"
-    data: {
-      codigo: await bcrypt.hash(codigo, 10), // Hashear el nuevo código antes de guardarlo
-      fechaCaducidad,
-      estado,
-    },
-  });
-
-    return cambioContrasena;
-  }
 }
+
+
+
+
+
+  
+
+  

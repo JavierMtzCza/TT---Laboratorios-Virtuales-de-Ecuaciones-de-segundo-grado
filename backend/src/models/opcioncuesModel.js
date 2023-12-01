@@ -17,6 +17,7 @@ export class OpcionCuestionarioModel {
     });
     return opcionCuestionario;
   };
+  
 
   // Obtener Opción de Cuestionario por ID
   static getById = async (opcionCuestionarioId) => {
@@ -38,10 +39,8 @@ export class OpcionCuestionarioModel {
         PreguntaCuestionario: true,
       },
     });
-
     return opcionCuestionarioActualizada;
   };
-
 
   // Eliminar Opción de Cuestionario por ID
   static delete = async (opcionCuestionarioId) => {
@@ -53,6 +52,40 @@ export class OpcionCuestionarioModel {
     });
     return opcionCuestionarioEliminada;
   };
+
+  // Obtener todas las opciones asociadas a una pregunta
+  static getAllByPregunta = async (preguntaCuestionarioId) => {
+    const opciones = await prisma.opcionCuestionario.findMany({
+      where: {
+        preguntaCuestionarioId: preguntaCuestionarioId,
+      },
+    });
+    return opciones;
+  };
+
+  // Actualizar Opción de Cuestionario y desactivar otras opciones como correctas
+  static updateAndDeactivateOthers = async (opcionCuestionarioId, nuevaInformacion) => {
+    const opcionCuestionarioActualizada = await prisma.opcionCuestionario.update({
+      where: { id: opcionCuestionarioId },
+      data: nuevaInformacion,
+      include: {
+        PreguntaCuestionario: true,
+      },
+    });
+
+    // Desactivar otras opciones como correctas
+    if (nuevaInformacion.correcta) {
+      await prisma.opcionCuestionario.updateMany({
+        where: {
+          preguntaCuestionarioId: opcionCuestionarioActualizada.PreguntaCuestionario.id,
+          id: { not: opcionCuestionarioId },
+        },
+        data: {
+          correcta: false,
+        },
+      });
+    }
+
+    return opcionCuestionarioActualizada;
+  };
 }
-
-

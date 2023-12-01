@@ -5,9 +5,11 @@ export class OpcionCuestionarioController {
   static async create(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.preguntaCuestionarioId);
-      const multimedia = req.file.buffer;
-      const { textOpcion, correcta,  } = req.body;
-      const correctaBoolean = !!correcta;
+      const multimedia = req.file ? req.file.buffer : undefined; // Verificar si hay un nuevo archivo
+      const { textOpcion, correcta } = req.body;
+
+      // Convertir correcta a booleano
+      const correctaBoolean = correcta === "true";
 
       const opcionCuestionario = await OpcionCuestionarioModel.create(
         preguntaCuestionarioId,
@@ -28,7 +30,7 @@ export class OpcionCuestionarioController {
 
   static async getById(req, res) {
     try {
-      const opcionCuestionarioId = parseInt(req.params.opcionCuestionarioId);  // Aquí cambiamos a opcionCuestionarioId
+      const opcionCuestionarioId = parseInt(req.params.opcionCuestionarioId);
       const opcionCuestionario = await OpcionCuestionarioModel.getById(opcionCuestionarioId);
       res.json(opcionCuestionario);
     } catch (error) {
@@ -44,15 +46,21 @@ export class OpcionCuestionarioController {
       const multimedia = req.file ? req.file.buffer : undefined;
 
       // Convertir correcta a booleano
-      const correctaBoolean = !!correcta;
+      const correctaBoolean = correcta === "true";
+
+      // Obtener la opción de cuestionario antes de la actualización
+      const opcionCuestionarioExistente = await OpcionCuestionarioModel.getById(opcionCuestionarioId);
 
       // Construir un objeto con los campos proporcionados
       const datosActualizados = {};
-      if (textOpcion) datosActualizados.textOpcion = textOpcion;
+      if (textOpcion !== undefined) datosActualizados.textOpcion = textOpcion;
       if (multimedia !== undefined) datosActualizados.multimedia = multimedia;
-      if (correcta !== undefined) datosActualizados.correcta = correctaBoolean;
+      if (correcta !== undefined) {
+        // Cambiar el estado de correcta solo si se proporciona y si es diferente al estado actual
+        datosActualizados.correcta = correctaBoolean !== opcionCuestionarioExistente.correcta ? correctaBoolean : undefined;
+      }
 
-      const opcionCuestionarioActualizada = await OpcionCuestionarioModel.update(
+      const opcionCuestionarioActualizada = await OpcionCuestionarioModel.updateAndDeactivateOthers(
         opcionCuestionarioId,
         datosActualizados
       );
@@ -66,7 +74,7 @@ export class OpcionCuestionarioController {
       res.status(500).json({ mensaje: 'Error interno del servidor' });
     }
   }
-  
+
   static async delete(req, res) {
     try {
       const opcionCuestionarioId = parseInt(req.params.opcionCuestionarioId);
@@ -82,6 +90,3 @@ export class OpcionCuestionarioController {
     }
   }
 }
-
-
-
