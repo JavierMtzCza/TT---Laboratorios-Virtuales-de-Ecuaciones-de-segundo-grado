@@ -19,7 +19,7 @@ export class CambioContrasenaController {
 
         res.json({ mensaje: "Código enviado exitosamente al correo del usuario." });
       } else {
-        res.status(404).json({ mensaje: "Usuario no encontrado." });
+        res.status(404).json({ mensaje: "Usuario no encontrado o registrado." });
       }
     } catch (error) {
       console.error("Error al buscar usuario por correo:", error);
@@ -31,8 +31,8 @@ export class CambioContrasenaController {
   static transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "@gmail.com", // <- Cambia aquí
-      pass: "", // <- Cambia aquí
+      user: "ikinnegameplays@gmail.com", // <- Cambia aquí
+      pass: "ndwchcufsgttqmza", // <- Cambia aquí
     },
   });
 
@@ -41,7 +41,7 @@ export class CambioContrasenaController {
     try {
       // Configurar el correo
       const mailOptions = {
-        from: "@gmail.com", // <- Cambia aquí
+        from: "ikinnegameplays@gmail.com", // <- Cambia aquí
         to: correoDestino,
         subject: "Código de Cambio de Contraseña",
         text: `Tu código de cambio de contraseña es: ${codigo}. Este código caducará en 10 minutos.`,
@@ -110,7 +110,7 @@ export class CambioContrasenaController {
 
         res.json({ mensaje: "Código reenviado exitosamente al correo del usuario." });
       } else {
-        res.status(404).json({ mensaje: "Usuario no encontrado." });
+        res.status(404).json({ mensaje: "Usuario no encontrado o registrado." });
       }
     } catch (error) {
       console.error("Error al reenviar el código:", error);
@@ -121,5 +121,8 @@ export class CambioContrasenaController {
 
 
 //ndwchcufsgttqmza
+
+
+
 
 

@@ -1,35 +1,158 @@
-import { Button, Form, Grid, Header, Icon, Image, Modal, Message } from 'semantic-ui-react';
+import { useState, useEffect } from 'react';
+import { Button, Form, Grid, Header, Icon, Image, Modal, Message, Divider, Segment } from 'semantic-ui-react';
 import imagen from '../images/undraw_login_re_4vu2 1.svg';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 const PA12RecuperarContrasena = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const [open, setOpen] = useState(false);
+  const [correo, setCorreo] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [codigo, setCodigo] = useState('');
+  const [nuevaContrasena, setNuevaContrasena] = useState('');
+  const [confirmarContrasena, setConfirmarContrasena] = useState('');
+  const [tiempoRestante, setTiempoRestante] = useState(600);
 
-  const onSubmit = async (data) => {
+  const [erroresContrasena, setErroresContrasena] = useState({
+    longitud: false,
+    mayuscula: false,
+    caracterEspecial: false,
+    numero: false,
+    coincidencia: false,
+  });
+
+  useEffect(() => {
+    let temporizador;
+
+    if (openModal) {
+      temporizador = setTimeout(() => {
+        setTiempoRestante((prevTiempo) => Math.max(prevTiempo - 1, 0));
+      }, 1000); // Actualiza cada segundo
+
+      // Limpiar el temporizador cuando se desmonta el componente o se cierra el modal
+      return () => clearTimeout(temporizador);
+    }
+
+    // Si el modal está cerrado, reinicia el tiempo restante
+    setTiempoRestante(600);
+
+  
+  }, [openModal, tiempoRestante]);
+
+  useEffect(() => {
+    validarContrasena();
+  }, [nuevaContrasena, confirmarContrasena]);
+
+  const tiempoRestanteMinutos = Math.floor(tiempoRestante / 60);
+  const tiempoRestanteSegundos = tiempoRestante % 60;
+
+  const validarContrasena = () => {
+    const regexMayuscula = /[A-Z]/;
+    const regexCaracterEspecial = /[?<>+=!@#$%&*()\"']/;
+    const regexNumero = /[0-9]/;
+
+    const longitudValida = nuevaContrasena.length >= 4;
+    const mayusculaValida = regexMayuscula.test(nuevaContrasena);
+    const caracterEspecialValido = regexCaracterEspecial.test(nuevaContrasena);
+    const numeroValido = regexNumero.test(nuevaContrasena);
+    const coincidenciaValida = nuevaContrasena === confirmarContrasena;
+
+    setErroresContrasena({
+      longitud: !longitudValida,
+      mayuscula: !mayusculaValida,
+      caracterEspecial: !caracterEspecialValido,
+      numero: !numeroValido,
+      coincidencia: !coincidenciaValida,
+    });
+  };
+  const handleEnviarCodigo = async () => {
     try {
-      const response = await fetch('http://localhost:3000/cambiocontrasena', {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/solicitar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ correo }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const responseData = await response.json();
-        console.log(responseData.message); // Mensaje desde el backend
-        setOpen(true); // Abre el modal en caso de éxito
+        setCodigoEnviado(true);
+        setMensaje('Código enviado exitosamente al correo del usuario.');
+        setOpenModal(true);
       } else {
-        const errorData = await response.json();
-        console.error('Error:', errorData.error); // Mensaje de error desde el backend
-        // Mostrar un mensaje de error al usuario
+        setMensaje(data.mensaje || 'Error al enviar el código.');
       }
     } catch (error) {
-      console.error('Error:', error.message); // Error de red u otro tipo de error
-      // Mostrar un mensaje si es necesario en caso de error 
+      console.error('Error al enviar el código:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+  const handleGuardarContrasena = async () => {
+          // Validar nuevamente antes de intentar actualizar la contraseña
+          validarContrasena();
+
+      const hayErrores = Object.values(erroresContrasena).some((error) => error);
+
+      if (hayErrores) {
+        setMensaje('La contraseña no cumple con los requisitos.');
+        return;
+      }
+
+      // Verificar si las contraseñas coinciden
+      if (nuevaContrasena !== confirmarContrasena) {
+        setMensaje('Las contraseñas no coinciden.');
+        return;
+      }
+
+      // Resto del código para actualizar la contraseña
+
+      try {
+        const response = await fetch('http://localhost:3000/cambiocontrasena/verificar', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ correo, codigo, nuevaContrasena, confirmarContrasena }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setMensaje('Contraseña actualizada con éxito');
+          setOpenModal(false);
+        } else {
+          setMensaje(result.mensaje || 'Error al actualizar la contraseña.');
+        }
+      } catch (error) {
+        console.error('Error al verificar el código y actualizar la contraseña:', error);
+        setMensaje('Error interno del servidor.');
+      }
+    };
+
+  const handleReenviarCodigo = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/reenviar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCodigoEnviado(true);
+        setMensaje('Código reenviado exitosamente al correo del usuario.');
+      } else {
+        setMensaje(data.mensaje || 'Error al reenviar el código.');
+      }
+    } catch (error) {
+      console.error('Error al reenviar el código:', error);
+      setMensaje('Error interno del servidor.');
     }
   };
 
@@ -46,51 +169,104 @@ const PA12RecuperarContrasena = () => {
               <Header as='h1' style={{ margin: '0 0 10% 10%' }}> Restablecer Contraseña</Header>
             </Grid.Row>
             <Grid.Row>
-              <Form error style={{ margin: '0 5% 5% 5%' }} onSubmit={handleSubmit(onSubmit)}>
-                <Form.Input
-                  required
-                  fluid
-                  iconPosition='left'
-                  label="Correo"
-                  type='email'
-                  placeholder='Ingrese su correo'
-                  {...register("correo", {
-                    minLength: { value: 4, message: "El `Correo` debe tener por lo menos 4 caracteres" },
-                    maxLength: { value: 50, message: "El `Correo` debe tener menos de 50 caracteres" },
-                    pattern: { value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: "Correo no válido" }
-                  })}
-                >
-                  <Icon name='mail' inverted circular />
-                  <input />
-                </Form.Input>
-                {errors.correo && <Message size='tiny' error content={errors.correo.message} />}
+              <Form>
+                <Form.Field>
+                  <label>Correo Electrónico</label>
+                  <input
+                    type="email"
+                    placeholder="Correo Electrónico"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                  />
+                </Form.Field>
 
-                <Button type='submit' icon='right arrow' labelPosition='right' fluid content="Enviar Código" />
+                <Button onClick={handleEnviarCodigo} type='button' fluid animated>
+                  <Button.Content visible>Enviar Código</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='arrow right' />
+                  </Button.Content>
+                </Button>
+
+                {mensaje && (
+                  <Message positive={codigoEnviado} negative={!codigoEnviado}>
+                    <Message.Header>{mensaje}</Message.Header>
+                  </Message>
+                )}
               </Form>
             </Grid.Row>
             <Grid.Row>
-              <Modal
-                centered={false}
-                size='tiny'
-                open={open}
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                trigger={<div></div>}
-              >
-                <Modal.Header>Correo enviado!</Modal.Header>
-                <Modal.Content>
-                  <Modal.Description>
-                    Se ha enviado un correo con el código de verificación.
-                  </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button onClick={() => setOpen(false)}>OK</Button>
-                </Modal.Actions>
-              </Modal>
+              <Segment style={{ margin: "0 10% 0 10%" }} basic textAlign='center'>
+                <Link to="/InicioSesion">
+                  <Header as='h4' content="Iniciar Sesion" />
+                </Link>
+                <Divider horizontal> o </Divider>
+                <Link to="/">
+                  <Header as='h4' content="Regresar a Inicio" />
+                </Link>
+              </Segment>
             </Grid.Row>
           </Grid.Column>
         </Grid.Row>
       </Grid>
+
+      {/* Modal para ingresar código y nueva contraseña */}
+      <Modal open={openModal} onClose={() => setOpenModal(false)} size='tiny'>
+        <Modal.Header>Restablecer Contraseña</Modal.Header>
+        <Modal.Content>
+          <Form>
+            <Form.Field>
+              <label>Código de Verificación</label>
+              <input
+                type="text"
+                placeholder="Ingrese el código de verificación"
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value)}
+              />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Nueva Contraseña</label>
+              <input
+                type="password"
+                placeholder="Ingrese la nueva contraseña"
+                value={nuevaContrasena}
+                onChange={(e) => setNuevaContrasena(e.target.value)}
+              />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Confirmar Contraseña</label>
+              <input
+                type="password"
+                placeholder="Confirme la nueva contraseña"
+                value={confirmarContrasena}
+                onChange={(e) => setConfirmarContrasena(e.target.value)}
+              />
+            </Form.Field>
+
+            {tiempoRestante > 0 && (
+              <Message>
+                <Message.Header>
+                  El código vencerá en {tiempoRestanteMinutos} minutos y {tiempoRestanteSegundos} segundos.
+                </Message.Header>
+              </Message>
+            )}
+
+            {mensaje && (
+              <Message positive={codigoEnviado} negative={!codigoEnviado}>
+                <Message.Header>{mensaje}</Message.Header>
+              </Message>
+            )}
+
+            <Button onClick={handleGuardarContrasena} type='button' fluid animated>
+              <Button.Content visible>Guardar Contraseña</Button.Content>
+              <Button.Content hidden>
+                <Icon name='arrow right' />
+              </Button.Content>
+            </Button>
+          </Form>
+        </Modal.Content>
+      </Modal>
     </>
   );
 };

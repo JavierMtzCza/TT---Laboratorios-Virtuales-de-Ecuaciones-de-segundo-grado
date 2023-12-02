@@ -88,33 +88,33 @@ export class CambioContrasenaModel {
   };
 
   static actualizarContrasena = async (correoUsuario, codigoIngresado, nuevaContrasena) => {
-    const esCodigoValido = await this.verificarCodigo(correoUsuario, codigoIngresado);
-
-    if (esCodigoValido) {
-      // Hashear la nueva contraseña con bcrypt y un salt
-      const saltGenerado = await bcrypt.genSalt(10);
-      const nuevaContrasenaHashed = await bcrypt.hash(nuevaContrasena, saltGenerado);
-
-      // Actualizar la contraseña del usuario
-      await prisma.usuario.update({
-        where: { correo: correoUsuario },
-        data: {
-          contrasena: nuevaContrasenaHashed,
-        },
-      });
-
-      // Desactivar el código de cambio de contraseña utilizado
-      await prisma.cambioContrasena.updateMany({
-        where: { usuarioCorreo: correoUsuario, codigo: codigoIngresado },
-        data: { estado: false },
-      });
-
-      return true; // La contraseña se actualizó correctamente
+    try {
+      const esCodigoValido = await this.verificarCodigo(correoUsuario, codigoIngresado);
+  
+      if (esCodigoValido) {
+        // Actualizar la contraseña del usuario sin cifrar
+        await prisma.usuario.updateMany({
+          where: { correo: correoUsuario },
+          data: {
+            contrasena: nuevaContrasena,
+          },
+        });
+  
+        // Desactivar el código de cambio de contraseña utilizado
+        await prisma.cambioContrasena.updateMany({
+          where: { usuarioCorreo: correoUsuario, codigo: codigoIngresado },
+          data: { estado: false },
+        });
+  
+        return true; // La contraseña se actualizó correctamente
+      }
+  
+      return false; // El código no es válido o ha expirado
+    } catch (error) {
+      return false; // El código no es válido o ha expirado
     }
-
-    return false; // El código no es válido o ha expirado
   };
-
+  
   static desactivarCodigo = async (correoUsuario, codigo) => {
     try {
       await prisma.cambioContrasena.updateMany({
@@ -126,12 +126,10 @@ export class CambioContrasenaModel {
           estado: false,
         },
       });
-      console.log(`Código desactivado para el usuario ${correoUsuario} y código ${codigo}`);
     } catch (error) {
       console.error("Error al desactivar el código:", error);
     }
   };
-
 }
 
 

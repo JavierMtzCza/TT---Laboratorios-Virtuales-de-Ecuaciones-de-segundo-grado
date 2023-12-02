@@ -453,3 +453,45 @@ export class CambioContrasenaModel {
 
 Controller 
 
+//$2$10$WbVn7KNT0Ypj4CwiJnEtB..WXWEHZCOyqirjoH1bCdV5sqeZgj30O
+//$2b$10$drld/IcQ5r57pfrE4jYJ3eCa5ajJ0xS0Qla4aPFG91bLtO.gImH12
+//$2b$10$QikU/aVEbVdACPCO0.jWhOC81Pm7mNdXtnrq4ZUofrHZajplbMYO2
+//$2b$10$RWY/GJTYUPz4MeXRg1CGSuZXBpvJYpUAaZ69WfwL6zN8YHXy4bKWK
+
+
+// Verificar si el código es válido y actualizar la contraseña
+  static async verificarCodigo(req, res) {
+    try {
+      const { correo, codigo, nuevaContrasena, confirmarContrasena } = req.body;
+
+      // Verificar que la nueva contraseña y la confirmación coincidan
+      if (nuevaContrasena !== confirmarContrasena) {
+        return res.status(400).json({ mensaje: "La nueva contraseña y la confirmación no coinciden." });
+      }
+
+      // Obtener el usuario y verificar que el código sea válido
+      const esCodigoValido = await CambioContrasenaModel.verificarCodigo(correo, codigo);
+
+      if (esCodigoValido) {
+        // Obtener el usuario para comparar con la contraseña actual
+        const usuario = await CambioContrasenaModel.getUserByEmail(correo);
+
+        // Verificar que la contraseña actual coincida
+        const passwordMatch = await bcrypt.compare(nuevaContrasena, usuario.contrasena);
+
+        if (passwordMatch) {
+          return res.status(400).json({ mensaje: "La nueva contraseña no puede ser igual a la contraseña actual." });
+        }
+
+        // Desactivar el código para que no pueda ser utilizado nuevamente
+        await CambioContrasenaModel.desactivarCodigo(correo, codigo);
+
+        res.json({ mensaje: "Contraseña actualizada con éxito" });
+      } else {
+        res.status(400).json({ mensaje: "Código no válido o expirado" });
+      }
+    } catch (error) {
+      console.error("Error al verificar el código y actualizar la contraseña:", error);
+      res.status(500).json({ mensaje: "Error interno del servidor" });
+    }
+  }

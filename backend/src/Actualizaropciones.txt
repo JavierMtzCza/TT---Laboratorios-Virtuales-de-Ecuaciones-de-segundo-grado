@@ -380,3 +380,139 @@ export class OpcionCuestionarioModel {
     return opcionCuestionarioActualizada;
   };
 }
+
+
+//
+$2b$10$E4GEQPwiGuW26Hbglg.uZeI2gsUVIMVyVskKuLen/2LGzLtysvun2
+$2b$10$E4GEQPwiGuW26Hbglg.uZeI2gsUVIMVyVskKuLen/2LGzLtysvun2	
+$2b$10$lWNIw7UPe5xseWfJJyADbuNqhmWwP6yJd2ubsmGqVuNvi24T.xz4G	2023-12-01 04:20:11.599	1
+
+
+
+//
+
+const handleEnviarCodigo = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/solicitar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCodigoEnviado(true);
+        setMensaje('Código enviado exitosamente al correo del usuario.');
+        setOpenModal(true);
+      } else {
+        setMensaje(data.mensaje || 'Error al enviar el código.');
+      }
+    } catch (error) {
+      console.error('Error al enviar el código:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+  const handleGuardarContrasena = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/verificar', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo, codigo, nuevaContrasena,confirmarContrasena }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setMensaje('Contraseña actualizada con éxito');
+        setOpenModal(false);
+      } else {
+        setMensaje(result.mensaje || 'Error al actualizar la contraseña.');
+      }
+    } catch (error) {
+      console.error('Error al verificar el código y actualizar la contraseña:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+  const handleReenviarCodigo = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/reenviar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCodigoEnviado(true);
+        setMensaje('Código reenviado exitosamente al correo del usuario.');
+      } else {
+        setMensaje(data.mensaje || 'Error al reenviar el código.');
+      }
+    } catch (error) {
+      console.error('Error al reenviar el código:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+
+
+  <Grid columns={2} style={{ height: '104vh' }}>
+        <Grid.Row>
+          <Grid.Column style={{ background: '#E0DCDC' }} stretched>
+            <Image src={imagen} alt="Imagen" />
+          </Grid.Column>
+          <Grid.Column>
+            <Grid.Row>
+              <Header as='h1' style={{ margin: '5% 0 0 5%' }}> Bienvenido a Math Learn Lab</Header>
+              <Header as='h1' style={{ margin: '0 0 10% 10%' }}> Restablecer Contraseña</Header>
+            </Grid.Row>
+            <Grid.Row>
+              <Form>
+                <Form.Field>
+                  <label>Correo Electrónico</label>
+                  <input
+                    type="email"
+                    placeholder="Correo Electrónico"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                  />
+                </Form.Field>
+
+                <Button onClick={handleEnviarCodigo} type='button' fluid animated>
+                  <Button.Content visible>Enviar Código</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='arrow right' />
+                  </Button.Content>
+                </Button>
+
+                {mensaje && (
+                  <Message positive={codigoEnviado} negative={!codigoEnviado}>
+                    <Message.Header>{mensaje}</Message.Header>
+                  </Message>
+                )}
+              </Form>
+            </Grid.Row>
+            <Grid.Row>
+              <Segment style={{ margin: "0 10% 0 10%" }} basic textAlign='center'>
+                <Link to="/InicioSesion">
+                  <Header as='h4' content="Iniciar Sesion" />
+                </Link>
+                <Divider horizontal> o </Divider>
+                <Link to="/">
+                  <Header as='h4' content="Regresar a Inicio" />
+                </Link>
+              </Segment>
+            </Grid.Row>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>

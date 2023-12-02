@@ -457,3 +457,167 @@ export const resetpasswordController = async (req, res) => {
   res.json({ message: "Se ha enviado un código de verificación a su correo electrónico." });
 };
 
+
+
+
+import React, { useState } from 'react';
+import { Form, Button, Message } from 'semantic-ui-react';
+
+const ResetPasswordForm = () => {
+  const [correo, setCorreo] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+
+  const handleEnviarCodigo = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/solicitar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setCodigoEnviado(true);
+        setMensaje('Código enviado exitosamente al correo del usuario.');
+      } else {
+        setMensaje(data.mensaje || 'Error al enviar el código.');
+      }
+    } catch (error) {
+      console.error('Error al enviar el código:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+  return (
+    <Form>
+      <Form.Field>
+        <label>Correo Electrónico</label>
+        <input
+          type="email"
+          placeholder="Correo Electrónico"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+        />
+      </Form.Field>
+
+      <Button primary onClick={handleEnviarCodigo}>
+        Enviar Código
+      </Button>
+
+      {mensaje && (
+        <Message positive={codigoEnviado} negative={!codigoEnviado}>
+          <Message.Header>{mensaje}</Message.Header>
+        </Message>
+      )}
+    </Form>
+  );
+};
+
+export default ResetPasswordForm;
+
+
+
+
+
+
+import { Button, Form, Grid, Header, Icon, Image, Modal, Message } from 'semantic-ui-react';
+import imagen from '../images/undraw_login_re_4vu2 1.svg';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+const PA12RecuperarContrasena = () => {
+  const [correo, setCorreo] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+
+  const handleEnviarCodigo = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/cambiocontrasena/solicitar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ correo }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setCodigoEnviado(true);
+        setMensaje('Código enviado exitosamente al correo del usuario.');
+      } else {
+        setMensaje(data.mensaje || 'Error al enviar el código.');
+      }
+    } catch (error) {
+      console.error('Error al enviar el código:', error);
+      setMensaje('Error interno del servidor.');
+    }
+  };
+
+  return (
+    <>
+      <Grid columns={2} style={{ height: '104vh' }}>
+        <Grid.Row>
+          <Grid.Column style={{ background: '#E0DCDC' }} stretched>
+            <Image src={imagen} alt="Imagen" />
+          </Grid.Column>
+          <Grid.Column>
+            <Grid.Row>
+              <Header as='h1' style={{ margin: '5% 0 0 5%' }}> Bienvenido a Math Learn Lab</Header>
+              <Header as='h1' style={{ margin: '0 0 10% 10%' }}> Restablecer Contraseña</Header>
+            </Grid.Row>
+            <Grid.Row>
+            <Form>
+                <Form.Field>
+                  <label>Correo Electrónico</label>
+                  <input
+                    type="email"
+                    placeholder="Correo Electrónico"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                  />
+                </Form.Field>
+
+                <Button primary onClick={handleEnviarCodigo}>
+                  Enviar Código
+                </Button>
+
+                <Button type='submit' fluid animated>
+                  <Button.Content visible>Iniciar Sesion</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='arrow right' />
+                  </Button.Content>
+                </Button>
+
+                {mensaje && (
+                  <Message positive={codigoEnviado} negative={!codigoEnviado}>
+                    <Message.Header>{mensaje}</Message.Header>
+                  </Message>
+                )}
+              </Form>
+            </Grid.Row>
+            <Grid.Row>
+            <Segment style={{ margin: "0 10% 0 10%" }} basic textAlign='center'>
+                <Link to="/InicioSesion">
+                  <Header as='h4' content="Iniciar Sesion" />
+                </Link>
+                <Divider horizontal> o </Divider>
+                <Link to="/">
+                  <Header as='h4' content="Regresar a Inicio" />
+                </Link>
+              </Segment>
+              
+            </Grid.Row>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </>
+  );
+};
+
+export default PA12RecuperarContrasena;

@@ -1,9 +1,9 @@
-import { CambioContrasenaModel } from "../models/resetpasswordModel.js";
+//import { CambioContrasenaModel } from "../models/resetpasswordModel.js";
 
-async function verifyResetPasswordCode(req, res, next) {
-  const { correo, codigoVerificacion } = req.body;
+//async function verifyResetPasswordCode(req, res, next) {
+  //const { correo, codigoVerificacion } = req.body;
 
-  try {
+  /*try {
     const cambioContrasena = await CambioContrasenaModel.verifyCode(correo, codigoVerificacion);
 
     if (!cambioContrasena) {
@@ -22,3 +22,4 @@ async function verifyResetPasswordCode(req, res, next) {
 }
 
 export default verifyResetPasswordCode;
+*/
