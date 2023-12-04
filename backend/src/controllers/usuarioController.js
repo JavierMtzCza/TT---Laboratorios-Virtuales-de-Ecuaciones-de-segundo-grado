@@ -19,14 +19,17 @@ export class usuarioController {
    // Crear usuario
    static async create(req, res) {
       const usuario = await usuarioModel.create(req.body)
-      console.log(req.body)
       res.json(usuario)
    }
 
    // Modificar usuario
    static async update(req, res) {
-      const usuario = await usuarioModel.update(req.params.correo, req.body)
-      res.json(usuario)
+      const usuario = await usuarioModel.update(req.correo, req.usuario, req.body)
+
+      if (usuario.id)
+         res.json({ token: jsonwebtoken.sign(usuario, "contrasena"), perfil: { id: usuario.id, nombre: usuario.nombre, apellido_paterno: usuario.apellido_paterno, apellido_materno: usuario.apellido_materno, correo: usuario.correo } })
+      else
+         res.json({ error: 'error al conectar con la base de datos' })
    }
 
    // Consultar los grupos a los que pertenece ese usuario
@@ -50,3 +53,4 @@ export class usuarioController {
 
 
 }
+

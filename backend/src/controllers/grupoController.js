@@ -1,5 +1,6 @@
 import { grupoModel } from "../models/grupoModel.js";
 import { v1 as uuidv1 } from 'uuid';
+import jsonwebtoken from "jsonwebtoken";
 
 export class grupoController {
 
@@ -45,10 +46,27 @@ export class grupoController {
       res.json(grupoEliminado)
    }
 
+   static async deleteUserFromGroup(req, res) {
+      const { claveGrupo, token } = req.params
+      const usuario = jsonwebtoken.verify(token, "contrasena")
+
+      const grupo = await grupoModel.existeGrupo(claveGrupo)
+
+      const grupoEliminado = await grupoModel.quitarUsuario(usuario.id, grupo.id)
+      res.json(grupoEliminado)
+   }
+
    static async update(req, res) {
       const { claveGrupo } = req.params
       const grupoActualizado = await grupoModel.actualizarGrupo(claveGrupo, req.body)
       res.json(grupoActualizado)
+   }
+
+   static async find(req, res) {
+      const { nombre } = req.params
+      const usuario = jsonwebtoken.verify(req.params.token, "contrasena")
+      const gruoposEncontrados = await grupoModel.find(nombre, usuario.id)
+      res.json(gruoposEncontrados)
    }
 
 }

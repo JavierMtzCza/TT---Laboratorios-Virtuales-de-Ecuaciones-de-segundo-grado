@@ -17,9 +17,18 @@ router.post("/inscripcion", existeGrupo, existeCorreo, existeRegistro, grupoCont
 // Creacion de un grupo
 router.post('/crear', existeCorreo, grupoController.create)
 
+//Eliminar a un usuario de un grupo
+router.delete('/:claveGrupo/:token', existeGrupo, grupoController.deleteUserFromGroup)
+
 //Eliminar un grupo
 router.delete('/:claveGrupo', grupoController.delete)
 
+//Ediatar un grupo
 router.patch('/:claveGrupo', grupoController.update)
+
+//Listar grupos que contengan %nombre% 
+router.get('/:token/:nombre', grupoController.find)
+
+
 
 export default router

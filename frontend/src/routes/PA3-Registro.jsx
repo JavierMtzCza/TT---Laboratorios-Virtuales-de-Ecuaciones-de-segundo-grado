@@ -73,13 +73,13 @@ const PA3Registro = () => {
                     maxLength: { value: 20, message: "El `Nombre` debe tener menos de 20 caractres" },
                   })} />}
                   />
-                  <Form.Input required label="Apellido Materno" children={<input {...register("ap_materno", {
+                  <Form.Input required label="Apellido Paterno" children={<input {...register("ap_paterno")} />} />
+                  <Form.Input label="Apellido Materno" children={<input {...register("ap_materno", {
                     minLength: { value: 2, message: "El `Apellido Materno` debe tener por lo menos 2 caractres" },
                     maxLength: { value: 25, message: "El `Apellido Materno` debe tener menos de 25 caractres" },
                   }
                   )} />}
                   />
-                  <Form.Input label="Apellido Paterno" children={<input {...register("ap_paterno")} />} />
                 </Form.Group>
                 {errors.nombre && <Message size='tiny' error content={errors.nombre.message} />}
                 {errors.ap_materno && <Message size='tiny' error content={errors.ap_materno.message} />}

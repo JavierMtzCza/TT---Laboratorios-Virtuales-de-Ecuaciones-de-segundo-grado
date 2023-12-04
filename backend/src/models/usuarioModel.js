@@ -42,8 +42,20 @@ export class usuarioModel {
    }
 
    // Modificar usuario
-   static update = async (correoUsuario, datosUsuario) => {
-      const usuario = prisma.usuario.update({ where: { correo: correoUsuario }, data: datosUsuario })
+   static update = async (correoUsuario, datosUsuarioActual, datosUsuarioNuevo) => {
+
+      const passwordAct = datosUsuarioNuevo.contrasenaNueva == "" ? datosUsuarioActual.contrasena : await bcrypt.hash(datosUsuarioNuevo.contrasenaNueva, await bcrypt.genSalt(10)); // Hashear la contraseña usando el salt
+
+      const usuario = prisma.usuario.update({
+         where: { correo: correoUsuario },
+         data: {
+            nombre: datosUsuarioNuevo.nombre == "" ? datosUsuarioActual.nombre : datosUsuarioNuevo.nombre,
+            apellido_materno: datosUsuarioNuevo.apellido_materno == "" ? datosUsuarioActual.apellido_materno : datosUsuarioNuevo.apellido_materno,
+            apellido_paterno: datosUsuarioNuevo.apellido_paterno == "" ? datosUsuarioActual.apellido_paterno : datosUsuarioNuevo.apellido_paterno,
+            correo: datosUsuarioNuevo.correo == "" ? datosUsuarioActual.correo : datosUsuarioNuevo.correo,
+            contrasena: passwordAct
+         }
+      })
       return usuario
    }
 

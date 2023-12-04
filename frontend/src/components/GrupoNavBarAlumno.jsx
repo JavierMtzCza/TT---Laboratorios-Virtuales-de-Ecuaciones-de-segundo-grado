@@ -2,7 +2,8 @@ import { Dropdown, Icon, Menu } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 
-const GrupoNavBarAlumno = ({ stateActivo, stateSetActivo }) => {
+const GrupoNavBarAlumno = ({ stateActivo, stateSetActivo, setSalirGrupo }) => {
+
   return (
     <Menu pointing secondary size='massive'>
       <Menu.Item>
@@ -23,7 +24,7 @@ const GrupoNavBarAlumno = ({ stateActivo, stateSetActivo }) => {
       <Menu.Menu position='right'>
         <Dropdown item icon='wrench' simple>
           <Dropdown.Menu>
-            <Dropdown.Item>Salir de grupo</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSalirGrupo(true)}>Salir de grupo</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Menu>

@@ -6,9 +6,11 @@ import GrupoMenuAlumno from '../components/GrupoMenuAlumno.jsx';
 import GrupoNavBarAlumno from '../components/GrupoNavBarAlumno.jsx';
 import GrupoCardActividad from "../components/GrupoCardActividad.jsx";
 import { useGrupoStore, useUsuarioStore } from '../stores/UsuarioStore.js';
+import Confirmacion from '../components/Confirmacion.jsx';
 
 const PA8Grupo = () => {
 
+  const [salirGrupo, setSalirGrupo] = useState(false)
   const [activo, setActivo] = useState('Novedades')
   const [rol, setRol] = useState(1)// rol 1 es profesor, rol 2 es alumno
   // Estados globales
@@ -21,6 +23,17 @@ const PA8Grupo = () => {
       .then((response) => response.json()).then((data) => setRol(data.rolId)).catch((error) => console.log(error))
   }, [])
 
+  const funcion = () => {
+    fetch(`http://localhost:3000/grupo/${grupo.clave}/${usuario.token}`, { method: 'DELETE' }).then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          console.log(error)
+        } else {
+          console.log("Cambios realizados")
+        }
+      })
+      .catch((error) => console.log(error))
+  }
 
   return (
     <>
@@ -31,8 +44,8 @@ const PA8Grupo = () => {
         </>
         :
         <>
-          <GrupoNavBarAlumno stateActivo={activo} stateSetActivo={setActivo} />
-          <GrupoMenuAlumno/>
+          <GrupoNavBarAlumno stateActivo={activo} stateSetActivo={setActivo} setSalirGrupo={setSalirGrupo} />
+          <GrupoMenuAlumno />
         </>
       }
       <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={1}  >
@@ -40,6 +53,7 @@ const PA8Grupo = () => {
         <GrupoCardActividad />
         <GrupoCardActividad />
       </Card.Group >
+      <Confirmacion open={salirGrupo} setOpen={setSalirGrupo} textoPantalla="Esta seguro de salir de este grupo" funcion={funcion} />
     </>
   )
 }
