@@ -1,6 +1,16 @@
 import { Button, Container, Grid, Header, Menu, Segment } from 'semantic-ui-react'
+import ActividadModalCreacion from "./GrupoModalActividad";
+import { useState } from 'react';
+
 
 const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
+  
+  const [showActividadModal, setShowActividadModal] = useState(false);
+
+  const handleCrearActividad = () => {
+    setShowActividadModal(true);
+  };
+
   return (
     <>
       <Segment style={{ borderRadius: "1rem", background: "#00C193", color: "#ffffff", margin: "1% 5% 1% 5%" }}>
@@ -35,9 +45,18 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
           <Button color='green'>Crear Ejercicio</Button>
         </Menu.Item>
         <Menu.Item>
-          <Button color='green'>Crear Cuestionaio</Button>
+        <Button color='green' onClick={handleCrearActividad}>Crear Cuestionario</Button>
         </Menu.Item>
       </Menu>
+
+      {/* Modal de creación de actividad */}
+      <ActividadModalCreacion
+        propShow={showActividadModal}
+        propSetShow={setShowActividadModal}
+        actualizarActividades={() => {
+          /* Lógica para actualizar actividades */
+        }}
+      />
     </>
   )
 }

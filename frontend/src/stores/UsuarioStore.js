@@ -32,15 +32,3 @@ export const useGrupoStore = create(persist((set) => {
 ))
 
 
-export const useResetPasswordStore = create(persist((set) => {
-	return {
-		cambiocontrasena: {
-			"correo": "",
-			"codigo": "",
-			"nuevaContrasena": "",
-			"confirmarContrasena": "",
-		},
-		setCambioContrasena: (resetPasswordData) => set({ cambiocontrasena: resetPasswordData }),
-	}
-  }, { name: 'resetpassword' }
-  ))

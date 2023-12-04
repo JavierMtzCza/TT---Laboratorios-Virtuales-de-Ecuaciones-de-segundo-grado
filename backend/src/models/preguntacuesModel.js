@@ -2,13 +2,13 @@ import { prisma } from "../conexion.js";
 
 export class PreguntaCuestionarioModel {
   // Crear Pregunta de Cuestionario
-  static create = async (actividadId, pregunta, multimedia, fechaLimite) => {
+  static create = async (actividadId, pregunta, multimedia, ) => {
     const preguntaCuestionario = await prisma.preguntaCuestionario.create({
       data: {
         actividadId: actividadId,
         pregunta: pregunta,
         multimedia: multimedia,
-        fechaLimite: new Date(fechaLimite),
+        
       },
       include: {
         Actividad: true,

@@ -5,8 +5,8 @@ export class ActividadController {
    static async create(req, res) {
       try {
          const grupoId = parseInt(req.params.idGrupo);
-         const { descripcion, fechaLimite, tipo } = req.body;
-         const actividad = await ActividadModel.create(grupoId, descripcion, fechaLimite, tipo);
+         const { nombre, descripcion, fechaLimite, tipo } = req.body;
+         const actividad = await ActividadModel.create(grupoId, nombre, descripcion, fechaLimite, tipo);
          res.json({ mensaje: 'Actividad creada con éxito', actividad });
       } catch (error) {
          console.error('Error al crear la actividad:', error);
@@ -42,8 +42,8 @@ export class ActividadController {
    static async update(req, res) {
       try {
          const actividadId = parseInt(req.params.idActividad);
-         const { descripcion, fechaLimite, tipo } = req.body;
-         const actividadActualizada = await ActividadModel.update(actividadId, { descripcion, fechaLimite, tipo });
+         const { nombre, descripcion, fechaLimite, tipo } = req.body; // Agregar "nombre" aquí
+         const actividadActualizada = await ActividadModel.update(actividadId, { nombre, descripcion, fechaLimite, tipo }); // Agregar "nombre" aquí
          res.json({ mensaje: 'Actividad actualizada con éxito', actividad: actividadActualizada });
       } catch (error) {
          console.error('Error al actualizar la actividad:', error);

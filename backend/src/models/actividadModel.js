@@ -3,10 +3,11 @@ import { prisma } from "../conexion.js";
 export class ActividadModel {
 
    // Crear Actividad 
-   static create = async (idGrupo, descripcion, fechaLimite, tipo) => {
+   static create = async (idGrupo, nombre, descripcion, fechaLimite, tipo) => {
       const actividad = prisma.actividad.create({
          data: {
-            grupoId: idGrupo, //Funciones que estan en Prisma
+            grupoId: idGrupo,
+            nombre: nombre, // Campo "nombre" agregado
             descripcion: descripcion,
             fechaLimite: new Date(fechaLimite),
             tipo: tipo,
@@ -47,6 +48,7 @@ export class ActividadModel {
       const actividadActualizada = prisma.actividad.update({
          where: { id: actividadId },
          data: {
+            nombre: nuevaInformacion.nombre, // Agregar el campo "nombre"
             descripcion: nuevaInformacion.descripcion,
             fechaLimite: nuevaInformacion.fechaLimite,
             tipo: nuevaInformacion.tipo,

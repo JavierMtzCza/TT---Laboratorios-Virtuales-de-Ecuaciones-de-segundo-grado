@@ -5,13 +5,13 @@ export class PreguntaCuestionarioController {
     try {
       const actividadId = parseInt(req.params.actividadId);
       const multimedia = req.file ? req.file.buffer : undefined; // Verificar si hay un nuevo archivo
-      const { pregunta, fechaLimite } = req.body;
+      const { pregunta } = req.body;
 
       const preguntaCuestionario = await PreguntaCuestionarioModel.create(
         actividadId,
         pregunta,
         multimedia,
-        fechaLimite
+        
       );
 
       res.json({
@@ -41,7 +41,7 @@ export class PreguntaCuestionarioController {
   static async update(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
-      const { pregunta, multimedia, fechaLimite } = req.body;
+      const { pregunta, multimedia  } = req.body;
   
       // Obtener la pregunta de cuestionario existente
       const preguntaCuestionarioExistente = await PreguntaCuestionarioModel.getById(preguntaCuestionarioId);
@@ -53,7 +53,7 @@ export class PreguntaCuestionarioController {
       // Actualizar la pregunta de cuestionario
       const preguntaCuestionarioActualizada = await PreguntaCuestionarioModel.update(
         preguntaCuestionarioId,
-        { pregunta: nuevaPregunta, multimedia: nuevaMultimedia, fechaLimite }
+        { pregunta: nuevaPregunta, multimedia: nuevaMultimedia }
       );
   
       res.json({

@@ -1,11 +1,12 @@
 import { Button, Form, Modal } from 'semantic-ui-react'
 import { useForm } from "react-hook-form";
-import { useUsuarioStore } from '../stores/UsuarioStore';
+import { useGrupoStore, useUsuarioStore } from '../stores/UsuarioStore';
 
 const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 
-	const { register, handleSubmit, formState: { errors }, reset } = useForm()
-	const usuario = useUsuarioStore(state => state.usuario)
+	const { register, handleSubmit, formState: { errors }, reset } = useForm();
+	const usuario = useUsuarioStore(state => state.usuario);
+	const grupoActual = useGrupoStore(state => state.grupo);
 
 	const postGrupo = async (data) => {
 		try {
@@ -13,25 +14,32 @@ const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					token: usuario.token,
-					nombre: data.nombre,
-					descripcion: data.descripcion
-				}),
-			})
-			if (response.ok) {
-				await alert("Creado correctamente")
-				actualizarGrupos()
-				propSetShow(false)
-				reset({
-					nombre: "",
-					descripcion: ""
-				})
+				token: usuario.token,
+				nombre: data.nombre,
+				descripcion: data.descripcion,
+			}),
+		});
+
+		if (response.ok) {
+			const { claveGrupo } = await response.json();
+
+			// Establece la clave del grupo actual seleccionado antes de crear la actividad
+			useGrupoStore.setState({ grupo: { ...grupoActual, clave: claveGrupo } });
+			await alert('Creado correctamente');
+			// Accede a la clave del grupo actual desde el estado global y úsala según sea necesario
+			console.log('Clave del grupo actual:', grupoActual.clave);
+			actualizarGrupos();
+			propSetShow(false);
+			reset({
+				nombre: '',
+				descripcion: '',
+			});
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		}
-	}
-
+	};
+	
 	const onSubmit = handleSubmit((formData) => {
 		postGrupo({
 			nombre: formData.nombre,
