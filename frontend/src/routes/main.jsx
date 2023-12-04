@@ -12,6 +12,7 @@ import PA9Cuestionario from "./PA9-Cuestionario.jsx";
 import PA10Formulario from "./PA10-Formulario.jsx";
 import PA11MiGrupo from "./PA11-MiGrupo";
 import PA12RecuperarContraseña from "./PA12-RecuperarCuenta.jsx";
+import PA13CrearEjercicio from "./PA13-CrearEjercicio.jsx";
 
 
 const router = createBrowserRouter([
@@ -54,16 +55,19 @@ const router = createBrowserRouter([
    {
       path: "/Formulario",
       element: <PA10Formulario />
-      
+
    },
    {
       path: "/MiGrupo",
-      element: <PA11MiGrupo/>
+      element: <PA11MiGrupo />
    },
    {
       path: "/SingUp",
-      element: <PA12RecuperarContraseña/>
-
+      element: <PA12RecuperarContraseña />
+   },
+   {
+      path: "/CrearEjercicio",
+      element: <PA13CrearEjercicio />
    }
 
 ]);

@@ -1,21 +1,7 @@
 import { checkSchema, validationResult } from 'express-validator';
 import { usuarioModel } from '../models/usuarioModel.js';
-
-export const esCorreo = checkSchema({
-  correo: {
-    in: ['params'],
-    errorMessage: 'El correo electrónico no es válido',
-    isEmail: true,
-    trim: true
-  },
-  contrasena: {
-    in: ['params'],
-    errorMessage: 'La contraseña no es válida',
-    optional: true,
-    isString: true,
-    trim: true
-  }
-});
+import jsonwebtoken from "jsonwebtoken";
+import bcrypt from 'bcrypt'
 
 export const validarEsquema = checkSchema({
   nombre: {
@@ -40,7 +26,8 @@ export const validarEsquema = checkSchema({
     in: ['body'],
     errorMessage: 'El correo electrónico no es válido',
     isEmail: true,
-    trim: true
+    trim: true,
+    toLowerCase: true
   },
   contrasena: {
     in: ['body'],
@@ -76,3 +63,20 @@ export const existeUsuario = async (req, res, next) => {
 
   next();
 };
+
+export const FiltrarToken = async (req, res, next) => {
+  const { correo } = jsonwebtoken.verify(req.params.token, "contrasena")
+  const { contrasenaActual } = req.body
+
+  const usuario = await usuarioModel.getByEmail(correo)
+  const passwordMatch = await bcrypt.compare(contrasenaActual, usuario.contrasena);
+
+  if (!passwordMatch)
+    return res.status(200).json({ error: "Las contrasenas no coinciden" });
+
+  // Almacena el correo del usuario en req
+  req.correo = correo
+  req.usuario = usuario
+
+  next();
+}

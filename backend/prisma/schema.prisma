@@ -65,6 +65,7 @@ model UsuarioEnGrupo {
 
 model Actividad {
     id          Int       @id @default(autoincrement())
+    nombre      String
     descripcion String?
     creadoEl    DateTime  @default(now())
     fechaLimite DateTime?

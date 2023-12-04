@@ -6,6 +6,7 @@ import GrupoModalCreacion from "../components/GrupoModalCreacion";
 import { useUsuarioStore } from '../stores/UsuarioStore';
 import iamge from '../images/matematicas.png'
 import GrupoModalInscripcion from '../components/GrupoModalInscripcion';
+import GrupoModalPerfil from '../components/GrupoModalPerfil';
 
 const PA5Grupos = () => {
 
@@ -14,6 +15,7 @@ const PA5Grupos = () => {
   const [data, setData] = useState([])    //Para la info que consultamos de los grupos del usuario
   const [show, setShow] = useState(false) //Para mostrar el modal de crear frupo
   const [open, setOpen] = useState(false) //Para mostrar el modal de unirse a un grupo
+  const [showProfile, setShowProfile] = useState(false)
   //Estado global
   const usuario = useUsuarioStore(state => state.usuario)
 
@@ -22,13 +24,21 @@ const PA5Grupos = () => {
       .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
   }
 
+  const filtrarGrupos = (filtro) => {
+    if (filtro == "")
+      obtenerGrupos()
+    else
+      fetch(`http://localhost:3000/grupo/${usuario.token}/${filtro}`)
+        .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
+  }
+
   useEffect(() => {
     obtenerGrupos()
   }, [])
 
   const trigger = (
     <span>
-      <Icon name='user' /> {usuario.perfil.nombre}
+      <Icon name='user' />
     </span>
   )
 
@@ -53,7 +63,12 @@ const PA5Grupos = () => {
           </Button>
         </Menu.Item>
         <Menu.Item>
-          <Dropdown trigger={trigger} options={options} />
+          <Dropdown text={usuario.perfil.nombre + " " + usuario.perfil.apellido_materno} >
+            <Dropdown.Menu>
+              <Dropdown.Item text="Perfil" onClick={() => setShowProfile(true)} />
+              <Dropdown.Item text="Cerrar Sesión" />
+            </Dropdown.Menu>
+          </Dropdown>
         </Menu.Item>
       </Menu>
       <Menu stackable secondary style={{ margin: "3% 5% 3% 5%" }}>
@@ -65,7 +80,9 @@ const PA5Grupos = () => {
             <Button color='green' onClick={() => { setShow(true) }} >Crear Grupo</Button>
           </Menu.Item>
           <Menu.Item  >
-            <Input icon='search' transparent iconPosition='left' placeholder='Encontrar Grupo' />
+            <Input icon='search' transparent iconPosition='left' placeholder='Encontrar Grupo' onChange={(e) => {
+              filtrarGrupos(e.target.value)
+            }} />
           </Menu.Item>
         </Menu.Menu>
       </Menu>
@@ -76,6 +93,7 @@ const PA5Grupos = () => {
       }
       <GrupoModalCreacion propShow={show} propSetShow={setShow} actualizarGrupos={obtenerGrupos} />
       <GrupoModalInscripcion propOpen={open} propSetOpen={setOpen} actualizarGrupos={obtenerGrupos} />
+      <GrupoModalPerfil propSetShow={setShowProfile} propShow={showProfile} />
     </>
   )
 }

@@ -74,6 +74,16 @@ export class grupoModel {
       return grupo
    }
 
+   static quitarUsuario = async (idUsuario, idGrupo) => {
+      console.log(idGrupo);
+      console.log(idUsuario);
+      const grupo = await prisma.usuarioEnGrupo.delete({
+         where: { usuarioId_grupoId: { grupoId: idGrupo, usuarioId: idUsuario } }
+      })
+
+      return grupo
+   }
+
    static actualizarGrupo = async (claveGrupo, dataGrupo) => {
       const grupo = await prisma.grupo.update({
          where: { clave: claveGrupo },
@@ -82,6 +92,15 @@ export class grupoModel {
          }
       })
       return grupo
+
    }
 
+   static find = async (nombre, id) => {
+      const grupos = await prisma.grupo.findMany({
+         where: {
+            nombre: { contains: nombre }, Usuarios: { some: { usuarioId: id } }
+         }
+      })
+      return grupos
+   }
 }
