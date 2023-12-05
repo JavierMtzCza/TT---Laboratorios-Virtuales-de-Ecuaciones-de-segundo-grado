@@ -88,7 +88,7 @@ const PA5Grupos = () => {
       </Menu>
       {
         <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={isDesktop ? 4 : isTablet ? 2 : 1}>
-          {data.map((grupo) => (<Grupo key={grupo.id} alumnos={4} nombreGrupo={grupo.nombre} descripcionGrupo={grupo.descripcion} claveGrupo={grupo.clave} />))}
+          {data.map((grupo) => (<Grupo key={grupo.id} idGrupo={grupo.id} alumnos={4} nombreGrupo={grupo.nombre} descripcionGrupo={grupo.descripcion} claveGrupo={grupo.clave} />))}
         </Card.Group >
       }
       <GrupoModalCreacion propShow={show} propSetShow={setShow} actualizarGrupos={obtenerGrupos} />
