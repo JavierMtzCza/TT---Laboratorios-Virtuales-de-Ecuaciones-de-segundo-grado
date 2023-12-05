@@ -22,6 +22,7 @@ export const useUsuarioStore = create(persist((set) => {
 export const useGrupoStore = create(persist((set) => {
 	return {
 		grupo: {
+			"id": 0,
 			"nombre": "",
 			"descripcion": "",
 			"clave": "",

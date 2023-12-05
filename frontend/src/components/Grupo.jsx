@@ -2,7 +2,7 @@ import { Button, Card, Dropdown, Header, Icon, Label } from "semantic-ui-react"
 import { useGrupoStore } from '../stores/UsuarioStore';
 import { Link } from "react-router-dom";
 
-export const Grupo = ({ nombreGrupo, alumnos, descripcionGrupo, claveGrupo }) => {
+export const Grupo = ({ idGrupo, nombreGrupo, alumnos, descripcionGrupo, claveGrupo }) => {
 
    const colores = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey']
    //Estado global
@@ -20,7 +20,7 @@ export const Grupo = ({ nombreGrupo, alumnos, descripcionGrupo, claveGrupo }) =>
          </Card.Content>
          <Card.Content extra>
             <Link to="/Grupo">
-               <Button onClick={() => { setGrupo({ nombre: nombreGrupo, descripcion: descripcionGrupo, clave: claveGrupo, }) }} fluid color="green" content="Entrar" />
+               <Button onClick={() => { setGrupo({ id: idGrupo, nombre: nombreGrupo, descripcion: descripcionGrupo, clave: claveGrupo }) }} fluid color="green" content="Entrar" />
             </Link>
          </Card.Content>
       </Card>
