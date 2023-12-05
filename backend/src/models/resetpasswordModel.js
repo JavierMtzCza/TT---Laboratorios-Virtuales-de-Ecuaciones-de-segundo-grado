@@ -1,7 +1,6 @@
 // cambioContrasenaModel.js
 import { prisma } from "../conexion.js";
 import { addMinutes } from "date-fns";
-import bcrypt from "bcrypt"; // Agrega esta línea
 
 export class CambioContrasenaModel {
   

@@ -1,15 +1,22 @@
-// ActividadModalCreacion.js
-import { useGrupoStore } from '../stores/UsuarioStore';
-import { useUsuarioStore } from '../stores/UsuarioStore';
+// CrearActividad.jsx
+import React from 'react';
+import { Button, Form, Modal } from 'semantic-ui-react';
 import { useForm } from 'react-hook-form';
-import { Button,  Modal,Form } from 'semantic-ui-react'
+import { useGrupoStore } from '../stores/UsuarioStore';
+import moment from 'moment';
 
 
-const ActividadModalCreacion = ({ propShow, propSetShow, actualizarActividades }) => {
-  const usuario = useUsuarioStore(state => state.usuario);
+const CrearActividad = ({ initialValues, onClose, showModal }) => {
+  const { register, handleSubmit, reset } = useForm({ defaultValues: initialValues });
+
+  const defaultValues = {
+    descripcion: 'Escribe', // Puedes cambiar este valor predeterminado según tus necesidades
+    tipo: 'Tarea o Cuestionario', // Puedes cambiar este valor predeterminado según tus necesidades
+    ...initialValues,
+  };
+
+  
   const grupoActual = useGrupoStore(state => state.grupo);
-
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const postActividad = async (data) => {
     try {
@@ -17,59 +24,73 @@ const ActividadModalCreacion = ({ propShow, propSetShow, actualizarActividades }
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          descripcion: data.descripcion,
-          fechaLimite: data.fechaLimite,
-          tipo: data.tipo,
+          nombre: data.nombre,
+          descripcion: data.descripcion || defaultValues.descripcion,
+          fechaLimite: moment(data.fechaLimite).toISOString(),
+          tipo: data.tipo || defaultValues.tipo,
+          claveGrupo: grupoActual.clave
         }),
       });
 
       if (response.ok) {
         await alert('Actividad creada correctamente');
-
-        // Restablece el estado global de grupo después de crear la actividad
-        useGrupoStore.setState({ grupo: { ...grupoActual, clave: '' } });
-
-        actualizarActividades();
-        propSetShow(false);
         reset({
-          descripcion: '',
+          nombre: '',
+          descripcion: 'Breve descripción de la actividad',
           fechaLimite: '',
-          tipo: '',
+          tipo: 'Tipo de actividad',
         });
+        onClose(); // Cierra el modal desde el componente padre si es necesario
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error al crear la actividad:', error);
     }
   };
 
   const onSubmit = handleSubmit((formData) => {
-    postActividad({
-      descripcion: formData.descripcion,
-      fechaLimite: new Date(formData.fechaLimite).toISOString(),
-      tipo: formData.tipo,
-    });
+    console.log(formData);
+    postActividad(formData);
   });
 
   return (
-    <Modal
-      onClose={() => propSetShow(false)}
-      onOpen={() => propSetShow(true)}
-      open={propShow}
-      size='tiny'
-    >
-      <Modal.Header>Crear Actividad</Modal.Header>
-      <Modal.Content>
-        <Form error onSubmit={onSubmit}>
-          <Form.Input required fluid label="Descripción" placeholder="Ingrese la descripción de la actividad" {...register("descripcion")} />
-          <Form.Input required fluid label="Fecha Límite" placeholder="Ingrese la fecha límite" type="date" {...register("fechaLimite")} />
-          <Form.Input required fluid label="Tipo" placeholder="Ingrese el tipo de actividad" {...register("tipo")} />
-          <Button floated='left' content="Cancelar" color='red' onClick={() => propSetShow(false)} />
-          <Button floated='right' content="Crear Actividad" color='green' type='submit' />
-        </Form>
-      </Modal.Content>
-    </Modal>
-
-    );
+    <div>
+      <Modal
+        onClose={onClose}
+        open={showModal}
+        size='tiny'
+      >
+        <Modal.Header>Crear Actividad</Modal.Header>
+        <Modal.Content>
+          <Form style={{ margin: '0 1% 15% 1%' }} onSubmit={onSubmit}>
+            <Form.Input required fluid label='Nombre' placeholder='Ingrese el nombre de la Actividad'>
+              <input {...register('nombre')} />
+            </Form.Input>
+            <Form.TextArea
+              required
+              label='Descripción'
+              placeholder='Descripción de la Actividad'
+              {...register('descripcion')}
+            />
+            <Form.Input
+              required
+              type='datetime-local'
+              label='Fecha Límite'
+              {...register('fechaLimite')}
+            />
+            <Form.Input
+              required
+              fluid
+              label='Tipo'
+              placeholder='Ingrese el tipo de la Actividad'
+              {...register('tipo')}
+            />
+            <Button floated='left' content='Cancelar' color='red' onClick={onClose} />
+            <Button floated='right' content='Crear Actividad' color='green' type='submit' />
+          </Form>
+        </Modal.Content>
+      </Modal>
+    </div>
+  );
 };
 
-export default ActividadModalCreacion;
+export default CrearActividad;

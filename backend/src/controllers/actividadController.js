@@ -5,8 +5,8 @@ export class ActividadController {
    static async create(req, res) {
       try {
          const grupoId = parseInt(req.params.idGrupo);
-         const { nombre, descripcion, fechaLimite, tipo } = req.body;
-         const actividad = await ActividadModel.create(grupoId, nombre, descripcion, fechaLimite, tipo);
+         const { nombre, descripcion, fechaLimite, tipo, claveGrupo } = req.body;
+         const actividad = await ActividadModel.create(grupoId, nombre, descripcion, fechaLimite, tipo, claveGrupo);
          res.json({ mensaje: 'Actividad creada con éxito', actividad });
       } catch (error) {
          console.error('Error al crear la actividad:', error);
@@ -15,10 +15,11 @@ export class ActividadController {
    }
 
    // Obtener todas las actividades de un grupo
-   static async getAll(req, res) {
+    // Obtener todas las actividades de un grupo
+    static async getAll(req, res) {
       try {
-         const grupoId = parseInt(req.params.idGrupo);
-         const actividades = await ActividadModel.getAll(grupoId);
+         const claveGrupo = req.params.claveGrupo; // Cambia aquí para obtener la clave del grupo
+         const actividades = await ActividadModel.getAll(claveGrupo);
          res.json(actividades);
       } catch (error) {
          console.error('Error al obtener las actividades:', error);
@@ -42,8 +43,18 @@ export class ActividadController {
    static async update(req, res) {
       try {
          const actividadId = parseInt(req.params.idActividad);
-         const { nombre, descripcion, fechaLimite, tipo } = req.body; // Agregar "nombre" aquí
-         const actividadActualizada = await ActividadModel.update(actividadId, { nombre, descripcion, fechaLimite, tipo }); // Agregar "nombre" aquí
+         const { nombre, descripcion, fechaLimite, tipo } = req.body;
+         const claveGrupo = req.body.claveGrupo; // Agregar aquí para obtener la clave del grupo
+         
+         const nuevaInformacion = {
+            nombre,
+            descripcion,
+            fechaLimite,
+            tipo,
+            claveGrupo, // Agregar la clave del grupo
+         };
+
+         const actividadActualizada = await ActividadModel.update(actividadId, nuevaInformacion);
          res.json({ mensaje: 'Actividad actualizada con éxito', actividad: actividadActualizada });
       } catch (error) {
          console.error('Error al actualizar la actividad:', error);

@@ -30,7 +30,6 @@ model CambioContrasena {
     estado         Boolean   @default(true)
     Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
     usuarioCorreo  String    @unique
-
    
 }
 
