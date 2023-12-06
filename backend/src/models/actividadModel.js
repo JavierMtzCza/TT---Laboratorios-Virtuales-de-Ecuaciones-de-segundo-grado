@@ -3,13 +3,11 @@ import { prisma } from "../conexion.js";
 export class ActividadModel {
 
    // Crear Actividad 
-   static create = async (nombre, descripcion, fechaLimite, tipo, claveGrupo) => {
+   static create = async (idGrupo, nombre, descripcion, fechaLimite, tipo) => {
       const actividad = prisma.actividad.create({
          data: {
-            Grupo: {
-               connect: { clave: claveGrupo },
-            },
-            nombre: nombre,
+            grupoId: idGrupo,
+            nombre: nombre, // Campo "nombre" agregado
             descripcion: descripcion,
             fechaLimite: new Date(fechaLimite),
             tipo: tipo,
@@ -17,84 +15,66 @@ export class ActividadModel {
       });
       return actividad;
    }
-   
 
    // Obtener las actividades 
-   static async obtenerActividadesPorClaveGrupo(claveGrupo) {
-      try {
-          // Buscar el grupo por la clave
-          const grupo = await prisma.grupo.findUnique({
-              where: {
-                  clave: claveGrupo,
-              },
-          });
-  
-          if (!grupo) {
-              return null;
-          }
-  
-          // Obtener todas las actividades del grupo
-          const actividades = await prisma.actividad.findMany({
-              where: {
-                  grupoId: grupo.id,
-              },
-          });
-  
-          return actividades;
-      } catch (error) {
-          // Puedes manejar el error de alguna otra manera, como imprimir un mensaje de registro
-          return null;
-      }
-  }
-
-  static getById = async (actividadId, claveGrupo) => {
-   try {
-       const actividad = await prisma.actividad.findUnique({
-           where: { id: actividadId, grupoId: { clave: claveGrupo } },
-           include: {
-               // ... Incluir otras relaciones si es necesario
-           },
-       });
-
-       return actividad;
-   } catch (error) {
-       console.error(`Error al obtener la actividad: ${error.message}`);
-       return null;
+   static getAll = async (idGrupo) => {
+      const actividades = prisma.actividad.findMany({ where: { grupoId: idGrupo } })
+      return actividades;
    }
-}
 
-// Actualizar Actividad 
+   static getById = async (actividadId) => {
+      const actividad = prisma.actividad.findUnique({
+         where: { id: actividadId },
+         include: {
+            PreguntaCuestionario: {
+               include: {
+                  OpcionCuestionario: true,
+               },
+            },
+            PreguntaEjercicio: {
+               include: {
+                  OpcionEjercicio: true,
+               },
+            },
+            
+         },
+      });
+      return actividad;
+   }
+
+   // Actualizar Actividad 
    static update = async (actividadId, nuevaInformacion) => {
       const actividadActualizada = prisma.actividad.update({
          where: { id: actividadId },
          data: {
-            Grupo: {
-               connect: { clave: nuevaInformacion.claveGrupo }, // Conectar por clave del grupo
-            },
-            nombre: nuevaInformacion.nombre,
+            nombre: nuevaInformacion.nombre, // Agregar el campo "nombre"
             descripcion: nuevaInformacion.descripcion,
             fechaLimite: nuevaInformacion.fechaLimite,
             tipo: nuevaInformacion.tipo,
          },
          include: {
             grupo: true,
-            preguntasCuestionario: {
+            PreguntaaCuestionario: {
                include: {
                   OpcionCuestionario: true,
                },
             },
-            preguntasEjercicio: {
+            PreguntaEjercicio: {
                include: {
                   OpcionEjercicio: true,
                },
             },
-            calificaciones: true,
+            calificacionesActividad: {
+               include: {
+                  Usuario: true,
+               },
+            },
          },
       });
       return actividadActualizada;
    }
 
-// Eliminar Actividad 
+   //Eliminar Actividad 
    static delete = async (actividadId) => {
       const actividadEliminada = await prisma.actividad.delete({
          where: { id: actividadId },

@@ -1,19 +1,26 @@
-// GrupoMenuProfe.jsx
 import React, { useState } from 'react';
-import { Button, Container, Grid, Header, Menu, Segment, Modal } from 'semantic-ui-react';
+import { Button, Container, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import CrearActividad from './GrupoModalActividad';
-import { useGrupoStore } from '../stores/UsuarioStore';
+import CrearEjercicio from './GrupoModalEjercicio';
 
 const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
-  const [showCrearActividadModal, setShowCrearActividadModal] = useState(false);
-  const grupoActual = useGrupoStore(state => state.grupo);
-  
-  const handleCrearCuestionarioClick = () => {
-    setShowCrearActividadModal(true);
+  const [modalActividadOpen, setModalActividadOpen] = useState(false);
+  const [modalEjercicioOpen, setModalEjercicioOpen] = useState(false);
+
+  const handleOpenModalActividad = () => {
+    setModalActividadOpen(true);
   };
 
-  const handleCloseCrearActividadModal = () => {
-    setShowCrearActividadModal(false);
+  const handleCloseModalActividad = () => {
+    setModalActividadOpen(false);
+  };
+
+  const handleOpenModalEjercicio = () => {
+    setModalEjercicioOpen(true);
+  };
+
+  const handleCloseModalEjercicio = () => {
+    setModalEjercicioOpen(false);
   };
 
   return (
@@ -47,16 +54,25 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
 
       <Menu secondary style={{ margin: "1% 5% 1% 5%" }}>
         <Menu.Item position='right'>
-          <Button color='green'>Crear Ejercicio</Button>
+          <Button color='green' onClick={() => setModalEjercicioOpen(true)}>
+            Crear Ejercicio
+          </Button>
         </Menu.Item>
         <Menu.Item>
-          <Button color='green' onClick={handleCrearCuestionarioClick}>Crear Cuestionario</Button>
+          <Button color='green' onClick={() => setModalActividadOpen(true)}>
+            Crear Cuestionario
+          </Button>
         </Menu.Item>
       </Menu>
 
-      {/* Modal para crear actividad */}
-      {showCrearActividadModal && (
-        <CrearActividad claveGrupo={grupoActual.clave} onClose={handleCloseCrearActividadModal} showModal={showCrearActividadModal} />
+      {/* Lógica para el componente CrearActividad */}
+      {modalActividadOpen && (
+        <CrearActividad onCloseModal={handleCloseModalActividad} />
+      )}
+
+      {/* Lógica para el componente CrearEjercicio */}
+      {modalEjercicioOpen && (
+        <CrearEjercicio onCloseModal={handleCloseModalEjercicio} />
       )}
     </>
   );

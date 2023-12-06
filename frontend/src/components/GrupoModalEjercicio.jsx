@@ -4,7 +4,7 @@ import moment from 'moment';
 import {  useNavigate } from 'react-router-dom'
 import { useGrupoStore } from '../stores/UsuarioStore';
 
-function CrearActividad({ onCloseModal }) {
+function CrearEjercicio({ onCloseModal }) {
   
   const { grupo } = useGrupoStore();
   const idGrupo = grupo.id;
@@ -14,7 +14,7 @@ function CrearActividad({ onCloseModal }) {
     nombre: '',
     descripcion: '',
     fechaLimite: moment().toISOString(),
-    tipo: 'Cuestionario',
+    tipo: 'Ejercicio',
   });
 
   const [mensaje, setMensaje] = useState('');
@@ -74,7 +74,7 @@ function CrearActividad({ onCloseModal }) {
             label="Fecha Límite"
             name="fechaLimite"
             type="datetime-local"
-            value={moment(nuevaActividad.fechaLimite).format('YYYY-MM-DDTHH:mm')}
+            value={nuevaActividad.fechaLimite}
             onChange={handleInputChange}
           />
           <Form.Input
@@ -108,4 +108,4 @@ function CrearActividad({ onCloseModal }) {
   );
 }
 
-export default CrearActividad;
+export default  CrearEjercicio;

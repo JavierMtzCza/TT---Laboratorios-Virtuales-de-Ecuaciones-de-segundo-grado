@@ -1,21 +1,23 @@
+
 import { Router } from "express";
-import { ActividadController } from "../controllers/ActividadController.js";
+import { ActividadController } from "../controllers/actividadController.js";
 
 const router = Router();
 
-// Crear Actividad
-router.post('/:claveGrupo/crearActividad',  ActividadController.create);
+// Se utilizará para crear una nueva actividad en el grupo especificado.
+router.post("/:idGrupo/actividad", ActividadController.create);
 
-// Obtener actividades por clave del grupo
-router.get('/:claveGrupo/actividades',  ActividadController.obtenerActividadesPorClaveGrupo);
+// Ruta para obtener todas las actividades de un grupo
+router.get("/:idGrupo/actividades", ActividadController.getAll);
 
-// Obtener actividad por ID
-router.get('/actividad/:actividadId/:claveGrupo', ActividadController.getById);
+// Ruta para obtener una actividad específica por su ID
+router.get("/:idGrupo/actividad/:idActividad", ActividadController.getById);
 
-// Actualizar Actividad
-router.patch('/actividad/:actividadId', ActividadController.update);
+// Ruta para actualizar una actividad existente
+router.put("/:idGrupo/actividad/:idActividad", ActividadController.update);
 
-// Eliminar Actividad por Clave del Grupo
-router.delete('/:claveGrupo/actividad/:actividadId', ActividadController.delete);
+// Ruta para eliminar una actividad existente
+router.delete("/:idGrupo/actividad/:idActividad", ActividadController.delete);
+
 
 export default router;
