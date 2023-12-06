@@ -4,9 +4,9 @@ export class ActividadController {
    // Crear una nueva actividad
    static async create(req, res) {
       try {
-         const grupoId = parseInt(req.params.idGrupo);
-         const { nombre, descripcion, fechaLimite, tipo, claveGrupo } = req.body;
-         const actividad = await ActividadModel.create(grupoId, nombre, descripcion, fechaLimite, tipo, claveGrupo);
+         const claveGrupo = req.params.claveGrupo;
+         const { nombre, descripcion, fechaLimite, tipo } = req.body;
+         const actividad = await ActividadModel.create(nombre, descripcion, fechaLimite, tipo, claveGrupo);
          res.json({ mensaje: 'Actividad creada con éxito', actividad });
       } catch (error) {
          console.error('Error al crear la actividad:', error);
@@ -15,8 +15,7 @@ export class ActividadController {
    }
 
    // Obtener todas las actividades de un grupo
-    // Obtener todas las actividades de un grupo
-    static async getAll(req, res) {
+   static async getAll(req, res) {
       try {
          const claveGrupo = req.params.claveGrupo; // Cambia aquí para obtener la clave del grupo
          const actividades = await ActividadModel.getAll(claveGrupo);
@@ -45,7 +44,7 @@ export class ActividadController {
          const actividadId = parseInt(req.params.idActividad);
          const { nombre, descripcion, fechaLimite, tipo } = req.body;
          const claveGrupo = req.body.claveGrupo; // Agregar aquí para obtener la clave del grupo
-         
+
          const nuevaInformacion = {
             nombre,
             descripcion,

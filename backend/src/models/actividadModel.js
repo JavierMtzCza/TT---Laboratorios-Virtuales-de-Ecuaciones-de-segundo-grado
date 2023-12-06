@@ -3,12 +3,10 @@ import { prisma } from "../conexion.js";
 export class ActividadModel {
 
    // Crear Actividad 
-   static create = async (idGrupo, nombre, descripcion, fechaLimite, tipo, claveGrupo) => {
+   static create = async (nombre, descripcion, fechaLimite, tipo, claveGrupo) => {
       const actividad = prisma.actividad.create({
          data: {
-            Grupo: {
-               connect: { clave: claveGrupo },
-            },
+            Grupo: { connect: { clave: claveGrupo } },
             nombre: nombre,
             descripcion: descripcion,
             fechaLimite: new Date(fechaLimite),
@@ -17,11 +15,11 @@ export class ActividadModel {
       });
       return actividad;
    }
-   
+
 
    // Obtener las actividades 
    static getAll = async (claveGrupo) => {
-      const actividades = prisma.actividad.findMany({ where: { grupo: { clave: claveGrupo } } })
+      const actividades = prisma.actividad.findMany({ where: { Grupo: { clave: claveGrupo } } })
       return actividades;
    }
 

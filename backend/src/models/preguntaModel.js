@@ -14,11 +14,11 @@ export class PreguntaEjercicioModel {
             ClaveVideo: claveVideo,
             OpcionEjercicio: {
                create: {
-                  a: opcion.a,
-                  b: opcion.b,
-                  c: opcion.c,
-                  r1: opcion.r1,
-                  r2: opcion.r2,
+                  a: parseFloat(opcion.a),
+                  b: parseFloat(opcion.b),
+                  c: parseFloat(opcion.c),
+                  r2: parseFloat(opcion.raiz2),
+                  r1: parseFloat(opcion.raiz1),
                }
             }
          },
