@@ -1,45 +1,56 @@
-import { ActividadModel } from "../models/actividadModel.js";
+import { ActividadModel } from "../models/ActividadModel.js";
 
 export class ActividadController {
-   // Crear una nueva actividad
-   static async create(req, res) {
-      try {
-         const grupoId = parseInt(req.params.idGrupo);
-         const { nombre, descripcion, fechaLimite, tipo, claveGrupo } = req.body;
-         const actividad = await ActividadModel.create(grupoId, nombre, descripcion, fechaLimite, tipo, claveGrupo);
-         res.json({ mensaje: 'Actividad creada con éxito', actividad });
-      } catch (error) {
-         console.error('Error al crear la actividad:', error);
-         res.status(500).json({ mensaje: 'Error interno del servidor' });
-      }
-   }
 
-   // Obtener todas las actividades de un grupo
-    // Obtener todas las actividades de un grupo
-    static async getAll(req, res) {
-      try {
-         const claveGrupo = req.params.claveGrupo; // Cambia aquí para obtener la clave del grupo
-         const actividades = await ActividadModel.getAll(claveGrupo);
-         res.json(actividades);
-      } catch (error) {
-         console.error('Error al obtener las actividades:', error);
-         res.status(500).json({ mensaje: 'Error interno del servidor' });
-      }
-   }
+    // Crear Actividad
+    static async create(req, res) {
+        const { nombre, descripcion, fechaLimite, tipo } = req.body;
+        const { claveGrupo } = req.params;
 
-   // Obtener una actividad específica por su ID
-   static async getById(req, res) {
-      try {
-         const actividadId = parseInt(req.params.idActividad);
-         const actividad = await ActividadModel.getById(actividadId);
-         res.json(actividad);
-      } catch (error) {
-         console.error('Error al obtener la actividad:', error);
-         res.status(500).json({ mensaje: 'Error interno del servidor' });
-      }
-   }
+        try {
+            const actividad = await ActividadModel.create(nombre, descripcion, fechaLimite, tipo, claveGrupo);
+            res.json(actividad);
+        } catch (error) {
+            res.status(500).json({ error: "Error al crear la actividad" });
+        }
+    }
 
-   // Actualizar una actividad existente
+    // Obtener las actividades por clave del grupo
+    static async obtenerActividadesPorClaveGrupo(req, res) {
+        const { claveGrupo } = req.params;
+
+        try {
+            const actividades = await ActividadModel.obtenerActividadesPorClaveGrupo(claveGrupo);
+            res.json(actividades || []);
+        } catch (error) {
+            res.status(500).json({ error: "Error al obtener las actividades" });
+        }
+    }
+
+    
+  
+
+    static async getById(req, res) {
+      const { actividadId, claveGrupo } = req.params;
+  
+      try {
+          const actividad = await ActividadModel.getById(parseInt(actividadId), claveGrupo);
+  
+          if (!actividad) {
+              return res.status(404).json({ error: 'Actividad no encontrada' });
+          }
+  
+          // Modifica la respuesta según la nueva estructura de datos
+          
+  
+          res.json(actividadResponse);
+      } catch (error) {
+          console.error(`Error al obtener la actividad: ${error.message}`);
+          res.status(500).json({ error: 'Error interno del servidor' });
+      }
+  }
+
+// Actualizar una actividad existente
    static async update(req, res) {
       try {
          const actividadId = parseInt(req.params.idActividad);
@@ -62,7 +73,7 @@ export class ActividadController {
       }
    }
 
-   // Eliminar una actividad existente
+// Eliminar una actividad existente
    static async delete(req, res) {
       try {
          const actividadId = parseInt(req.params.idActividad);
@@ -74,3 +85,4 @@ export class ActividadController {
       }
    }
 }
+

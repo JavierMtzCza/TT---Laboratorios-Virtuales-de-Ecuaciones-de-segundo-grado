@@ -3,7 +3,7 @@ import { prisma } from "../conexion.js";
 export class ActividadModel {
 
    // Crear Actividad 
-   static create = async (idGrupo, nombre, descripcion, fechaLimite, tipo, claveGrupo) => {
+   static create = async (nombre, descripcion, fechaLimite, tipo, claveGrupo) => {
       const actividad = prisma.actividad.create({
          data: {
             Grupo: {
@@ -20,40 +20,50 @@ export class ActividadModel {
    
 
    // Obtener las actividades 
-   static getAll = async (claveGrupo) => {
-      const actividades = prisma.actividad.findMany({ where: { grupo: { clave: claveGrupo } } })
-      return actividades;
-   }
+   static async obtenerActividadesPorClaveGrupo(claveGrupo) {
+      try {
+          // Buscar el grupo por la clave
+          const grupo = await prisma.grupo.findUnique({
+              where: {
+                  clave: claveGrupo,
+              },
+          });
+  
+          if (!grupo) {
+              return null;
+          }
+  
+          // Obtener todas las actividades del grupo
+          const actividades = await prisma.actividad.findMany({
+              where: {
+                  grupoId: grupo.id,
+              },
+          });
+  
+          return actividades;
+      } catch (error) {
+          // Puedes manejar el error de alguna otra manera, como imprimir un mensaje de registro
+          return null;
+      }
+  }
 
-   static getByClave = async (claveGrupo) => {
-      const grupo = prisma.grupo.findUnique({
-         where: { clave: claveGrupo },
-      });
-      return grupo;
-   }
+  static getById = async (actividadId, claveGrupo) => {
+   try {
+       const actividad = await prisma.actividad.findUnique({
+           where: { id: actividadId, grupoId: { clave: claveGrupo } },
+           include: {
+               // ... Incluir otras relaciones si es necesario
+           },
+       });
 
-   static getById = async (actividadId) => {
-      const actividad = prisma.actividad.findUnique({
-         where: { id: actividadId },
-         include: {
-            grupo: true,
-            preguntasCuestionario: {
-               include: {
-                  OpcionCuestionario: true,
-               },
-            },
-            preguntasEjercicio: {
-               include: {
-                  OpcionEjercicio: true,
-               },
-            },
-            calificaciones: true,
-         },
-      });
-      return actividad;
+       return actividad;
+   } catch (error) {
+       console.error(`Error al obtener la actividad: ${error.message}`);
+       return null;
    }
+}
 
-   // Actualizar Actividad 
+// Actualizar Actividad 
    static update = async (actividadId, nuevaInformacion) => {
       const actividadActualizada = prisma.actividad.update({
          where: { id: actividadId },
@@ -84,7 +94,7 @@ export class ActividadModel {
       return actividadActualizada;
    }
 
-   // Eliminar Actividad 
+// Eliminar Actividad 
    static delete = async (actividadId) => {
       const actividadEliminada = await prisma.actividad.delete({
          where: { id: actividadId },
