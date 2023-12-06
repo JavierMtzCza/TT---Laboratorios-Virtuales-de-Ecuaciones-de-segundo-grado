@@ -8,6 +8,7 @@ const router = Router()
 
 // Crear una nueva pregunta de ejercicio
 router.post("/:actividadId", upload.single('multimedia'), PreguntaEjercicioController.create);
+// upload.single('multimedia'), PreguntaEjercicioController.create);
 
 // Obtener una pregunta de ejercicio por ID
 router.get("/:idPreguntaEjercicio", PreguntaEjercicioController.getById);
