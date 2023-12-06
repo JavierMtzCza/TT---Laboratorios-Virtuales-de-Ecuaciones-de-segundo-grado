@@ -4,9 +4,9 @@ export class ActividadController {
    // Crear una nueva actividad
    static async create(req, res) {
       try {
-         const claveGrupo = req.params.claveGrupo;
+         const idGrupo = req.params.idGrupo;
          const { nombre, descripcion, fechaLimite, tipo } = req.body;
-         const actividad = await ActividadModel.create(nombre, descripcion, fechaLimite, tipo, claveGrupo);
+         const actividad = await ActividadModel.create(nombre, descripcion, fechaLimite, tipo, parseInt(idGrupo));
          res.json({ mensaje: 'Actividad creada con éxito', actividad });
       } catch (error) {
          console.error('Error al crear la actividad:', error);
