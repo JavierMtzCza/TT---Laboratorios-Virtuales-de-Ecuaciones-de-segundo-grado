@@ -1,27 +1,11 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Container, Grid, Header, Menu, Segment } from 'semantic-ui-react';
-import CrearActividad from './GrupoModalActividad';
-import CrearEjercicio from './GrupoModalEjercicio';
+import ActividadModalCreacion from './ActividadModalCreacion';
 
 const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
-  const [modalActividadOpen, setModalActividadOpen] = useState(false);
-  const [modalEjercicioOpen, setModalEjercicioOpen] = useState(false);
 
-  const handleOpenModalActividad = () => {
-    setModalActividadOpen(true);
-  };
-
-  const handleCloseModalActividad = () => {
-    setModalActividadOpen(false);
-  };
-
-  const handleOpenModalEjercicio = () => {
-    setModalEjercicioOpen(true);
-  };
-
-  const handleCloseModalEjercicio = () => {
-    setModalEjercicioOpen(false);
-  };
+  const tipo = useRef("")
+  const [crearActividad, setCrearActividad] = useState(false)
 
   return (
     <>
@@ -54,26 +38,27 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
 
       <Menu secondary style={{ margin: "1% 5% 1% 5%" }}>
         <Menu.Item position='right'>
-          <Button color='green' onClick={() => setModalEjercicioOpen(true)}>
+          <Button color='green' onClick={() => {
+            tipo.current = 'Ejercicio'
+            setCrearActividad(true)
+          }
+          }>
             Crear Ejercicio
           </Button>
         </Menu.Item>
         <Menu.Item>
-          <Button color='green' onClick={() => setModalActividadOpen(true)}>
+          <Button color='green' onClick={() => {
+            tipo.current = 'Cuestionario'
+            setCrearActividad(true)
+          }
+          }>
             Crear Cuestionario
           </Button>
         </Menu.Item>
-      </Menu>
+      </Menu >
 
-      {/* Lógica para el componente CrearActividad */}
-      {modalActividadOpen && (
-        <CrearActividad onCloseModal={handleCloseModalActividad} />
-      )}
+      <ActividadModalCreacion tipo={tipo} propShow={crearActividad} propSetShow={setCrearActividad} />
 
-      {/* Lógica para el componente CrearEjercicio */}
-      {modalEjercicioOpen && (
-        <CrearEjercicio onCloseModal={handleCloseModalEjercicio} />
-      )}
     </>
   );
 };

@@ -1,3 +1,4 @@
+import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { Button, Container, Embed, Grid, Item, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
@@ -5,15 +6,18 @@ import Divisor from '../components/Divisor';
 import imagen1 from '../images/newplot (1).png';
 import EjercicioFormEc from '../components/EjercicioFormEc';
 import ModalEjercicio from '../components/ModalEjercicio';
-import { useForm } from 'react-hook-form';
+import { useActividadStore, useGrupoStore } from '../stores/UsuarioStore';
 
 const PA8Pruebas = () => {
 
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	const [showModal, setShowModal] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
-	const [enable, setEnable] = useState(false)
-	const [multimedia, setMultimedia] = useState('imagen')
+	const [multimedia, setMultimedia] = useState('imagen') //
+	const [dataEjercicio, setDataEjercicio] = useState({}) //estado de la data del ejercicio
+	// Estado global del ejercicio
+	const actividad = useActividadStore(state => state.actividad)
+	const grupo = useGrupoStore(state => state.grupo)
 
 	useEffect(() => {
 		// Cargar MathJax después de que el componente esté montado
@@ -23,8 +27,11 @@ const PA8Pruebas = () => {
 		script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
 		document.head.appendChild(script);
 
+		//Cargar datos de la actividad
+		//fetch(`http://localhost:3000/actividad/${grupo.id}/actividad/${actividad.id}`)
+		//	.then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
+
 		return () => {
-			// Eliminar el script de MathJax al desmontar el componente
 			document.head.removeChild(script);
 		};
 	}, []);
@@ -57,10 +64,10 @@ const PA8Pruebas = () => {
 		let pasosHTML = `<br>${paso1}<br>${paso2}<br>${paso3}<br>`;
 
 		if (discriminante > 0) {
-			const x1 = (-1*(b)+(raizDiscriminante)) / (2 * a);
-			const x2 = (-1*(b)-(raizDiscriminante)) / (2 * a);
+			const x1 = (-1 * (b) + (raizDiscriminante)) / (2 * a);
+			const x2 = (-1 * (b) - (raizDiscriminante)) / (2 * a);
 			const paso4 = `<p>Paso 4: Analizamos el discriminante para saber cuantas raices tiene:</p><span class="math2">\\(\\sqrt{${discriminante}} = {${raizDiscriminante.toFixed(2)}} \\therefore {${raizDiscriminante.toFixed(2)}} > 0\\)</br></span>`;
-			const paso5 = `<p>Paso 5: Como el discriminante es mayor que 0, sabemos que esta ecuación tiene dos raices:</p><span class="math">\\(x_1 = \\frac{-(${b}) + \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})}  = \\frac{-(${b}) + \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-1*b+(raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x1.toFixed(4)}\\)<br>\\(x_2 = \\frac{-(${b}) - \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})} = \\frac{-(${b}) - \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-b-(raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x2.toFixed(4)}\\)</br></span>`;
+			const paso5 = `<p>Paso 5: Como el discriminante es mayor que 0, sabemos que esta ecuación tiene dos raices:</p><span class="math">\\(x_1 = \\frac{-(${b}) + \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})}  = \\frac{-(${b}) + \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-1 * b + (raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x1.toFixed(4)}\\)<br>\\(x_2 = \\frac{-(${b}) - \\sqrt{(${b})^2 - 4(${a})(${c})}}{2(${a})} = \\frac{-(${b}) - \\sqrt{${discriminante}}}{2(${a})} = \\frac{${-b - (raizDiscriminante.toFixed(3))}}{${2 * a}} = ${x2.toFixed(4)}\\)</br></span>`;
 			const paso6 = `<p>Paso 6: Simplificamos las fracciones:</p><span class="math"> \\(x_1 = ${x1.toFixed(4)}\\) y \\(x_2 = ${x2.toFixed(4)}\\)</br></span>`;
 			// const paso7 = `Paso 7: Verificamos las soluciones: <br> <span class="math">  \\(${a}(${x1.toFixed(2)})^2 + ${b}(${x1.toFixed(2)}) + ${c} = ${(a * x1 * x1 + b * x1 + c).toFixed(2)} \\approx 0\\) y \\(${a}(${x2.toFixed(2)})^2 + ${b}(${x2.toFixed(2)}) + ${c} = ${(a * x2 * x2 + b * x2 + c).toFixed(2)} \\approx 0\\) </span>`;
 			pasosHTML += `${paso4}<br>${paso5}<br>${paso6}`;
@@ -85,7 +92,7 @@ const PA8Pruebas = () => {
 		const r1 = parseFloat(raiz1);
 		const r2 = parseFloat(raiz2);
 
-		console.log(((1-r1)*(1-r2)))
+		console.log(((1 - r1) * (1 - r2)))
 
 		const paso1 = `<br>Paso 1: Las raíces de la ecuación cuadrática son: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
 
@@ -110,11 +117,6 @@ const PA8Pruebas = () => {
 			window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
 
 	};
-
-	// const limpiarPantalla = () => {
-	// 	document.getElementById('resultado').innerHTML = '';
-	// 	document.getElementById('pasos').innerHTML = '';
-	// };
 
 
 	return (
