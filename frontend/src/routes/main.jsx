@@ -10,7 +10,7 @@ import PA7Ejercicio from "./PA7-Ejercicio.jsx";
 import PA8Grupo from "./PA8-Grupo.jsx";
 import PA9Cuestionario from "./PA9-Cuestionario.jsx";
 import PA10Formulario from "./PA10-Formulario.jsx";
-import PA11MiGrupo from "./PA11-MiGrupo";
+import PA11AvisodePrivacidad from "./PA11-Aviso.jsx";
 import PA12RecuperarContraseña from "./PA12-RecuperarCuenta.jsx";
 import PA13CrearEjercicio from "./PA13-CrearEjercicio.jsx";
 
@@ -59,8 +59,8 @@ const router = createBrowserRouter([
 
    },
    {
-      path: "/MiGrupo",
-      element: <PA11MiGrupo />
+      path: "/Aviso",
+      element: <PA11AvisodePrivacidad />
    },
    {
       path: "/SingUp",
@@ -69,7 +69,8 @@ const router = createBrowserRouter([
    {
       path: "/CrearEjercicio",
       element: <PA13CrearEjercicio />
-   }
+   },
+   
 
 ]);
 

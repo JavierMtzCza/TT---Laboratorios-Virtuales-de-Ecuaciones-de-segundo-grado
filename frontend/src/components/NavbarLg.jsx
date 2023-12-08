@@ -29,6 +29,10 @@ const NavbarLg = ({imagen}) => {
                 <Menu.Item name='Ayuda'>
                     <Link to={"/"}>Ayuda</Link>
                 </Menu.Item>
+
+                <Menu.Item name='Condiciones'>
+                    <Link to={"/Aviso"}>Aviso de Privacidad</Link>
+                </Menu.Item>
                 
                 <Menu.Item name='Condiciones'>
                     <Link to={"/Condiciones"}>Terminos y Condiciones</Link>

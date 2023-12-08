@@ -73,9 +73,9 @@ const TermsAndConditions = () => {
           <strong>1. Objeto y ámbito de aplicación</strong>
         </p>
         <p>
-          Los presentes términos y condiciones de uso (en adelante, los "Términos y Condiciones") regulan el acceso y uso
-          de la aplicación web educativa [nombre de la aplicación] (en adelante, la "Aplicación"), propiedad de [nombre
-          de la empresa].
+          Los presentes términos y condiciones de uso  regulan el acceso y uso
+          de la aplicación web educativa "Chicharronera Lab" una aplicación desarrollada por estudiantes del Intituto Politecnico Nacional
+           ,la cual es propiedad de la escuela Superior de Computo "ESCOM".
         </p>
 
         <p id="aceptacion">
@@ -89,23 +89,24 @@ const TermsAndConditions = () => {
           <strong> 3. Usuarios </strong>
         </p>
         <p>
-        La Aplicación está dirigida a alumnos y profesores de secundaria en México.
+        La Aplicación está dirigida a alumnos y profesores de 3ro de secundaria en México.
         </p>
 
         <p id="Información-personal">
           <strong>4. Información personal</strong>
         </p>
         <p>
-        La Aplicación recopila información personal de los usuarios, como su nombre, apellidos, correo electrónico, dirección IP, etc. 
-        Esta información se utilizará para proporcionar los servicios de la Aplicación y para fines estadísticos y de marketing.
+        La Aplicación recopila información personal de los usuarios, como su nombre, apellidos y correo electrónico, el cual deberá ser consentido por el titular 
+        o el padre y madre del alumno para que haga uso de la aplicación. 
+        Esta información se utilizará para proporcionar los servicios de la Aplicación y para fines estadísticos .
         </p>
 
         <p id="Contenido-Aplicacion">
           <strong>5. Contenido de la Aplicación</strong>
         </p>
         <p>
-        La Aplicación contiene contenido educativo, como libros, artículos, videos, cuestionarios e imágenes.
-        Este contenido es propiedad de [nombre de la empresa] o de sus respectivos titulares de derechos.
+        La Aplicación contiene contenido educativo, como  videos, cuestionarios e imágenes .
+        Este contenido es propiedad de la Escuela Superior de Computo o de sus respectivos titulares de derechos.
         </p>
 
         <p id="Uso-Aplicacion">
@@ -116,7 +117,7 @@ const TermsAndConditions = () => {
 
           Utilizar la Aplicación para fines ilegales o que violen los derechos de terceros.
           Utilizar la Aplicación para difundir contenido que sea ilegal, dañino, amenazante, 
-          abusivo, difamatorio, obsceno, o que de cualquier forma viole las leyes o los reglamentos aplicables.
+          abusivo, difamatorio, obsceno, o que de cualquier forma viole los reglamentos o leyes mexicanas .
           Utilizar la Aplicación para enviar spam o correo electrónico no solicitado.
           Utilizar la Aplicación para crear cuestionarios o subir imágenes que sean ilegales, 
           dañinos, amenazantes, abusivos, difamatorios, obscenos, o que de cualquier forma violen las leyes o los reglamentos aplicables.
@@ -126,24 +127,24 @@ const TermsAndConditions = () => {
           <strong> 7. Propiedad intelectual </strong>
         </p>
         <p>
-        El software y el contenido de la Aplicación son propiedad de [nombre de la empresa] o de sus respectivos titulares de derechos. 
+        El software y el contenido de la Aplicación son propiedad de la Escuela Superior de Cómputo "ESCOM" o de sus respectivos titulares de derechos. 
         El usuario no podrá copiar, distribuir, modificar o crear trabajos derivados del software o el contenido de la Aplicación
-         sin el consentimiento previo por escrito de [nombre de la empresa].
+         sin el consentimiento previo por escrito.
         </p>
 
         <p id="Exclusion-responsabilidad">
           <strong>8. Exclusión de responsabilidad</strong>
         </p>
         <p>
-        [Nombre de la empresa] no será responsable por daños directos, indirectos, incidentales, especiales o consecuentes,
-         derivados del uso o la imposibilidad de uso de la Aplicación.
+        La Escuela Superior de Computo "ESCOM" no será responsable por daños directos, indirectos, incidentales, especiales o consecuentes,
+        derivados del uso o la irresponsabilidad que se le de la Aplicación.
         </p>
 
         <p id="Suspension-servicio">
           <strong> 9. Suspensión o terminación del servicio</strong>
         </p>
         <p>
-        [Nombre de la empresa] se reserva el derecho a suspender o terminar el acceso a la Aplicación
+        La Escuela Superior de Computo "ESCOM" se reserva el derecho a suspender o terminar el acceso a la Aplicación
          en cualquier momento, sin previo aviso.
         </p>
 
@@ -151,15 +152,14 @@ const TermsAndConditions = () => {
           <strong>10. Ley aplicable</strong>
         </p>
         <p>
-        Los presentes Términos y Condiciones 
-        se rigen por las leyes de los Estados Unidos Mexicanos.
+        Los presentes Términos y Condiciones se rigen por las leyes de los Estados Unidos Mexicanos.
         </p>
 
         <p id="CambiosyCondiciones">
           <strong>11. Cambios a los Términos y Condiciones</strong>
         </p>
         <p>
-        [Nombre de la empresa] se reserva el derecho a modificar los presentes 
+        La Escuela Superior de Computo "ESCOM" se reserva el derecho a modificar los presentes 
         Términos y Condiciones en cualquier momento. Las modificaciones se publicarán en la Aplicación y entrarán en vigor a partir de su publicación.
         </p>
 
@@ -174,10 +174,10 @@ const TermsAndConditions = () => {
           <strong>13. Política de privacidad</strong>
         </p>
         <p>
-        [Nombre de la empresa] se compromete a proteger la privacidad de los usuarios de la Aplicación. 
+        La Escuela Superior de Computo "ESCOM" se compromete a proteger la privacidad de los usuarios de la Aplicación. 
         La información personal recopilada por la Aplicación se utilizará únicamente para proporcionar los servicios de 
-        la Aplicación y para fines estadísticos y de marketing.
-        [Nombre de la empresa] no compartirá la información personal de los usuarios con terceros sin su consentimiento previo.
+        la Aplicación y para fines estadísticos .
+        La Escuela Superior de Computo "ESCOM" no compartirá la información personal de los usuarios con terceros sin su consentimiento previo.
         </p>
 
         <p id="Politica-autor">
@@ -185,7 +185,7 @@ const TermsAndConditions = () => {
         </p>
         <p>
         El contenido de la Aplicación está protegido por derechos de autor. El usuario no podrá copiar, distribuir,
-         modificar o crear trabajos derivados del contenido de la Aplicación sin el consentimiento previo por escrito de [nombre de la empresa].
+         modificar o crear trabajos derivados del contenido de la Aplicación sin el consentimiento previo por escrito de .
         </p>
 
         <p id="Politica-contenido">
