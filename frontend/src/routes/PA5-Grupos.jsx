@@ -43,7 +43,7 @@ const PA5Grupos = () => {
           <Image src={iamge} size='mini' />
         </Menu.Item>
         <Menu.Item>
-          <Button animated='vertical' color='teal' onClick={() => setOpen(true)}>
+          <Button animated='vertical' color='teal' onClick={() => setShowInscribir(true)}>
             <Button.Content visible>Entrar a un grupo</Button.Content>
             <Button.Content hidden>
               <Icon name='plus' />
@@ -65,7 +65,7 @@ const PA5Grupos = () => {
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
-            <Button color='green' onClick={() => { setShow(true) }} >Crear Grupo</Button>
+            <Button color='green' onClick={() => { setShowCrearGrupo(true) }} >Crear Grupo</Button>
           </Menu.Item>
           <Menu.Item  >
             <Input icon='search' transparent iconPosition='left' placeholder='Encontrar Grupo' onChange={(e) => {

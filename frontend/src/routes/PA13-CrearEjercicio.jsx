@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Button, Checkbox, Divider, Form, Transition } from 'semantic-ui-react'
 import { Controller, useForm } from 'react-hook-form';
 import Confirmacion from "../components/Confirmacion.jsx";
+import { useActividadStore } from '../stores/UsuarioStore.js';
 
 const PA13CrearEjercicio = () => {
 
@@ -11,27 +12,30 @@ const PA13CrearEjercicio = () => {
   const [showConfirm, setShowConfirm] = useState(false)
   const [visible, setVisible] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const actividad = useActividadStore(state => state.actividad)
 
   const onSubmit = handleSubmit((data) => {
 
     guardarPregunta() //Guardamos la pregunta que actualmente tiene
     //Proceso de creacion de las preguntas
-    for (let index = 0; index < preguntas.current.length; index++) {
-      const { pregunta, multimedia, consejo, URL, raiz1, raiz2, tCuadratico, tIndependiente, tLineal } = preguntas.current[index]
-      const formData = new FormData();
-      formData.append("pregunta", pregunta == undefined ? "" : pregunta);
-      formData.append("multimedia", multimedia == undefined ? null : multimedia);
-      formData.append("consejo", consejo == undefined ? "" : consejo);
-      formData.append("claveVideo", URL == undefined ? "" : URL);
-      formData.append("opciones[a]", tCuadratico == undefined ? 0 : tCuadratico);
-      formData.append("opciones[b]", tLineal == undefined ? 0 : tLineal);
-      formData.append("opciones[c]", tIndependiente == undefined ? 0 : tIndependiente);
-      formData.append("opciones[raiz1]", raiz1 == undefined ? 0 : raiz1);
-      formData.append("opciones[raiz2]", raiz2 == undefined ? 0 : raiz2);
 
-      fetch("http://localhost:3000/preguntaejercicio/1", { method: "POST", body: formData }).then(response => response.json())
-        .then(data => { console.log(data); }).catch(error => { console.error(error); });
-    }
+      for (let index = 0; index < preguntas.current.length; index++) {
+        const { pregunta, multimedia, consejo, URL, raiz1, raiz2, tCuadratico, tIndependiente, tLineal } = preguntas.current[index]
+        const formData = new FormData();
+        formData.append("pregunta", pregunta == undefined ? "" : pregunta);
+        formData.append("multimedia", multimedia == undefined ? null : multimedia);
+        formData.append("consejo", consejo == undefined ? "" : consejo);
+        formData.append("claveVideo", URL == undefined ? "" : URL.split("v=")[1]);
+        formData.append("opciones[a]", tCuadratico == undefined ? 0 : tCuadratico);
+        formData.append("opciones[b]", tLineal == undefined ? 0 : tLineal);
+        formData.append("opciones[c]", tIndependiente == undefined ? 0 : tIndependiente);
+        formData.append("opciones[raiz1]", raiz1 == undefined ? 0 : raiz1);
+        formData.append("opciones[raiz2]", raiz2 == undefined ? 0 : raiz2);
+
+        fetch(`http://localhost:3000/preguntaejercicio/${actividad.id}`, { method: "POST", body: formData }).then(response => response.json())
+          .then(data => { console.log(data); }).catch(error => { console.error(error); });
+      }
+    
     console.log("acabo");
   })
 

@@ -18,14 +18,17 @@ const PA8Grupo = () => {
   const usuario = useUsuarioStore(state => state.usuario)
   const grupo = useGrupoStore(state => state.grupo)
 
+  const obtenerActividades = () => {
+    fetch(`http://localhost:3000/actividad/${grupo.id}/actividades`)
+      .then((response) => response.json()).then((data) => setActividades(data)).catch((error) => console.log(error))
+  }
+
   useEffect(() => {
     //Consultamos el Rol del usuario
     fetch(`http://localhost:3000/rol/${usuario.perfil.correo}/${grupo.clave}/`)
       .then((response) => response.json()).then((data) => setRol(data.rolId)).catch((error) => console.log(error))
 
-    //Consultamos las actividades
-    fetch(`http://localhost:3000/actividad/${grupo.id}/actividades`)
-      .then((response) => response.json()).then((data) => setActividades(data)).catch((error) => console.log(error))
+    obtenerActividades()
   }, [])
 
   const funcion = () => {
@@ -50,11 +53,11 @@ const PA8Grupo = () => {
         :
         <>
           <GrupoNavBarAlumno stateActivo={activo} stateSetActivo={setActivo} setSalirGrupo={setSalirGrupo} />
-          <GrupoMenuAlumno />
+          <GrupoMenuAlumno nombre={grupo.nombre} descripcion={grupo.descripcion} />
         </>
       }
       {
-        <Card.Group style={{ margin: "1% 3% 0% 3%" }} itemsPerRow={2}>
+        <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={2} >
           {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} />))}
         </Card.Group >
       }

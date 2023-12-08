@@ -199,11 +199,11 @@ const TermsAndConditions = () => {
 
         {/* Agrega el resto de los términos y condiciones aquí */}
 
-        <Checkbox label="Acepto los términos y condiciones" style={{ marginBottom: '15px' }} />
+        {/* <Checkbox label="Acepto los términos y condiciones" style={{ marginBottom: '15px' }} />
         
           <Button primary as={Link} to="/">
             Aceptar
-          </Button>
+          </Button> */}
       </Segment>
     </Container>
     </div>

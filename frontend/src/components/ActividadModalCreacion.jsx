@@ -2,17 +2,18 @@ import { useRef, useState } from 'react';
 import { Button, Modal, Form } from 'semantic-ui-react';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom'
-import { useGrupoStore } from '../stores/UsuarioStore';
+import { useActividadStore, useGrupoStore } from '../stores/UsuarioStore';
 import { Controller, useForm } from 'react-hook-form';
 
 const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm()
   const time = useRef(moment().format('YYYY-MM-DDTHH:mm'))
-  const grupo = useGrupoStore(state => state.grupo)
   const navigate = useNavigate();
+  const grupo = useGrupoStore(state => state.grupo)
+  const setActividad = useActividadStore(state => state.setActividad)
 
-  
+
   const handleCrearActividad = handleSubmit((data) => {
 
     const fechaFormateada = moment(data.fechaLimite).toISOString();
@@ -30,10 +31,20 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
         if (data.error) {
           console.log(error)
         } else {
-          if (tipo == "Ejercicio")
-            navigate('/CrearEjercicio');
-          else
-            navigate('/Formulario')
+          //if (tipo == "Ejercicio")
+          console.log(data);
+          setActividad({
+            id: data.actividad.id,
+            nombre: data.actividad.nombre,
+            descripcion: data.actividad.descripcion,
+            fechaLimite: data.actividad.fechaLimite,
+            tipo: data.actividad.tipo,
+            PreguntaCuestionario: [],
+            PreguntaEjercicio: []
+          })
+          navigate('/CrearEjercicio');
+          //else
+          //navigate('/Formulario')
         }
       })
       .catch((error) => console.log(error))

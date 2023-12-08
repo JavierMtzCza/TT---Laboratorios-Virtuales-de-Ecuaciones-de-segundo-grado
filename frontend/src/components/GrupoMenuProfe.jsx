@@ -4,9 +4,9 @@ import ActividadModalCreacion from './ActividadModalCreacion';
 
 const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
 
-  const tipo = useRef("")
+  const tipo = useRef("Ejercicio")
   const [crearActividad, setCrearActividad] = useState(false)
-
+ 
   return (
     <>
       <Segment style={{ borderRadius: "1rem", background: "#00C193", color: "#ffffff", margin: "1% 5% 1% 5%" }}>
@@ -46,7 +46,7 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
             Crear Ejercicio
           </Button>
         </Menu.Item>
-        <Menu.Item>
+        {/* <Menu.Item>
           <Button color='green' onClick={() => {
             tipo.current = 'Cuestionario'
             setCrearActividad(true)
@@ -54,7 +54,7 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
           }>
             Crear Cuestionario
           </Button>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu >
 
       <ActividadModalCreacion tipo={tipo} propShow={crearActividad} propSetShow={setCrearActividad} />

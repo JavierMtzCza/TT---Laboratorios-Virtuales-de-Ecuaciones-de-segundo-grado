@@ -3,21 +3,19 @@ import { useState, useEffect } from 'react';
 import { Button, Container, Embed, Grid, Item, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
 import Divisor from '../components/Divisor';
-import imagen1 from '../images/newplot (1).png';
 import EjercicioFormEc from '../components/EjercicioFormEc';
 import ModalEjercicio from '../components/ModalEjercicio';
 import { useActividadStore, useGrupoStore } from '../stores/UsuarioStore';
 
 const PA8Pruebas = () => {
 
+	// Estado global del ejercicio
+	const actividad = useActividadStore(state => state.actividad)
+
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	const [showModal, setShowModal] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
-	const [multimedia, setMultimedia] = useState('imagen') //
 	const [dataEjercicio, setDataEjercicio] = useState({}) //estado de la data del ejercicio
-	// Estado global del ejercicio
-	const actividad = useActividadStore(state => state.actividad)
-	const grupo = useGrupoStore(state => state.grupo)
 
 	useEffect(() => {
 		// Cargar MathJax después de que el componente esté montado
@@ -27,13 +25,7 @@ const PA8Pruebas = () => {
 		script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
 		document.head.appendChild(script);
 
-		//Cargar datos de la actividad
-		//fetch(`http://localhost:3000/actividad/${grupo.id}/actividad/${actividad.id}`)
-		//	.then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
-
-		return () => {
-			document.head.removeChild(script);
-		};
+		return () => { document.head.removeChild(script) };
 	}, []);
 
 	const onSubmit = handleSubmit((formData) => {
@@ -128,11 +120,14 @@ const PA8Pruebas = () => {
 						<Grid.Row>
 							<Item style={{ background: "#FEF6AF" }} as={Segment}>
 								{
-									multimedia == 'image'
+									actividad.PreguntaEjercicio[0].multimedia != null
 										?
-										<Item.Image as={Button} floated='left' size='small' src={imagen1} onClick={() => setShowModal(true)} />
+										<Item.Image as={Button} floated='left' size='tiny'
+											src={actividad.PreguntaEjercicio[0].multimedia != null ? `data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data)))}`: ''}
+											onClick={() => setShowModal(true)}
+										/>
 										:
-										multimedia == 'video'
+										actividad.PreguntaEjercicio[0].ClaveVideo != "null"
 											?
 											<Embed
 												id='3vRZ6UxpgpU'
@@ -142,14 +137,11 @@ const PA8Pruebas = () => {
 											/>
 											: <></>
 								}
-								<Item.Content verticalAlign='middle'>
-									<Item.Header style={{ fontSize: "25px", color: "#000000" }}>Grafica la función</Item.Header>
+								<Item.Content verticalAlign='top' >
+									<Item.Header style={{ fontSize: "18px", color: "#000000" }}>Pregunta: {actividad.PreguntaEjercicio[0].pregunta}</Item.Header>
 									<Item.Meta>
-										<Container style={{ color: "#000000" }}>
-											<p style={{ fontSize: "17px" }}>
-												Con respecto a la funcion dada, encuentra las raices para esta funcion.
-											</p>
-											<p style={{ fontSize: "13px" }}>
+										<Container textAlign='left' style={{ color: "#000000" }}>
+											<p style={{ fontSize: "13px", marginTop:"20px" }}>
 												Para poder visualizar la imagen o el video de forma correcta, de un clic en el.
 											</p>
 										</Container>
@@ -181,7 +173,9 @@ const PA8Pruebas = () => {
 
 				</Grid.Row>
 			</Grid>
-			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={imagen1} />
+			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={`data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(
+				String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data))
+			)}`} />
 		</>
 	)
 }

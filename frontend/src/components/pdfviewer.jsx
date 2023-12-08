@@ -1,13 +1,14 @@
 import React from 'react';
 
-const PdfViewer = () => {
+const PdfViewer = ({ruta}) => {
   return (
     <div>
       <iframe
-        src="/src/images/prueba.pdf"  // poner ruta del pdf 
+        src={ruta} // poner ruta del pdf 
         width="100%"
-        height="700px"
+        height="500px"
         style={{ border: 'none' }}
+        type="application/pdf"
       />
     </div>
   );

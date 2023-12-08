@@ -43,7 +43,7 @@ export const useActividadStore = create(persist((set) => {
 			"PreguntaCuestionario": [],
 			"PreguntaEjercicio": []
 		},
-		setGrupo: (actividadActual) => set({ actividad: actividadActual })
+		setActividad: (actividadActual) => set({ actividad: actividadActual })
 	}
 }, { name: "act" }
 ))

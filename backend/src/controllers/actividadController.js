@@ -10,7 +10,7 @@ export class ActividadController {
          res.json({ mensaje: 'Actividad creada con éxito', actividad });
       } catch (error) {
          console.error('Error al crear la actividad:', error);
-         res.status(500).json({ mensaje: 'Error interno del servidor' });
+         res.status(500).json({ error: 'Error interno del servidor' });
       }
    }
 
