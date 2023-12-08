@@ -1,101 +1,60 @@
 import { useRef, useState } from 'react'
-import { Button, Checkbox, Divider, Form, Grid, Header, Icon, Input, Label, Segment, Step, Transition } from 'semantic-ui-react'
-import moment from 'moment';
-import GrupoModalActividad from "../components/GrupoModalActividad.jsx"
+import { Button, Checkbox, Divider, Form, Transition } from 'semantic-ui-react'
 import { Controller, useForm } from 'react-hook-form';
+import Confirmacion from "../components/Confirmacion.jsx";
+import { useActividadStore } from '../stores/UsuarioStore.js';
 
 const PA13CrearEjercicio = () => {
 
   const { register, control, watch, handleSubmit, formState: { errors }, reset } = useForm()
 
-  const time = useRef(moment().format('YYYY-MM-DDTHH:mm'))
   const preguntas = useRef([])
-  const [status, setStatus] = useState(1)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [visible, setVisible] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const actividad = useActividadStore(state => state.actividad)
 
   const onSubmit = handleSubmit((data) => {
-    const { pregunta, multimedia, consejo, URL, raiz1, raiz2, tCuadratico, tIndependiente, tLineal } = data
-    const formData = new FormData();
-    console.log(multimedia);
 
-    formData.append("pregunta", pregunta == undefined ? "" : pregunta);
-    formData.append("multimedia", multimedia == undefined ? null : multimedia);
-    formData.append("consejo", consejo == undefined ? "" : consejo);
-    formData.append("claveVideo", URL == undefined ? "" : URL);
-    formData.append("opciones[a]", tCuadratico == undefined ? 0 : tCuadratico);
-    formData.append("opciones[b]", tLineal == undefined ? 0 : tLineal);
-    formData.append("opciones[c]", tIndependiente == undefined ? 0 : tIndependiente);
-    formData.append("opciones[raiz1]", raiz1 == undefined ? 0 : raiz1);
-    formData.append("opciones[raiz2]", raiz2 == undefined ? 0 : raiz2);
+    guardarPregunta() //Guardamos la pregunta que actualmente tiene
+    //Proceso de creacion de las preguntas
 
+      for (let index = 0; index < preguntas.current.length; index++) {
+        const { pregunta, multimedia, consejo, URL, raiz1, raiz2, tCuadratico, tIndependiente, tLineal } = preguntas.current[index]
+        const formData = new FormData();
+        formData.append("pregunta", pregunta == undefined ? "" : pregunta);
+        formData.append("multimedia", multimedia == undefined ? null : multimedia);
+        formData.append("consejo", consejo == undefined ? "" : consejo);
+        formData.append("claveVideo", URL == undefined ? "" : URL.split("v=")[1]);
+        formData.append("opciones[a]", tCuadratico == undefined ? 0 : tCuadratico);
+        formData.append("opciones[b]", tLineal == undefined ? 0 : tLineal);
+        formData.append("opciones[c]", tIndependiente == undefined ? 0 : tIndependiente);
+        formData.append("opciones[raiz1]", raiz1 == undefined ? 0 : raiz1);
+        formData.append("opciones[raiz2]", raiz2 == undefined ? 0 : raiz2);
 
-    fetch("http://localhost:3000/preguntaejercicio/1", {
-      method: "POST",
-      body: formData,
-    }).then(response => response.json())
-      .then(data => {
-        // Manejar la respuesta del servidor
-        console.log(data);
-      })
-      .catch(error => {
-        // Manejar errores
-        console.error(error);
-      });
+        fetch(`http://localhost:3000/preguntaejercicio/${actividad.id}`, { method: "POST", body: formData }).then(response => response.json())
+          .then(data => { console.log(data); }).catch(error => { console.error(error); });
+      }
+    
+    console.log("acabo");
   })
 
   const guardarPregunta = () => {
     const { pregunta, multimedia, consejo, URL, raiz1, raiz2, tCuadratico, tIndependiente, tLineal } = watch()
-    console.log(multimedia);
     const preguntaActual = {
       pregunta: pregunta,
       multimedia: multimedia,
       consejo: consejo,
       claveVideo: URL,
-      opciones: {
-        a: tCuadratico,
-        b: tLineal,
-        c: tIndependiente,
-        raiz1: raiz1,
-        raiz2: raiz2
-      }
+      opciones: { a: tCuadratico, b: tLineal, c: tIndependiente, raiz1: raiz1, raiz2: raiz2 }
     }
-    //preguntas.current.push(preguntaActual)
-    //console.log(preguntas.current);
+    preguntas.current.push(preguntaActual)
+    console.log(preguntas.current);
   }
 
   return (
     <>
-      {/* <Step.Group attached='top' fluid unstackable >
-        <Step active={status == 1 ? true : false} disabled={status == 1 ? false : true}>
-          <Icon name='info' />
-          <Step.Content>
-            <Step.Title>Datos de la Actividad</Step.Title>
-          </Step.Content>
-        </Step>
-
-        <Step active={status == 2 ? true : false} disabled={status == 2 ? false : true}>
-          <Icon name='info' />
-          <Step.Content>
-            <Step.Title>Datos del ejercicio</Step.Title>
-          </Step.Content>
-        </Step>
-      </Step.Group> */}
-
       <Form style={{ margin: "2% 15% 0% 15%" }} onSubmit={onSubmit}>
-        {/* <Controller name="nombre" control={control} render={({ field: { onChange, value } }) => (
-          <Form.Input required label="Nombre de la actividad" placeholder="Ingrese el nombre de la actividad"
-            onChange={onChange} selected={value} />)}
-        />
-        <Controller name="descripcion" control={control} render={({ field: { onChange, value } }) => (
-          <Form.Input label="Descripción (Opcional)" placeholder="Ingrese una descripción a la actividad"
-            onChange={onChange} selected={value} />)}
-        />
-        <Controller name="fechaLimite" control={control} render={({ field: { onChange, value } }) => (
-          <Form.Input type='datetime-local' min={time.current} label="Fecha Limite (Opcional)" placeholder="Ingrese una descripción a la actividad"
-            onChange={onChange} selected={value} />)}
-        /> */}
-        {/* <Button content="Siguiente" onClick={() => { setStatus(2) }} /> */}
         <Divider style={{ margin: "0% 10% 2% 10%" }} horizontal>Pregunta</Divider>
         <Controller name="pregunta" control={control} render={({ field: { onChange, value } }) => (
           <Form.Input required label="Texto de la pregunta" placeholder='Explica de que trata esta pregunta'
@@ -108,13 +67,7 @@ const PA13CrearEjercicio = () => {
         <Form.Group inline widths='equal' >
           <Controller name="multimedia" control={control} render={({ field: { onChange, value } }) => (
             <Form.Input type='file' disabled={disabled} label='Multimedia de Apoyo (Opcional)' placeholder='Agrega un consejo para tus alumnos'
-              onChange={(e) => {
-                console.log(e.target.files[0]);
-                onChange(e.target.files[0])
-              }  // Usar e.target.files para obtener la lista de archivos
-              }
-              selected={value}  // No estoy seguro de por qué usas selected aquí 
-            />)}
+              onChange={(e) => { onChange(e.target.files[0]) }} selected={value} />)}
           />
           <Form.Field>
             <Checkbox onChange={() => {
@@ -155,12 +108,16 @@ const PA13CrearEjercicio = () => {
               onChange={onChange} selected={value} />)}
           />
         </Form.Group>
-        <Button type="button" onClick={guardarPregunta} content="Agregar otra pregunta a la actividad" />
-        <Button type="submit" content="Agregar otra pregunta a la actividad" />
+        <Button type="button" onClick={() => setShowConfirm(true)} content="Agregar otra pregunta a la actividad" />
+        <Button type="submit" content="Terminar Actividad" />
       </Form>
 
-      {/* <Button content="Terminar la creacion de la actividad" onClick={() => setVisible(true)} />
-      <GrupoModalActividad showModal={visible} /> */}
+      <Confirmacion
+        textoPantalla="Esta seguro de agregar esta pregunta?"
+        open={showConfirm}
+        setOpen={setShowConfirm}
+        funcion={guardarPregunta}
+      />
     </>
   )
 }

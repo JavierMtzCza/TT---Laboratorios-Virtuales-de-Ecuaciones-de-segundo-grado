@@ -13,8 +13,8 @@ const PA5Grupos = () => {
   const isDesktop = useMediaQuery({ minWidth: 1024 })
   const isTablet = useMediaQuery({ maxWidth: 1023, minWidth: 426 })
   const [data, setData] = useState([])    //Para la info que consultamos de los grupos del usuario
-  const [show, setShow] = useState(false) //Para mostrar el modal de crear frupo
-  const [open, setOpen] = useState(false) //Para mostrar el modal de unirse a un grupo
+  const [showCrearGrupo, setShowCrearGrupo] = useState(false) //Para mostrar el modal de crear frupo
+  const [showInscribir, setShowInscribir] = useState(false) //Para mostrar el modal de unirse a un grupo
   const [showProfile, setShowProfile] = useState(false)
   //Estado global
   const usuario = useUsuarioStore(state => state.usuario)
@@ -36,18 +36,6 @@ const PA5Grupos = () => {
     obtenerGrupos()
   }, [])
 
-  const trigger = (
-    <span>
-      <Icon name='user' />
-    </span>
-  )
-
-  const options = [
-    { key: 'Perfil', text: 'Perfil' },
-    { key: 'Logout', text: 'Cerrar sesión' },
-  ]
-
-
   return (
     <>
       <Menu secondary pointing widths={3} style={{ margin: "1% 0% 1% 0%" }}>
@@ -55,7 +43,7 @@ const PA5Grupos = () => {
           <Image src={iamge} size='mini' />
         </Menu.Item>
         <Menu.Item>
-          <Button animated='vertical' color='teal' onClick={() => setOpen(true)}>
+          <Button animated='vertical' color='teal' onClick={() => setShowInscribir(true)}>
             <Button.Content visible>Entrar a un grupo</Button.Content>
             <Button.Content hidden>
               <Icon name='plus' />
@@ -77,7 +65,7 @@ const PA5Grupos = () => {
         </Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item>
-            <Button color='green' onClick={() => { setShow(true) }} >Crear Grupo</Button>
+            <Button color='green' onClick={() => { setShowCrearGrupo(true) }} >Crear Grupo</Button>
           </Menu.Item>
           <Menu.Item  >
             <Input icon='search' transparent iconPosition='left' placeholder='Encontrar Grupo' onChange={(e) => {
@@ -91,8 +79,8 @@ const PA5Grupos = () => {
           {data.map((grupo) => (<Grupo key={grupo.id} idGrupo={grupo.id} alumnos={4} nombreGrupo={grupo.nombre} descripcionGrupo={grupo.descripcion} claveGrupo={grupo.clave} />))}
         </Card.Group >
       }
-      <GrupoModalCreacion propShow={show} propSetShow={setShow} actualizarGrupos={obtenerGrupos} />
-      <GrupoModalInscripcion propOpen={open} propSetOpen={setOpen} actualizarGrupos={obtenerGrupos} />
+      <GrupoModalCreacion propShow={showCrearGrupo} propSetShow={setShowCrearGrupo} actualizarGrupos={obtenerGrupos} />
+      <GrupoModalInscripcion propOpen={showInscribir} propSetOpen={setShowInscribir} actualizarGrupos={obtenerGrupos} />
       <GrupoModalPerfil propSetShow={setShowProfile} propShow={showProfile} />
     </>
   )
