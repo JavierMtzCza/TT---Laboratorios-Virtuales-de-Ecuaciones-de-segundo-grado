@@ -1,6 +1,6 @@
 import { Button, Form, Grid, Icon, Input, Label, Segment } from "semantic-ui-react"
 
-const EjercicioFormEc = ({ registrador, graficar, resolver }) => {
+const EjercicioFormEc = ({ deshabilitarRaices, deshabilitarEcuacion, registrador, graficar, resolver }) => {
   return (
     <>
       <Segment style={{ margin: '0% 7px 0px 7px' }}>
@@ -11,21 +11,21 @@ const EjercicioFormEc = ({ registrador, graficar, resolver }) => {
                 {/* <div id="resultado"></div> */}
                 <Form.Group grouped>
                   <Form.Field>
-                    <Input type='number' step="any" placeholder='Termino Cuadratico' icon>
+                    <Input disabled={deshabilitarEcuacion} type='number' step="any" placeholder='Termino Cuadratico' icon>
                       <input {...registrador("a")} />
                       <Icon name='superscript' />
                     </Input>
                   </Form.Field>
                   <Label circular color="red">+</Label>
                   <Form.Field>
-                    <Input type='number' step="any" placeholder='Termino Lineal' icon>
+                    <Input disabled={deshabilitarEcuacion} type='number' step="any" placeholder='Termino Lineal' icon>
                       <input {...registrador("b")} />
                       <Icon name='x' />
                     </Input>
                   </Form.Field>
                   <Label circular color="red">+</Label>
                   <Form.Field>
-                    <Input type='number' step="any" placeholder='Termino Independiente' icon>
+                    <Input disabled={deshabilitarEcuacion} type='number' step="any" placeholder='Termino Independiente' icon>
                       <input {...registrador("c")} />
                       <Icon name='circle outline' />
                     </Input>
@@ -36,12 +36,12 @@ const EjercicioFormEc = ({ registrador, graficar, resolver }) => {
               <Grid.Column>
                 <Form.Group grouped>
                   <Form.Field>
-                    <Input type='number' step="any" placeholder='Raiz 1' icon>
+                    <Input disabled={deshabilitarRaices} type='number' step="any" placeholder='Raiz 1' icon>
                       <input {...registrador("r1")} />
                     </Input>
                   </Form.Field>
                   <Form.Field>
-                    <Input type='number' step="any" placeholder='Raiz 2' icon>
+                    <Input disabled={deshabilitarRaices} type='number' step="any" placeholder='Raiz 2' icon>
                       <input {...registrador("r2")} />
                     </Input>
                   </Form.Field>

@@ -10,9 +10,26 @@ export class PreguntaEjercicioController {
    static async create(req, res) {
       try {
          const actividadId = parseInt(req.params.actividadId);
-         const multimedia = req.file == null ? null : req.file.buffer
-         const { pregunta, consejo, claveVideo, opciones } = req.body;
-         const preguntaEjercicio = await PreguntaEjercicioModel.create(actividadId, pregunta, multimedia, consejo, claveVideo, opciones);
+         const { pregunta, consejo, ClaveVideo, OpcionEjercicio } = req.body;
+
+         //Construimos el objeto
+         const dataPregunta = {
+            pregunta: pregunta,
+            multimedia: req.file == null ? null : req.file.buffer,
+            consejo: (consejo == "null") ? null : consejo,
+            ClaveVideo: (ClaveVideo == "null") ? null : ClaveVideo,
+         }
+
+         const dataRespuesta = {
+            a: parseFloat(OpcionEjercicio.a),
+            b: parseFloat(OpcionEjercicio.b),
+            c: parseFloat(OpcionEjercicio.c),
+            r1: parseFloat(OpcionEjercicio.r1),
+            r2: parseFloat(OpcionEjercicio.r2),
+         }
+
+
+         const preguntaEjercicio = await PreguntaEjercicioModel.create(actividadId, dataPregunta, dataRespuesta);
          res.json({ mensaje: 'Pregunta de ejercicio creada con éxito', preguntaEjercicio });
       } catch (error) {
          console.error('Error al crear la pregunta de ejercicio:', error);

@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Container, Embed, Grid, Item, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
 import Divisor from '../components/Divisor';
@@ -12,10 +12,27 @@ const PA8Pruebas = () => {
 	// Estado global del ejercicio
 	const actividad = useActividadStore(state => state.actividad)
 
+	const respuestas = useRef({
+		a: actividad.PreguntaEjercicio[0].OpcionEjercicio[0].a,
+		b: actividad.PreguntaEjercicio[0].OpcionEjercicio[0].b,
+		c: actividad.PreguntaEjercicio[0].OpcionEjercicio[0].c,
+		r1: actividad.PreguntaEjercicio[0].OpcionEjercicio[0].r1,
+		r2: actividad.PreguntaEjercicio[0].OpcionEjercicio[0].r2
+	})
+
+	const video = useRef()
+
+	const imagen = useRef(actividad.PreguntaEjercicio[0].multimedia != null ? `data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data)))}` : '')
+
+	const consejo = useRef(actividad.PreguntaEjercicio[0].consejo)
+
+
+	//estados adicionales
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	const [showModal, setShowModal] = useState(false)
+	const [deshabilitarRaices, setDeshabilitarRaices] = useState(false)
+	const [deshabilitarEcuacion, setDeshabilitarEcuacion] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
-	const [dataEjercicio, setDataEjercicio] = useState({}) //estado de la data del ejercicio
 
 	useEffect(() => {
 		// Cargar MathJax después de que el componente esté montado
@@ -25,11 +42,16 @@ const PA8Pruebas = () => {
 		script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
 		document.head.appendChild(script);
 
+		if (respuestas.current.r1 == 0 & respuestas.current.r2 == 0 && respuestas.current.a != 0 && respuestas.current.b != 0 && respuestas.current.a != 0) {
+			setDeshabilitarRaices(true)
+		} else {
+			setDeshabilitarEcuacion(true)
+		}
+
 		return () => { document.head.removeChild(script) };
 	}, []);
 
 	const onSubmit = handleSubmit((formData) => {
-		console.log(formData)
 
 		if (false) {
 			obtenerEcuacionCuadratica(formData.r1, formData.r2)
@@ -123,11 +145,10 @@ const PA8Pruebas = () => {
 									actividad.PreguntaEjercicio[0].multimedia != null
 										?
 										<Item.Image as={Button} floated='left' size='tiny'
-											src={actividad.PreguntaEjercicio[0].multimedia != null ? `data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data)))}`: ''}
-											onClick={() => setShowModal(true)}
+											src={imagen.current} onClick={() => { setShowModal(true) }}
 										/>
 										:
-										actividad.PreguntaEjercicio[0].ClaveVideo != "null"
+										actividad.PreguntaEjercicio[0].ClaveVideo != "null" && actividad.PreguntaEjercicio[0].ClaveVideo != ""
 											?
 											<Embed
 												id='3vRZ6UxpgpU'
@@ -141,7 +162,7 @@ const PA8Pruebas = () => {
 									<Item.Header style={{ fontSize: "18px", color: "#000000" }}>Pregunta: {actividad.PreguntaEjercicio[0].pregunta}</Item.Header>
 									<Item.Meta>
 										<Container textAlign='left' style={{ color: "#000000" }}>
-											<p style={{ fontSize: "13px", marginTop:"20px" }}>
+											<p style={{ fontSize: "10px", marginTop: "20px" }}>
 												Para poder visualizar la imagen o el video de forma correcta, de un clic en el.
 											</p>
 										</Container>
@@ -154,6 +175,8 @@ const PA8Pruebas = () => {
 						</Grid.Row>
 						<Grid.Row>
 							<EjercicioFormEc
+								deshabilitarEcuacion={deshabilitarEcuacion}
+								deshabilitarRaices={deshabilitarRaices}
 								registrador={register}
 								graficar={onSubmit}
 								resolver={resolverEcuacionCuadratica}
@@ -173,9 +196,7 @@ const PA8Pruebas = () => {
 
 				</Grid.Row>
 			</Grid>
-			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={`data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(
-				String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data))
-			)}`} />
+			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={imagen.current} />
 		</>
 	)
 }

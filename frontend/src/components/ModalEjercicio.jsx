@@ -14,9 +14,6 @@ const ModalEjercicio = ({ mostrar, setmostrar, imagen }) => {
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={() => setmostrar(false)} negative>Cerrar</Button>
-        <Button onClick={() => setmostrar(false)} positive>
-          Ok
-        </Button>
       </Modal.Actions>
     </Modal>
   )

@@ -135,7 +135,6 @@ const PA3Registro = () => {
                 open={open}
                 onClose={() => setOpen(false)}
                 onOpen={() => setOpen(true)}
-                trigger={<div></div>}
               >
                 <Modal.Header>Usuario registrado!</Modal.Header>
                 <Modal.Content>

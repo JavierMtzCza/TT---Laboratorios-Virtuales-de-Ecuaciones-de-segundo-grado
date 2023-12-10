@@ -4,23 +4,27 @@ export class PreguntaEjercicioModel {
 
    //Aqui combine los model de PreguntaEjercio y OpcionEjercicio, con su relacion con Actividad 
    //Funcion para crear la Pregunta y las opciones
-   static create = async (actividadId, pregunta, multimedia, consejo, claveVideo, opcion) => {
+   static create = async (actividadId, dataPregunta, dataRespuesta) => {
+      const { OpcionEjercicio } = dataRespuesta
       const preguntaEjercicio = await prisma.preguntaEjercicio.create({
          data: {
             Actividad: { connect: { id: actividadId } },
-            pregunta: pregunta,
-            multimedia: multimedia,
-            consejo: consejo,
-            ClaveVideo: claveVideo,
-            OpcionEjercicio: {
-               create: {
-                  a: parseFloat(opcion.a),
-                  b: parseFloat(opcion.b),
-                  c: parseFloat(opcion.c),
-                  r2: parseFloat(opcion.raiz2),
-                  r1: parseFloat(opcion.raiz1),
-               }
-            }
+            // pregunta: pregunta,
+            // multimedia: multimedia,
+            // consejo: consejo,
+            // ClaveVideo: ClaveVideo,
+            // OpcionEjercicio: {
+            //    create: {
+            //       a: parseFloat(OpcionEjercicio.a),
+            //       b: parseFloat(OpcionEjercicio.b),
+            //       c: parseFloat(OpcionEjercicio.c),
+            //       r1: parseFloat(OpcionEjercicio.r1),
+            //       r2: parseFloat(OpcionEjercicio.r2),
+            //    }
+            // }
+
+            OpcionEjercicio: { create: dataRespuesta },
+            ...dataPregunta
          },
       });
       return preguntaEjercicio;
