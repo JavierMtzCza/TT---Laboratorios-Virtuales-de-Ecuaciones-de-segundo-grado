@@ -16,21 +16,20 @@ model Usuario {
     contrasena              String                    @db.VarChar(191)
     creadoEl                DateTime                  @default(now())
     estado                  Boolean                   @default(true)
+    verificado              Boolean                   @default(false)
     UsuarioEnGrupo          UsuarioEnGrupo[]
-    CambioContrasena        CambioContrasena?
+    CodigoDeValidacion        CodigoDeValidacion?
     CalificacionesActividad CalificacionesActividad[]
-
-   
 }
 
-model CambioContrasena {
+//codigosDeValidacion
+model CodigoDeValidacion {
     id             Int       @id @default(autoincrement())
     codigo         String    @unique @db.VarChar(191)
     fechaCaducidad DateTime?
     estado         Boolean   @default(true)
     Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
     usuarioCorreo  String    @unique
-   
 }
 
 model Rol {

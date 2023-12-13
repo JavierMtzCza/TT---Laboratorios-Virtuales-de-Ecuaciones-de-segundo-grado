@@ -56,7 +56,7 @@ const PA15CalificacionesActividad = () => {
                       <Table.Cell>{calificacion.nombre}</Table.Cell>
                       <Table.Cell>{calificacion.apellido_paterno}</Table.Cell>
                       <Table.Cell>{calificacion.apellido_materno}</Table.Cell>
-                      <Table.Cell>{calificacion.calificacion}</Table.Cell>
+                      <Table.Cell>{calificacion.calificacion == -1 ? "-" : calificacion.calificacion}</Table.Cell>
                     </Table.Row>
                   ))
                 }

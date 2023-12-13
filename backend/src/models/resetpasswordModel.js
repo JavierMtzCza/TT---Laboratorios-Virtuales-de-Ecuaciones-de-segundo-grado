@@ -1,4 +1,4 @@
-// cambioContrasenaModel.js
+// CodigoDeValidacionModel.js
 import { prisma } from "../conexion.js";
 import { addMinutes } from "date-fns";
 
@@ -8,7 +8,7 @@ export class CambioContrasenaModel {
     const codigo = this.generarCodigo();
   
     // Buscar cualquier registro (activo o desactivado) con el mismo usuarioCorreo
-    const registroExistente = await prisma.cambioContrasena.findFirst({
+    const registroExistente = await prisma.CodigoDeValidacion.findFirst({
       where: { usuarioCorreo: correoUsuario },
     });
   
@@ -16,7 +16,7 @@ export class CambioContrasenaModel {
       // Si existe un registro, actualizamos el código y la fecha de caducidad
       const fechaCaducidad = addMinutes(new Date(), 10); // Fecha de vencimiento en 10 minutos
   
-      const cambioContrasenaActualizado = await prisma.cambioContrasena.update({
+      const CodigoDeValidacionActualizado = await prisma.CodigoDeValidacion.update({
         where: { id: registroExistente.id },
         data: {
           codigo: codigo,
@@ -25,12 +25,12 @@ export class CambioContrasenaModel {
         },
       });
   
-      return { cambioContrasena: cambioContrasenaActualizado, codigo };
+      return { CodigoDeValidacion: CodigoDeValidacionActualizado, codigo };
     } else {
       // Si no existe un registro, creamos uno nuevo
-      const fechaCaducidad = addMinutes(new Date(), 10); // Fecha de vencimiento en 10 minutos
+      const fechaCaducidad = addMinutes(new Date(), 1); // Fecha de vencimiento en 10 minutos
   
-      const cambioContrasenaNuevo = await prisma.cambioContrasena.create({
+      const CodigoDeValidacionNuevo = await prisma.CodigoDeValidacion.create({
         data: {
           codigo: codigo,
           fechaCaducidad: fechaCaducidad,
@@ -42,7 +42,7 @@ export class CambioContrasenaModel {
         },
       });
   
-      return { cambioContrasena: cambioContrasenaNuevo, codigo };
+      return { CodigoDeValidacion: CodigoDeValidacionNuevo, codigo };
     }
   };
 
@@ -56,7 +56,7 @@ export class CambioContrasenaModel {
   // Verificar si un código de cambio de contraseña es válido
   static verificarCodigo = async (correoUsuario, codigoIngresado) => {
     try {
-      const solicitud = await prisma.cambioContrasena.findFirst({
+      const solicitud = await prisma.CodigoDeValidacion.findFirst({
         where: {
           usuarioCorreo: correoUsuario,
           codigo: codigoIngresado,
@@ -99,7 +99,7 @@ export class CambioContrasenaModel {
         });
   
         // Desactivar el código de cambio de contraseña utilizado
-        await prisma.cambioContrasena.updateMany({
+        await prisma.CodigoDeValidacion.updateMany({
           where: { usuarioCorreo: correoUsuario, codigo: codigoIngresado },
           data: { estado: false },
         });
@@ -115,7 +115,7 @@ export class CambioContrasenaModel {
   
   static desactivarCodigo = async (correoUsuario, codigo) => {
     try {
-      await prisma.cambioContrasena.updateMany({
+      await prisma.CodigoDeValidacion.updateMany({
         where: {
           usuarioCorreo: correoUsuario,
           codigo: codigo,

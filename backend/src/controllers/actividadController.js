@@ -98,7 +98,7 @@ export class ActividadController {
 
             const calificacion = await ActividadModel.calificacionAlumno(parseInt(idActividad), alumno.Usuario.id)
 
-            return { id: alumno.Usuario.id, nombre: alumno.Usuario.nombre, apellido_paterno: alumno.Usuario.apellido_paterno, apellido_materno: alumno.Usuario.apellido_materno, calificacion: calificacion.calificacion }
+            return { id: alumno.Usuario.id, nombre: alumno.Usuario.nombre, apellido_paterno: alumno.Usuario.apellido_paterno, apellido_materno: alumno.Usuario.apellido_materno, calificacion: calificacion == null ? -1 : calificacion.calificacion }
          })
 
          //Una vez que acaben todas las promesas, iteramos en cada dato para aplanar la informacion

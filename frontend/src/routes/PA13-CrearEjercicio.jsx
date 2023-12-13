@@ -22,11 +22,11 @@ const PA13CrearEjercicio = () => {
   const actividad = useActividadStore(state => state.actividad)
 
   const Submit = handleSubmit(() => {
+    guardarPregunta()
     setShowConfirmEjercicio(false)
     if (preguntas.current.length < 1) {
       setError({ show: true, mensaje: "Se tiene que agregar por lo menos una pregunta" })
     } else {
-      guardarPregunta()
       for (let index = 0; index < preguntas.current.length; index++) {
         const { pregunta, multimedia, consejo, claveVideo, opciones } = preguntas.current[index]
         const formData = new FormData();
@@ -113,7 +113,7 @@ const PA13CrearEjercicio = () => {
             <input id='multimedia' {...register("multimedia")} />
           </Form.Input> */}
           <Controller name="multimedia" control={control} render={({ field: { onChange, value } }) => (
-            <Form.Input id="multimedia" type='file' label='Multimedia de Apoyo (Opcional)'
+            <Form.Input id="multimedia" disabled={checkURL.deshabilitado} type='file' label='Multimedia de Apoyo (Opcional)'
               onChange={(e) => { onChange(e.target.files[0]) }} selected={value} />)}
           />
           <Form.Field>
