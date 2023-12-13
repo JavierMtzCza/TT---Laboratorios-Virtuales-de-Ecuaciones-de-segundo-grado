@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Avatar from '../images/user_1144709.png'
 import { useState } from 'react'
 
-const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite }) => {
+const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite, rol }) => {
 
     const setActividad = useActividadStore(state => state.setActividad)
     const [actividadHecha, setactividadHecha] = useState({ show: false, calificacion: 0.0 })
@@ -12,6 +12,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite }) => {
     const navigate = useNavigate();
 
     const dataActividad = () => {
+        console.log(rol);
         fetch(`http://localhost:3000/actividad/actividad/${id}/${usuario.perfil.id}`)
             .then((response) => response.json())
             .then((data) => {
@@ -23,12 +24,15 @@ const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite }) => {
                             id: data.id,
                             nombre: data.nombre,
                             descripcion: data.descripcion,
-                            fechaLimite: data.fechaxLimite,
+                            fechaLimite: data.fechaLimite,
                             tipo: data.tipo,
                             PreguntaCuestionario: data.PreguntaCuestionario,
                             PreguntaEjercicio: data.PreguntaEjercicio,
                         })
-                        navigate('/ResolverActividad')
+                        if (rol == 2)
+                            navigate('/ResolverActividad')
+                        else
+                            navigate('/CalificacionActividad')
                     } else {
                         setactividadHecha({ show: true, calificacion: data.Calificaciones[0].calificacion })
                     }

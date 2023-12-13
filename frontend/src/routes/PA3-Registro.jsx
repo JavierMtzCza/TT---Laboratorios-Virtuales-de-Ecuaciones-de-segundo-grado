@@ -126,7 +126,7 @@ const PA3Registro = () => {
                 onOpen={() => setOpen(true)}
                 onClose={() => {
                   setOpen(false)
-                  navigate('/InicioSesion')
+                  navigate('/InicioSesion',{ replace: true })
                 }}
                 header="Usuario registrado exitosamente!"
                 content="El usuario ha sido registrado correctamente"

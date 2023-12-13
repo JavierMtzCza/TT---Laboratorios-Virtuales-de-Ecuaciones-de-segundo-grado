@@ -3,10 +3,11 @@ import { Button, Card, Dropdown, Grid, Header, Icon, Image, Input, Menu, Modal, 
 import { Grupo } from '../components/Grupo'
 import { useMediaQuery } from 'react-responsive'
 import GrupoModalCreacion from "../components/GrupoModalCreacion";
-import { useUsuarioStore } from '../stores/UsuarioStore';
+import { useGrupoStore, useUsuarioStore } from '../stores/UsuarioStore';
 import iamge from '../images/matematicas.png'
 import GrupoModalInscripcion from '../components/GrupoModalInscripcion';
 import GrupoModalPerfil from '../components/GrupoModalPerfil';
+import { useNavigate } from 'react-router-dom';
 
 const PA5Grupos = () => {
 
@@ -16,8 +17,11 @@ const PA5Grupos = () => {
   const [showCrearGrupo, setShowCrearGrupo] = useState(false) //Para mostrar el modal de crear frupo
   const [showInscribir, setShowInscribir] = useState(false) //Para mostrar el modal de unirse a un grupo
   const [showProfile, setShowProfile] = useState(false)
+  const navigate = useNavigate();
   //Estado global
   const usuario = useUsuarioStore(state => state.usuario)
+  const setUsuario = useUsuarioStore(state => state.setUsuario)
+  const setGrupo = useGrupoStore(state => state.setGrupo)
 
   const obtenerGrupos = () => {
     fetch(`http://localhost:3000/usuario/grupos/${usuario.perfil.correo}`)
@@ -54,7 +58,12 @@ const PA5Grupos = () => {
           <Dropdown text={usuario.perfil.nombre + " " + usuario.perfil.apellido_paterno} >
             <Dropdown.Menu>
               <Dropdown.Item text="Perfil" onClick={() => setShowProfile(true)} />
-              <Dropdown.Item text="Cerrar Sesión" />
+              <Dropdown.Item text="Cerrar Sesión" onClick={() => {
+                setUsuario({ token: "", perfil: { id: 0, nombre: "", apellido_paterno: "", apellido_materno: "", correo: "" } })
+                setGrupo({ id: 0, nombre: "", descripcion: "", clave: "" })
+                navigate("/", { replace: true })
+              }}
+              />
             </Dropdown.Menu>
           </Dropdown>
         </Menu.Item>

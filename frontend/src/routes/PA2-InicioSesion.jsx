@@ -26,7 +26,7 @@ const PA2InicioSesion = () => {
         } else {
           setNoUser(false)
           logearUsuario(data)
-          navigate("/Grupos");
+          navigate("/Grupos", { replace: true });
         }
       })
       .finally(() => {

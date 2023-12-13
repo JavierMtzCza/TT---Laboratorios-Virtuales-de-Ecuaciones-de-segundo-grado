@@ -1,36 +1,35 @@
-import { useEffect, useState } from "react"
-import { useGrupoStore } from "../stores/UsuarioStore"
-import { Message, Segment, Table } from "semantic-ui-react"
+import { useEffect, useState } from 'react'
+import { useActividadStore, useGrupoStore } from '../stores/UsuarioStore'
+import { Header, Icon, Message, Segment, Table } from 'semantic-ui-react'
 
-const CalificacionesGrupales = () => {
+const PA15CalificacionesActividad = () => {
 
-  const [actividades, setActividades] = useState([])
   const [calificaciones, setCalificaciones] = useState([])
   const [sinAlumnos, setSinAlumno] = useState(false)
   const grupo = useGrupoStore(state => state.grupo)
-
+  const actividad = useActividadStore(state => state.actividad)
 
   useEffect(() => {
-    fetch(`http://localhost:3000/actividad/calificaciones/${grupo.id}`)
+    fetch(`http://localhost:3000/actividad/calificacionesActividad/${actividad.id}/${grupo.id}`)
       .then((response) => response.json())
       .then((data) => {
-
-        const actividades = data.pop()
-
         if (data.length > 0) {
-          setSinAlumno(false)
-          setActividades(actividades)
           setCalificaciones(data)
-
         } else {
           setSinAlumno(true)
         }
       })
   }, [])
 
+
   return (
     <>
+      <Header as='h2' icon textAlign='center'>
+        <Icon name='users' circular />
+        <Header.Content>{actividad.nombre}</Header.Content>
+      </Header>
       {
+
         !sinAlumnos ?
           <Table unstackable textAlign="center" compact style={{ margin: "1% 1% 1% 1%" }} >
             <Table.Header>
@@ -38,11 +37,7 @@ const CalificacionesGrupales = () => {
                 <Table.HeaderCell>Nombre</Table.HeaderCell>
                 <Table.HeaderCell>Apellido Paterno</Table.HeaderCell>
                 <Table.HeaderCell>Apellido Materno</Table.HeaderCell>
-                {
-                  actividades.map((actividad) => (
-                    <Table.HeaderCell key={actividad.id} content={actividad.nombre} />
-                  ))
-                }
+                <Table.HeaderCell>Calificacion</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -52,11 +47,7 @@ const CalificacionesGrupales = () => {
                     <Table.Cell>{calificacion.nombre}</Table.Cell>
                     <Table.Cell>{calificacion.apellido_paterno}</Table.Cell>
                     <Table.Cell>{calificacion.apellido_materno}</Table.Cell>
-                    {
-                      actividades.map((actividad) => (
-                        <Table.Cell error={calificacion[actividad.nombre] == -1 ? true : false} key={actividad.id}>{calificacion[actividad.nombre] == -1 ? "-" : calificacion[actividad.nombre]}</Table.Cell>
-                      ))
-                    }
+                    <Table.Cell>{calificacion.calificacion}</Table.Cell>
                   </Table.Row>
                 ))
               }
@@ -74,4 +65,4 @@ const CalificacionesGrupales = () => {
   )
 }
 
-export default CalificacionesGrupales
+export default PA15CalificacionesActividad

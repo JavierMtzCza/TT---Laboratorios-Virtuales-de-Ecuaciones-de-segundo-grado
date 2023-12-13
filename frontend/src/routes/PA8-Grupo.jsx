@@ -40,7 +40,7 @@ const PA8Grupo = () => {
         if (data.error) {
           console.log(error)
         } else {
-          navigate("/Grupos")
+          navigate("/Grupos", { replace: true })
         }
       })
       .catch((error) => console.log(error))
@@ -65,7 +65,7 @@ const PA8Grupo = () => {
           <CalificacionesGrupales />
           :
           <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={2} >
-            {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} />))}
+            {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} rol={rol}  />))}
           </Card.Group >
       }
       <Confirmacion open={salirGrupo} setOpen={setSalirGrupo} textoPantalla="Esta seguro de salir de este grupo" funcion={salirDeGrupo} />

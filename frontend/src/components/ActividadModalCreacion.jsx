@@ -47,7 +47,7 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
               PreguntaEjercicio: []
             })
             reset({ nombre: "", descripcion: "" })
-            navigate('/CrearEjercicio');
+            navigate('/CrearEjercicio',{ replace: true });
             //else
             //navigate('/Formulario')
           }

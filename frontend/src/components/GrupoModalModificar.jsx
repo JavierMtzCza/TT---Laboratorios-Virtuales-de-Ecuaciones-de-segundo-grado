@@ -52,7 +52,7 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
       onClose={() => {
         propSetShow(false)
         setCorrecto({ modificado: false, deshabilitado: false })
-        navigate('/Grupo')
+        navigate('/Grupos', { replace: true })
       }}
       closeIcon
       onOpen={() => propSetShow(true)}
