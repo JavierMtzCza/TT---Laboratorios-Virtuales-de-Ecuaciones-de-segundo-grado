@@ -4,7 +4,7 @@ import { Grid, Input, Label } from 'semantic-ui-react';
 
 const Plotly = ({ a1, b1, c1 }) => {
 
-   const [dominio, setDominio] = useState(25)
+   const [dominio, setDominio] = useState(50)
    const [color, setColor] = useState('#68FF33')
    const [data, setData] = useState({ xss: [], yss: [], rais: [] })
 
@@ -17,7 +17,7 @@ const Plotly = ({ a1, b1, c1 }) => {
       const c = parseFloat(c1);
       var discriminante = (b * b) - (4 * a * c)
 
-      for (var x = -dominio; x <= dominio; x += .3) {
+      for (var x = -dominio; x <= dominio; x += .2) {
          xs.push(x)
          ys.push((a * x * x) + (b * x) + (c))
       }
@@ -88,9 +88,9 @@ const Plotly = ({ a1, b1, c1 }) => {
                         <Grid.Column stretched>
                            <Input
                               type='range'
-                              min="5"
+                              min="2"
                               max="50"
-                              step="5"
+                              step="2"
                               onChange={(e) => { setDominio(e.target.value) }}
                            />
                            <Label size='large' content={`Dominio de -${dominio} a +${dominio}`} />

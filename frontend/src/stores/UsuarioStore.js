@@ -41,11 +41,11 @@ export const useActividadStore = create(persist((set) => {
 			"fechaLimite": "",
 			"tipo": "",
 			"PreguntaCuestionario": [],
-			"PreguntaEjercicio": []		 
-    },
-    setActividad: (actividadActual) => set({ actividad: actividadActual }),
-	
-  }
+			"PreguntaEjercicio": [],
+			"calificacion": 0.0
+		},
+		setActividad: (actividadActual) => set({ actividad: actividadActual })
+	}
 }, { name: "act" }
 ))
 

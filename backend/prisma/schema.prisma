@@ -16,21 +16,20 @@ model Usuario {
     contrasena              String                    @db.VarChar(191)
     creadoEl                DateTime                  @default(now())
     estado                  Boolean                   @default(true)
+    verificado              Boolean                   @default(false)
     UsuarioEnGrupo          UsuarioEnGrupo[]
-    CambioContrasena        CambioContrasena?
+    CodigoDeValidacion        CodigoDeValidacion?
     CalificacionesActividad CalificacionesActividad[]
-
-   
 }
 
-model CambioContrasena {
+//codigosDeValidacion
+model CodigoDeValidacion {
     id             Int       @id @default(autoincrement())
     codigo         String    @unique @db.VarChar(191)
     fechaCaducidad DateTime?
     estado         Boolean   @default(true)
     Usuario        Usuario   @relation(fields: [usuarioCorreo], references: [correo])
     usuarioCorreo  String    @unique
-   
 }
 
 model Rol {
@@ -67,7 +66,7 @@ model Actividad {
     creadoEl    DateTime  @default(now())
     fechaLimite DateTime?
     grupoId     Int
-    Grupo       Grupo     @relation(fields: [grupoId], references: [id])
+    Grupo       Grupo     @relation(fields: [grupoId], references: [id], onDelete: Cascade)
     tipo        String
 
     Calificaciones       CalificacionesActividad[]
@@ -124,8 +123,8 @@ model CalificacionesActividad {
     usuarioId    Int
     actividadId  Int
     calificacion Float
-    Usuario      Usuario   @relation(fields: [usuarioId], references: [id])
-    Actividad    Actividad @relation(fields: [actividadId], references: [id])
+    Usuario      Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+    Actividad    Actividad @relation(fields: [actividadId], references: [id], onDelete: Cascade)
 
     @@id([usuarioId, actividadId])
 }

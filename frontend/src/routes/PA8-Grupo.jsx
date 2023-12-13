@@ -7,6 +7,8 @@ import GrupoMenuAlumno from '../components/GrupoMenuAlumno.jsx';
 import GrupoNavBarAlumno from '../components/GrupoNavBarAlumno.jsx';
 import GrupoCardActividad from "../components/GrupoCardActividad.jsx";
 import Confirmacion from '../components/Confirmacion.jsx';
+import CalificacionesGrupales from '../components/CalificacionesGrupales.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const PA8Grupo = () => {
 
@@ -17,6 +19,7 @@ const PA8Grupo = () => {
   // Estados globales
   const usuario = useUsuarioStore(state => state.usuario)
   const grupo = useGrupoStore(state => state.grupo)
+  const navigate = useNavigate();
 
   const obtenerActividades = () => {
     fetch(`http://localhost:3000/actividad/${grupo.id}/actividades`)
@@ -31,13 +34,13 @@ const PA8Grupo = () => {
     obtenerActividades()
   }, [])
 
-  const funcion = () => {
+  const salirDeGrupo = () => {
     fetch(`http://localhost:3000/grupo/${grupo.clave}/${usuario.token}`, { method: 'DELETE' }).then((response) => response.json())
       .then((data) => {
         if (data.error) {
           console.log(error)
         } else {
-          console.log("Cambios realizados")
+          navigate("/Grupos", { replace: true })
         }
       })
       .catch((error) => console.log(error))
@@ -57,11 +60,15 @@ const PA8Grupo = () => {
         </>
       }
       {
-        <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={2} >
-          {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} />))}
-        </Card.Group >
+        activo == 'Calificaciones'
+          ?
+          <CalificacionesGrupales />
+          :
+          <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={2} >
+            {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} rol={rol}  />))}
+          </Card.Group >
       }
-      <Confirmacion open={salirGrupo} setOpen={setSalirGrupo} textoPantalla="Esta seguro de salir de este grupo" funcion={funcion} />
+      <Confirmacion open={salirGrupo} setOpen={setSalirGrupo} textoPantalla="Esta seguro de salir de este grupo" funcion={salirDeGrupo} />
     </>
   )
 }

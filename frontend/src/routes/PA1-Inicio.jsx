@@ -7,6 +7,8 @@ import school from '../images/school.png'
 import { Grid, Header, Image } from 'semantic-ui-react'
 import NavbarLg from '../components/NavbarLg.jsx'
 import NavbarMb from '../components/NavbarMb.jsx'
+import { Link } from 'react-router-dom'
+
 
 const PA1Inicio = () => {
 
@@ -27,7 +29,10 @@ const PA1Inicio = () => {
                   <img src={imagen} alt="Logo" height={250} />
                   <br />
                   <br />
-                  <button className='button1'>Prueba los laboratorios</button>
+                  <Link to={"/InicioSesion"}>
+                     <button className='button1' >Prueba los laboratorios</button>
+                  </Link>
+
                </>
             }
          </Grid>

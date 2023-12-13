@@ -16,11 +16,11 @@ const GrupoNavBarAlumno = ({ stateActivo, stateSetActivo, setSalirGrupo }) => {
         active={stateActivo === 'Novedades'}
         onClick={() => { stateSetActivo('Novedades') }}
       />
-      <Menu.Item
+      {/* <Menu.Item
         name='Ejercicios'
         active={stateActivo === 'Ejercicios'}
         onClick={() => { stateSetActivo('Ejercicios') }}
-      />
+      /> */}
       <Menu.Menu position='right'>
         <Dropdown item icon='wrench' simple>
           <Dropdown.Menu>

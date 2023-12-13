@@ -1,45 +1,113 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { Button, Container, Embed, Grid, Item, Segment } from 'semantic-ui-react';
+import { Button, Embed, Grid, Image, Label, Message, Modal, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
 import Divisor from '../components/Divisor';
 import EjercicioFormEc from '../components/EjercicioFormEc';
 import ModalEjercicio from '../components/ModalEjercicio';
-import { useActividadStore, useGrupoStore } from '../stores/UsuarioStore';
+import { useNavigate } from 'react-router-dom';
+import { useActividadStore, useUsuarioStore } from '../stores/UsuarioStore';
 
-const PA8Pruebas = () => {
+const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tipo, preguntaActual, long, setPreguntaActual }) => {
 
-	// Estado global del ejercicio
+	const usuario = useUsuarioStore(state => state.usuario)
 	const actividad = useActividadStore(state => state.actividad)
 
+	//estados adicionales
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
+	//Estados para controlar los mensdajes e informacion
 	const [showModal, setShowModal] = useState(false)
+	const [mensajeRespuesta, setMensajeRespuesta] = useState({ show: false, texto: "", consejo: consejo })
+	const [respuestaCorrecta, setRespuestaCorrecta] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
-	const [dataEjercicio, setDataEjercicio] = useState({}) //estado de la data del ejercicio
+	const [final, setFinal] = useState(false)
+	const navigate = useNavigate();
+	//Estaod para controlar la calificcion
+	const [intentos, setIntentos] = useState(3)
+	const [calificacion, setCalificacion] = useState(0)
 
 	useEffect(() => {
-		// Cargar MathJax después de que el componente esté montado
+		if (intentos == 0) {
+			avanzarActividad()
+			setIntentos(3)
+		}
+	}, [intentos])
+
+	useEffect(() => {
 		const script = document.createElement('script');
 		script.type = 'text/javascript';
 		script.async = true;
 		script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
 		document.head.appendChild(script);
-
 		return () => { document.head.removeChild(script) };
 	}, []);
 
-	const onSubmit = handleSubmit((formData) => {
-		console.log(formData)
+	const AsignarCalificacion = () => {
+		fetch('http://localhost:3000/actividad/calificacion', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				idActividad: actividad.id,
+				idUsuario: usuario.perfil.id,
+				calificacion: parseFloat(((calificacion * 10) / (long + 1)).toFixed(2))
+			})
+		}).then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+			})
+			.catch((error) => console.log(error))
+	}
 
-		if (false) {
-			obtenerEcuacionCuadratica(formData.r1, formData.r2)
+	const onSubmit = handleSubmit((formData) => {
+		if (tipo) {
+			if (formData.a == '' || formData.b == '' || formData.c == '') {
+				alert("Debe poner algo en los campos")
+			} else if (formData.a == respuestas.a && formData.b == respuestas.b && formData.c == respuestas.c) {
+				//PASS: Cuando acierta el ejercicio
+				setRespuestaCorrecta(true)
+				resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
+				reset({ a: "", b: "", c: "" })
+				setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
+				setCalificacion(calificacion + 1)
+			} else {
+				//NOTE: Cuanfo falla el ejercicio
+				setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: "Verifica si la grafica que generaron los valores: " + formData.a + "x^2, " + formData.b + "x, " + formData.c + " es la que deberias obtener" })
+				reset({ a: "", b: "", c: "" })
+				setIntentos(intentos - 1)
+			}
+			setData({ tc: formData.a, tl: formData.b, ti: formData.c })
 		} else {
-			resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
+			if (formData.r1 == '' || formData.r2 == '') {
+				alert("Debe poner algo en los campos")
+			} else if (formData.r1 == respuestas.r1 && formData.r2 == respuestas.r2) {
+				//PASS: Cuando acierta el ejercicio
+				setRespuestaCorrecta(true)
+				obtenerEcuacionCuadratica(formData.r1, formData.r2)
+				reset({ a: "", b: "", c: "" })
+				setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
+				setCalificacion(calificacion + 1)
+			} else {
+				//NOTE: Cuanfo falla el ejercicio
+				reset({ r1: "", r2: "" })
+				setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: consejo })
+				setIntentos(intentos - 1)
+			}
 		}
 
-		setData({ tc: formData.a, tl: formData.b, ti: formData.c })
 	})
 
+	const avanzarActividad = () => {
+		if (preguntaActual < long) {
+			setRespuestaCorrecta(false)
+			setMensajeRespuesta({ show: false, texto: "", consejo: "" })
+			document.getElementById('pasos').innerHTML = "";
+			setPreguntaActual(preguntaActual + 1)
+			setIntentos(3)
+		} else {
+			AsignarCalificacion()
+			setFinal(true)
+		}
+	}
 
 	const resolverEcuacionCuadratica = (a1, b1, c1) => {
 		const a = parseFloat(a1);
@@ -110,59 +178,68 @@ const PA8Pruebas = () => {
 
 	};
 
-
 	return (
 		<>
 			<Grid columns={2} stackable>
 				<Grid.Row>
 					<Grid.Column >
-						<Divisor tamano='h3' horizontal={true} icono='book' descripcion='Descripción del problema' />
-						<Grid.Row>
-							<Item style={{ background: "#FEF6AF" }} as={Segment}>
+						<Grid.Row >
+							<Segment basic>
 								{
-									actividad.PreguntaEjercicio[0].multimedia != null
+									multimedia != ''
 										?
-										<Item.Image as={Button} floated='left' size='tiny'
-											src={actividad.PreguntaEjercicio[0].multimedia != null ? `data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data)))}`: ''}
-											onClick={() => setShowModal(true)}
-										/>
-										:
-										actividad.PreguntaEjercicio[0].ClaveVideo != "null"
+										< Label as='a' color='red' ribbon content="Para ver mejor la imagen de clic en ella" />
+										: claveVideo != ''
 											?
-											<Embed
-												id='3vRZ6UxpgpU'
-												source='youtube'
-												iframe={{ allowFullScreen: true }}
-												aspectRatio='21:9'
-											/>
-											: <></>
+											<Embed id={claveVideo} source='youtube' iframe={{ allowFullScreen: true }} aspectRatio='21:9' />
+											:
+											<></>
 								}
-								<Item.Content verticalAlign='top' >
-									<Item.Header style={{ fontSize: "18px", color: "#000000" }}>Pregunta: {actividad.PreguntaEjercicio[0].pregunta}</Item.Header>
-									<Item.Meta>
-										<Container textAlign='left' style={{ color: "#000000" }}>
-											<p style={{ fontSize: "13px", marginTop:"20px" }}>
-												Para poder visualizar la imagen o el video de forma correcta, de un clic en el.
-											</p>
-										</Container>
-									</Item.Meta>
-								</Item.Content>
-							</Item>
+								<Grid style={{ background: "#FEF6AF", margin: "1% 5% 0% 5%", borderRadius: "15px" }} columns={2}>
+									<Grid.Row>
+										<Grid.Column verticalAlign='middle' width={multimedia == '' ? 1 : 3}>
+											{multimedia != ''
+												?
+												<Image as={Button} floated='left' size='medium' src={multimedia} onClick={() => { setShowModal(true) }} />
+												:
+												<></>
+											}
+										</Grid.Column>
+										<Grid.Column verticalAlign='middle' width={multimedia == '' ? 15 : 13}>
+											<Message color='olive' style={{ borderRadius: "14px" }} header={pregunta} />
+										</Grid.Column>
+									</Grid.Row>
+								</Grid>
+							</Segment>
 						</Grid.Row>
 						<Grid.Row>
-							<Divisor tamano='h3' horizontal={true} icono='edit outline' descripcion='Resolver' />
 						</Grid.Row>
 						<Grid.Row>
-							<EjercicioFormEc
-								registrador={register}
-								graficar={onSubmit}
-								resolver={resolverEcuacionCuadratica}
-							/>
-							<Divisor tamano='h3' horizontal={true} icono='sort numeric down' descripcion='Pasos' />
-							<div id="pasos"></div>
+							{
+								respuestaCorrecta ?
+									<Segment textAlign='center' basic >
+										<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Solucion paso a paso' />
+										<Message size='mini' color="green" header="Perfecto, esa era la respuesta correcta" content="A continuacion puedes ver el paso a paso de la solucion del problema" />
+										<Button onClick={avanzarActividad} content="Siguiente Actividad" />
+									</Segment>
+									:
+									<>
+										<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Responder' />
+										<EjercicioFormEc
+											registrador={register}
+											graficar={onSubmit}
+											resolver={resolverEcuacionCuadratica}
+											tipo={tipo}
+											mensaje={mensajeRespuesta}
+										/>
+									</>
+							}
+
+							<Segment textAlign='center' basic compact>
+								<div id="pasos"></div>
+							</Segment>
 						</Grid.Row>
 					</Grid.Column>
-
 					<Grid.Column>
 						<Plotly
 							a1={data.tc}
@@ -170,12 +247,21 @@ const PA8Pruebas = () => {
 							c1={data.ti}
 						/>
 					</Grid.Column>
-
 				</Grid.Row>
 			</Grid>
-			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={`data:${actividad.PreguntaEjercicio[0].multimedia.type};base64,${btoa(
-				String.fromCharCode.apply(null, new Uint8Array(actividad.PreguntaEjercicio[0].multimedia.data))
-			)}`} />
+			<ModalEjercicio mostrar={showModal} setmostrar={setShowModal} imagen={multimedia} />
+			<Modal
+				centered={false}
+				size='tiny'
+				content={<Message style={{ textAlign: "center", fontSize: "18px" }} positive
+					header={"Se ha concluido esta actividad, has obtenido " + calificacion + "/" + (long + 1) + " aciertos que equivale a " + ((calificacion * 10) / (long + 1)).toFixed(2)} />}
+				open={final}
+				onOpen={() => setFinal(true)}
+				onClose={() => {
+					setFinal(false)
+					navigate('/Grupo')
+				}}
+			/>
 		</>
 	)
 }

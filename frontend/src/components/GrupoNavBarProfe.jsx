@@ -24,9 +24,9 @@ const GrupoNavBarProfe = ({ stateActivo, stateSetActivo }) => {
           onClick={() => { stateSetActivo('Novedades') }}
         />
         <Menu.Item
-          name='Alumnos'
-          active={stateActivo === 'Alumnos'}
-          onClick={() => { stateSetActivo('Alumnos') }}
+          name='Calificaciones'
+          active={stateActivo === 'Calificaciones'}
+          onClick={() => { stateSetActivo('Calificaciones') }}
         />
         <Menu.Menu position='right'>
           <Dropdown item icon='cog' simple>

@@ -40,7 +40,7 @@ export const validarEsquema = checkSchema({
 export const validaErrores = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(200).json({ errors: errors.array() });
   }
   next();
 };
@@ -49,7 +49,7 @@ export const existeCorreo = async (req, res, next) => {
   const usuario = await usuarioModel.getByEmail(req.params.correo)
 
   if (!usuario)
-    return res.status(404).json({ error: "Usuario no encontrado" });
+    return res.status(200).json({ error: "Usuario no encontrado" });
 
   next();
 };
@@ -59,7 +59,7 @@ export const existeUsuario = async (req, res, next) => {
   const usuario = await usuarioModel.getByEmail(correo)
 
   if (usuario)
-    return res.status(400).json({ error: "Usuario ya registrado" });
+    return res.status(200).json({ error: "Usuario ya registrado" });
 
   next();
 };
