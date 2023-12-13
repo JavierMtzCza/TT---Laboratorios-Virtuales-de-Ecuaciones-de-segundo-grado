@@ -14,7 +14,7 @@ router.get("/:idGrupo/actividad/:idActividad", ActividadController.getById);
 router.get("/calificaciones/:idGrupo", ActividadController.calificacionesGrupales);
 
 // Obtener las calificaciones de una actividad
-router.get("/calificacionesActividad/:idActividad", ActividadController.calificacionesActividad);
+router.get("/calificacionesActividad/:idActividad/:idGrupo", ActividadController.calificacionesActividad);
 
 // Ruta para obtener una actividad específica por su ID para un usuario
 router.get("/actividad/:idActividad/:idUsuario", ActividadController.getByIdUser);

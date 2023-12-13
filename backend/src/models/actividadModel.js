@@ -114,12 +114,14 @@ export class ActividadModel {
    }
 
    // Obtener calificaciones de actividad
-   static calificacionesActividad = async (idGrupo) => {
-      const actividad = prisma.calificacionesActividad.findMany({
-         where: { actividadId: idActividad },
-         include: { Usuario: true }
+   static calificacionesActividad = async (idActividad, idGrupo) => {
+
+      const alumn = await prisma.usuarioEnGrupo.findMany({
+         where: { rolId: 2, grupoId: idGrupo },
+         include: { Usuario: { select: { id: true, nombre: true, apellido_paterno: true, apellido_materno: true } } }
       })
-      return actividad;
+
+      return alumn
    }
 
    //obtener calificaciones grupales

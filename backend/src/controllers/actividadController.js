@@ -91,20 +91,21 @@ export class ActividadController {
    //Obtener una calificacion a una actividad
    static async calificacionesActividad(req, res) {
       try {
-         const { idActividad } = req.params
-         const data = await ActividadModel.calificaciones(parseInt(idActividad));
+         const { idActividad, idGrupo } = req.params
+         const data = await ActividadModel.calificacionesActividad(parseInt(idActividad), parseInt(idGrupo));
 
-         var calificaciones = []
-         data.map((dato) => {
-            calificaciones.push({
-               nombre: dato.Usuario.nombre,
-               apellido_paterno: dato.Usuario.apellido_paterno,
-               apellido_materno: dato.Usuario.apellido_materno,
-               calificacion: dato.calificacion
-            })
+         let promesas = data.map(async (alumno) => {
+
+            const calificacion = await ActividadModel.calificacionAlumno(parseInt(idActividad), alumno.Usuario.id)
+
+            return { id: alumno.Usuario.id, nombre: alumno.Usuario.nombre, apellido_paterno: alumno.Usuario.apellido_paterno, apellido_materno: alumno.Usuario.apellido_materno, calificacion: calificacion.calificacion }
          })
 
-         res.json(calificaciones);
+         //Una vez que acaben todas las promesas, iteramos en cada dato para aplanar la informacion
+         Promise.all(promesas).then(resultados => {
+            res.json(resultados);
+         })
+
       } catch (error) {
          console.error('Error obtener las calificaiones:', error);
          res.status(200).json({ error: 'Error obtener las calificaiones:' });
@@ -124,9 +125,9 @@ export class ActividadController {
             for (let i = 0; i < data.actividades.length; i++) {
                const calificacion = await ActividadModel.calificacionAlumno(data.actividades[i].id, alumno.id)
                if (calificacion != null)
-                  valores.push({nombre:data.actividades[i].nombre ,calificacion:calificacion.calificacion})
+                  valores.push({ nombre: data.actividades[i].nombre, calificacion: calificacion.calificacion })
                else
-                  valores.push({nombre:data.actividades[i].nombre ,calificacion:-1})
+                  valores.push({ nombre: data.actividades[i].nombre, calificacion: -1 })
             }
 
             return { id: alumno.id, nombre: alumno.nombre, apellido_paterno: alumno.apellido_paterno, apellido_materno: alumno.apellido_materno, calificaciones: valores }
@@ -142,7 +143,7 @@ export class ActividadController {
                objetoAplanado.apellido_paterno = resultado.apellido_paterno;
                objetoAplanado.apellido_materno = resultado.apellido_materno;
                for (let i = 0; i < resultado.calificaciones.length; i++) {
-                  objetoAplanado[ resultado.calificaciones[i].nombre] = resultado.calificaciones[i].calificacion;
+                  objetoAplanado[resultado.calificaciones[i].nombre] = resultado.calificaciones[i].calificacion;
                }
                return objetoAplanado
             })
