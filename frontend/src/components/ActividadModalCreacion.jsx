@@ -31,22 +31,24 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
         if (data.error) {
           console.log(error)
         } else {
-          //if (tipo == "Ejercicio")
-          console.log(data);
-          setActividad({
-            id: data.actividad.id,
-            nombre: data.actividad.nombre,
-            descripcion: data.actividad.descripcion,
-            fechaLimite: data.actividad.fechaLimite,
-            tipo: data.actividad.tipo,
-            PreguntaCuestionario: [],
-            PreguntaEjercicio: []
-          })
-          navigate('/CrearEjercicio');
-          //else
-          //navigate('/Formulario')
-        }
-      })
+          if (tipo == "Ejercicio") {
+            console.log(data);
+            setActividad({
+              id: data.actividad.id,
+              nombre: data.actividad.nombre,
+              descripcion: data.actividad.descripcion,
+              fechaLimite: data.actividad.fechaLimite,
+              tipo: data.actividad.tipo,
+              PreguntaCuestionario: [],
+              PreguntaEjercicio: []
+            });
+            navigate('/CrearEjercicio');
+          } else {
+
+            navigate('/Cuestionario');
+             }
+          }
+        })
       .catch((error) => console.log(error))
 
   })

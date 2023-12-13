@@ -13,6 +13,9 @@ router.post("/:preguntaCuestionarioId", upload.single('multimedia'), OpcionCuest
 // Obtener una opción de cuestionario por ID
 router.get("/:opcionCuestionarioId", OpcionCuestionarioController.getById);
 
+//Obtener todas las opciones de una pregunta 
+router.get("/pregunta/:preguntaCuestionarioId", OpcionCuestionarioController.getAllByPregunta);
+
 // Actualizar una opción de cuestionario por ID
 router.put("/:opcionCuestionarioId", upload.single('multimedia'), OpcionCuestionarioController.update);
 

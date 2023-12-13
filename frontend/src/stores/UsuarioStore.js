@@ -41,11 +41,23 @@ export const useActividadStore = create(persist((set) => {
 			"fechaLimite": "",
 			"tipo": "",
 			"PreguntaCuestionario": [],
-			"PreguntaEjercicio": []
-		},
-		setActividad: (actividadActual) => set({ actividad: actividadActual })
-	}
+			"PreguntaEjercicio": []		 
+    },
+    setActividad: (actividadActual) => set({ actividad: actividadActual }),
+	
+  }
 }, { name: "act" }
 ))
 
+import { create, persist } from 'zustand';
+
+export const usePreguntaStore = create(persist((set) => {
+  return {
+    pregunta: {
+      id: 0,
+      opciones: [],
+    },
+    setPregunta: (preguntaActual) => set({ pregunta: preguntaActual }),
+  };
+}, { name: 'pregunta' }));
 

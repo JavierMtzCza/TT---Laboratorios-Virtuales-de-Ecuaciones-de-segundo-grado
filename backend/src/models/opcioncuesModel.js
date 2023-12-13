@@ -53,6 +53,24 @@ export class OpcionCuestionarioModel {
     return opcionCuestionarioEliminada;
   };
 
+
+  // Eliminar todas las opciones asociadas a una pregunta por ID de pregunta
+  static deleteAllByPregunta = async (preguntaCuestionarioId) => {
+    try {
+      const opcionesEliminadas = await prisma.opcionCuestionario.deleteMany({
+        where: {
+          preguntaCuestionarioId: preguntaCuestionarioId,
+        },
+      });
+      return opcionesEliminadas;
+    } catch (error) {
+      console.error('Error al eliminar opciones por pregunta:', error);
+      throw error;
+    }
+  };
+
+
+
   // Obtener todas las opciones asociadas a una pregunta
   static getAllByPregunta = async (preguntaCuestionarioId) => {
     const opciones = await prisma.opcionCuestionario.findMany({
@@ -87,5 +105,22 @@ export class OpcionCuestionarioModel {
     }
 
     return opcionCuestionarioActualizada;
-  };
+    };
+
+    //Calcular Opciones Correctas 
+    static getAllCorrectasByPregunta = async (preguntaCuestionarioId) => {
+      try {
+        const opcionesCorrectas = await prisma.opcionCuestionario.findMany({
+          where: {
+            preguntaCuestionarioId: preguntaCuestionarioId,
+            correcta: true,
+          },
+        });
+        return opcionesCorrectas;
+      } catch (error) {
+        console.error('Error al obtener opciones correctas por pregunta:', error);
+        throw error;
+      }
+    };
+  
 }

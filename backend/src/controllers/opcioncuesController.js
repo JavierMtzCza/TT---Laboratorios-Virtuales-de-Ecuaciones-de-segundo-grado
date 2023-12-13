@@ -39,6 +39,18 @@ export class OpcionCuestionarioController {
     }
   }
 
+  // Obtener todas las opciones (correctas o no) asociadas a una pregunta por ID
+  static async getAllByPregunta(req, res) {
+    try {
+      const preguntaCuestionarioId = parseInt(req.params.preguntaCuestionarioId);
+      const opciones = await OpcionCuestionarioModel.getAllByPregunta(preguntaCuestionarioId);
+      res.json(opciones);
+    } catch (error) {
+      console.error('Error al obtener opciones por pregunta desde el controlador:', error);
+      res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+  }
+
   static async update(req, res) {
     try {
       const opcionCuestionarioId = parseInt(req.params.opcionCuestionarioId);
@@ -87,6 +99,17 @@ export class OpcionCuestionarioController {
     } catch (error) {
       console.error('Error al eliminar la opción de cuestionario:', error);
       res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+  }
+
+
+  static async deleteAllByPregunta(preguntaCuestionarioId) {
+    try {
+      const opcionesEliminadas = await OpcionCuestionarioModel.deleteAllByPregunta(preguntaCuestionarioId);
+      return opcionesEliminadas;
+    } catch (error) {
+      console.error('Error al eliminar opciones por pregunta:', error);
+      throw error;
     }
   }
 }

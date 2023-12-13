@@ -1,4 +1,6 @@
 import { PreguntaCuestionarioModel } from "../models/preguntacuesModel.js";
+import {OpcionCuestionarioController} from "./opcioncuesController.js"
+
 
 export class PreguntaCuestionarioController {
   static async create(req, res) {
@@ -24,6 +26,35 @@ export class PreguntaCuestionarioController {
     }
   }
 
+
+  static async createBatch(req, res) {
+    try {
+      const actividadId = parseInt(req.params.actividadId);
+      const preguntas = req.body.preguntas; // Asegúrate de que las preguntas se envíen como un array en el cuerpo de la solicitud
+
+      const preguntasCreadas = await Promise.all(
+        preguntas.map(async (pregunta) => {
+          // Lógica para crear cada pregunta en el lote
+          const preguntaCuestionario = await PreguntaCuestionarioModel.create(
+            actividadId,
+            pregunta.pregunta,
+            pregunta.multimedia
+          );
+          return preguntaCuestionario;
+        })
+      );
+
+      res.json({
+        mensaje: 'Preguntas de cuestionario creadas con éxito en lote',
+        preguntasCreadas,
+      });
+    } catch (error) {
+      console.error('Error al crear preguntas de cuestionario en lote:', error);
+      res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+  }
+
+  //Obtener una pregunta de una actividad 
   static async getById(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
@@ -36,6 +67,19 @@ export class PreguntaCuestionarioController {
       res.status(500).json({ mensaje: 'Error interno del servidor' });
     }
   }
+
+  //Obtener todas las Preguntas relacionadas a una Actividad 
+  static async getAllByActividad(req, res) {
+    try {
+      const actividadId = parseInt(req.params.actividadId);
+      const preguntas = await PreguntaCuestionarioModel.getAllByActividad(actividadId);
+      res.json(preguntas);
+    } catch (error) {
+      console.error('Error al obtener preguntas por actividad:', error);
+      res.status(500).json({ mensaje: 'Error interno del servidor' });
+    }
+  }
+
 
   
   static async update(req, res) {
@@ -66,9 +110,33 @@ export class PreguntaCuestionarioController {
     }
   }
 
+  //Función para calificar el cuestionario 
+  static async calificarRespuestas(alumnoRespuestas, preguntaCuestionarioId) {
+    try {
+      const opcionesCorrectas = await OpcionCuestionarioModel.getAllCorrectasByPregunta(
+        preguntaCuestionarioId
+      );
+
+      // Comparar respuestas del alumno con opciones correctas
+      const calificacion = calcularCalificacion(alumnoRespuestas, opcionesCorrectas);
+
+      return calificacion;
+    } catch (error) {
+      console.error('Error al calificar respuestas:', error);
+      throw error;
+    }
+  }
+
+
+  
   static async delete(req, res) {
     try {
       const preguntaCuestionarioId = parseInt(req.params.idPreguntaCuestionario);
+
+      // Eliminar opciones asociadas a la pregunta
+      await OpcionCuestionarioController.deleteAllByPregunta(preguntaCuestionarioId);
+
+      // Eliminar la pregunta
       const preguntaCuestionarioEliminada = await PreguntaCuestionarioModel.delete(
         preguntaCuestionarioId
       );
@@ -82,5 +150,8 @@ export class PreguntaCuestionarioController {
       res.status(500).json({ mensaje: 'Error interno del servidor' });
     }
   }
+
+  
+  
 }
 

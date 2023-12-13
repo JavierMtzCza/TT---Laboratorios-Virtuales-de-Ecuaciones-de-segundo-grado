@@ -36,7 +36,11 @@ export class ActividadModel {
                   OpcionEjercicio: true,
                },
             },
-
+            Calificaciones: {
+               include: {
+                  Usuario: true,
+               },
+            },
          },
       });
       return actividad;
@@ -64,7 +68,7 @@ export class ActividadModel {
                   OpcionEjercicio: true,
                },
             },
-            calificacionesActividad: {
+            Calificaciones: {
                include: {
                   Usuario: true,
                },

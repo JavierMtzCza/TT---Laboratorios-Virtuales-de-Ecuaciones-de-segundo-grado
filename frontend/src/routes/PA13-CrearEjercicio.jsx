@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import { Button, Checkbox, Divider, Form, Transition } from 'semantic-ui-react'
 import { Controller, useForm } from 'react-hook-form';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Confirmacion from "../components/Confirmacion.jsx";
 import { useActividadStore } from '../stores/UsuarioStore.js';
 
@@ -13,6 +15,26 @@ const PA13CrearEjercicio = () => {
   const [visible, setVisible] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const actividad = useActividadStore(state => state.actividad)
+
+  const formats = [
+    'header', 'font', 'size',
+    //'bold', 'italic', 'underline', 'strike', 'blockquote',
+    //'list', 'bullet', 'indent',
+    //'link', 'image', 'video',
+    //'color', 'background',
+     'script',
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      //['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      //['list', 'bullet'],
+      //['clean'],
+      [{ 'script': 'sub' }, { 'script': 'super' }], // Script para subíndice y superíndice
+    ],
+  };
+  
 
   const onSubmit = handleSubmit((data) => {
 
@@ -56,9 +78,17 @@ const PA13CrearEjercicio = () => {
     <>
       <Form style={{ margin: "2% 15% 0% 15%" }} onSubmit={onSubmit}>
         <Divider style={{ margin: "0% 10% 2% 10%" }} horizontal>Pregunta</Divider>
-        <Controller name="pregunta" control={control} render={({ field: { onChange, value } }) => (
-          <Form.Input required label="Texto de la pregunta" placeholder='Explica de que trata esta pregunta'
-            onChange={onChange} selected={value} />)}
+        <Controller
+          name="pregunta"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <ReactQuill
+              value={value}
+              onChange={(content) => onChange(content)}
+              formats={formats}
+              modules={modules}
+            />
+          )}
         />
         <Controller name="consejo" control={control} render={({ field: { onChange, value } }) => (
           <Form.Input label='Consejo (Opcional)' placeholder='Agrega un consejo para tus alumnos'
