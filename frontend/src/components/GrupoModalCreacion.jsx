@@ -27,7 +27,6 @@ const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 			useGrupoStore.setState({ grupo: { ...grupoActual, clave: claveGrupo } });
 			await alert('Creado correctamente');
 			// Accede a la clave del grupo actual desde el estado global y úsala según sea necesario
-			console.log('Clave del grupo actual:', grupoActual.clave);
 			actualizarGrupos();
 			propSetShow(false);
 			reset({
@@ -57,13 +56,13 @@ const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 			<Modal.Header>Crear de un grupo</Modal.Header>
 			<Modal.Content>
 				<Form style={{ margin: "0 1% 15% 1%" }} error onSubmit={onSubmit}>
-					<Form.Input required fluid label="Nombre" placeholder="Ingrese el nombre del Grupo">
+					<Form.Input required fluid label="Nombre" placeholder="Ingrese el nombre del grupo">
 						<input {...register("nombre")} />
 					</Form.Input>
-					<Form.Input required fluid label="Descripción" placeholder="Descripcion del grupo">
+					<Form.Input required fluid label="Descripción" placeholder="Descripción del grupo">
 						<input {...register("descripcion")} />
 					</Form.Input>
-					<Button floated='left' content="Cancelar" color='red' onClick={() => propSetShow(false)} />
+					<Button floated='left' type='button' content="Cancelar" color='red' onClick={() => propSetShow(false)} />
 					<Button floated='right' content="Crear Grupo" color='green' type='submit' />
 				</Form>
 			</Modal.Content>

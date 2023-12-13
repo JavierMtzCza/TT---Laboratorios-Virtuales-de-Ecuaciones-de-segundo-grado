@@ -51,7 +51,7 @@ const PA5Grupos = () => {
           </Button>
         </Menu.Item>
         <Menu.Item>
-          <Dropdown text={usuario.perfil.nombre + " " + usuario.perfil.apellido_materno} >
+          <Dropdown text={usuario.perfil.nombre + " " + usuario.perfil.apellido_paterno} >
             <Dropdown.Menu>
               <Dropdown.Item text="Perfil" onClick={() => setShowProfile(true)} />
               <Dropdown.Item text="Cerrar Sesión" />

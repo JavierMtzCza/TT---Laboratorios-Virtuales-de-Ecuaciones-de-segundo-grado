@@ -1,6 +1,6 @@
 import { Button, Divider, Form, Grid, Header, Icon, Image, Modal, Message, Segment } from 'semantic-ui-react'
 import imagen from "../images/undraw_login_re_4vu2 1.svg"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
 
@@ -9,22 +9,25 @@ const PA3Registro = () => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [open, setOpen] = useState(false)
+  const [error, setError] = useState(false)
   const [noCoinicide, setNoCoinicide] = useState(false)
+  const navigate = useNavigate();
 
-  const postData = async (data) => {
-    try {
-      const response = await fetch('http://localhost:3000/usuario', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+  const postData = (data) => {
+
+    fetch('http://localhost:3000/usuario', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setError(true)
+        } else {
+          setOpen(true)
+        }
       })
-      if (response.ok) {
-        await setOpen(true)
-      }
-    }
-    catch (error) {
-      console.log(error)
-    }
+      .catch((error) => console.log(error))
   }
 
   const onSubmit = handleSubmit((data) => {
@@ -32,22 +35,8 @@ const PA3Registro = () => {
       setNoCoinicide(true)
     } else {
       setNoCoinicide(false)
-      console.log(data)
-      postData({
-        nombre: data.nombre,
-        apellido_paterno: data.ap_paterno,
-        apellido_materno: data.ap_materno,
-        correo: data.correo,
-        contrasena: data.contrasena,
-      })
-      reset({
-        nombre: '',
-        correo: '',
-        ap_paterno: '',
-        ap_materno: '',
-        contrasena: '',
-        confir_contrasena: ''
-      })
+      postData({ nombre: data.nombre, apellido_paterno: data.ap_paterno, apellido_materno: data.ap_materno, correo: data.correo, contrasena: data.contrasena })
+      reset({ nombre: '', correo: '', ap_paterno: '', ap_materno: '', contrasena: '', confir_contrasena: '' })
     }
   })
 
@@ -60,7 +49,7 @@ const PA3Registro = () => {
           </Grid.Column>
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a Math Learn Lab</Header>
+              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a Chicharronera Lab</Header>
               <Header as='h1' style={{ margin: "0 0 10% 10%" }}> Registro</Header>
             </Grid.Row>
             <Grid.Row>
@@ -95,18 +84,18 @@ const PA3Registro = () => {
                 </Form.Input>
                 {errors.correo && <Message size='tiny' error content={errors.correo.message} />}
 
-                <Form.Input required fluid iconPosition='left' type='password' label="Contrasena" placeholder='Ingrese su contrasena'>
+                <Form.Input required fluid iconPosition='left' type='password' label="Contraseña" placeholder='Ingrese su contraseña'>
                   <Icon name='key' inverted circular />
                   <input {...register("contrasena", {
-                    minLength: { value: 4, message: "La `Contrasena` debe tener por lo menos 4 caractres" },
-                    maxLength: { value: 25, message: "La `Contrasena` debe tener menos de 25 caractres" },
+                    minLength: { value: 4, message: "La `Contraseña` debe tener por lo menos 4 caractres" },
+                    maxLength: { value: 25, message: "La `Contraseña` debe tener menos de 25 caractres" },
                     pattern: { value: /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{4,24}$/, message: "La contrasena debe tener por lo menos 1 caracter especial (?<>+=!@#$%&*()\"\'), una mayuscula y un numero" }
                   })
                   } />
                 </Form.Input>
                 {errors.contrasena && <Message size='tiny' error content={errors.contrasena.message} />}
 
-                <Form.Input required fluid iconPosition='left' type='password' placeholder='Verifique su contrasena'>
+                <Form.Input required fluid iconPosition='left' type='password' placeholder='Verifique su contraseña'>
                   <Icon name='key' inverted circular />
                   <input {...register("confir_contrasena", {
                     required: { value: true, message: "El campo `Verificar contrasena` es requerido" }
@@ -122,7 +111,7 @@ const PA3Registro = () => {
             <Grid.Row>
               <Segment style={{ margin: "0 10% 0 10%" }} basic textAlign='center'>
                 <Link to="/InicioSesion">
-                  <Header as='h4' content="Ya tienes una cuenta?" />
+                  <Header as='h4' content="¿Ya tienes una cuenta?" />
                 </Link>
                 <Divider horizontal> o </Divider>
                 <Link to="/">
@@ -133,19 +122,25 @@ const PA3Registro = () => {
                 centered={false}
                 size='tiny'
                 open={open}
-                onClose={() => setOpen(false)}
+                closeIcon
                 onOpen={() => setOpen(true)}
-              >
-                <Modal.Header>Usuario registrado!</Modal.Header>
-                <Modal.Content>
-                  <Modal.Description>
-                    El usuario ha sido registrado correctamente
-                  </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                  <Button onClick={() => setOpen(false)}>OK</Button>
-                </Modal.Actions>
-              </Modal>
+                onClose={() => {
+                  setOpen(false)
+                  navigate('/InicioSesion')
+                }}
+                header="Usuario registrado exitosamente!"
+                content="El usuario ha sido registrado correctamente"
+              />
+              <Modal
+                centered={false}
+                size='tiny'
+                open={error}
+                closeIcon
+                onClose={() => { setError(false) }}
+                onOpen={() => setError(true)}
+                header="Ocurrio un error al crear el Usuario"
+                content="El correo ya ha sido usado anteriormente"
+              />
             </Grid.Row>
           </Grid.Column>
         </Grid.Row>

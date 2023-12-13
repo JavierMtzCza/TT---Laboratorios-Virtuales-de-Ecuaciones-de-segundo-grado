@@ -67,7 +67,7 @@ model Actividad {
     creadoEl    DateTime  @default(now())
     fechaLimite DateTime?
     grupoId     Int
-    Grupo       Grupo     @relation(fields: [grupoId], references: [id])
+    Grupo       Grupo     @relation(fields: [grupoId], references: [id], onDelete: Cascade)
     tipo        String
 
     Calificaciones       CalificacionesActividad[]
@@ -125,8 +125,8 @@ model CalificacionesActividad {
     usuarioId    Int
     actividadId  Int
     calificacion Float
-    Usuario      Usuario   @relation(fields: [usuarioId], references: [id])
-    Actividad    Actividad @relation(fields: [actividadId], references: [id])
+    Usuario      Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+    Actividad    Actividad @relation(fields: [actividadId], references: [id], onDelete: Cascade)
 
     @@id([usuarioId, actividadId])
 }

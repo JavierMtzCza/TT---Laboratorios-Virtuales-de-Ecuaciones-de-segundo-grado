@@ -27,7 +27,6 @@ const PA2InicioSesion = () => {
           setNoUser(false)
           logearUsuario(data)
           navigate("/Grupos");
-          console.log(usuario)
         }
       })
       .finally(() => {
@@ -48,7 +47,7 @@ const PA2InicioSesion = () => {
           </Grid.Column>
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a MateLab</Header>
+              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a Chicharronera Lab</Header>
               <Header as='h1' style={{ margin: "2% 0 10% 5%" }}> Inicio de Sesion</Header>
             </Grid.Row>
             <Grid.Row>
@@ -61,11 +60,11 @@ const PA2InicioSesion = () => {
                 </Form.Input>
                 {errors.correo && <Message size='tiny' error content={errors.correo.message} />}
 
-                <Form.Input required iconPosition='left' fluid label="Password" placeholder="Ingrese su contrasena" type='password'>
+                <Form.Input required iconPosition='left' fluid label="Contraseña" placeholder="Ingrese su contraseña" type='password'>
                   <Icon name='key' />
                   <input {...register("contrasena")} />
                 </Form.Input>
-                {noUser && <Message size='tiny' error content="Usuario o contrasena incorrectos" />}
+                {noUser && <Message size='tiny' error content="Usuario o contraseña incorrectos" />}
 
                 <Button type='submit' fluid animated>
                   <Button.Content visible>Iniciar Sesion</Button.Content>
@@ -79,11 +78,11 @@ const PA2InicioSesion = () => {
             <Grid.Row>
               <Segment style={{ margin: "0 20% 0 20%" }} basic textAlign='center'>
                 <Link to="/Registro">
-                  <Header as='h4'>No tienes una cuenta?</Header>
+                  <Header as='h4'>¿No tienes una cuenta?</Header>
                 </Link>
                 <Divider horizontal>O</Divider>
                 <Link to="/SingUp">
-                  <Header as='h4'>Se te olvido tu contrasena?</Header>
+                  <Header as='h4'>¿Se te olvido tu contraseña?</Header>
                 </Link>
               </Segment>
             </Grid.Row>
