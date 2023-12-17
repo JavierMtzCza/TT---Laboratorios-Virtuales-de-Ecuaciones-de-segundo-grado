@@ -21,6 +21,9 @@ const PA12RecuperarContrasena = () => {
     coincidencia: false,
   });
 
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
+  const [mostrarConfirmar, setMostrarConfirmar] = useState(false)
+
   useEffect(() => {
     let temporizador;
 
@@ -97,7 +100,7 @@ const PA12RecuperarContrasena = () => {
       const hayErrores = Object.values(erroresContrasena).some((error) => error);
 
       if (hayErrores) {
-        setMensaje('La contraseña no cumple con los requisitos.');
+        setMensaje('La contraseña debe tener al Menos una Mayúscula, un número y un caracter especial " [?<>+=!@#$%&*()] " .');
         return;
       }
 
@@ -131,6 +134,15 @@ const PA12RecuperarContrasena = () => {
         setMensaje('Error interno del servidor.');
       }
     };
+
+    const handleMostrarContrasena = () => {
+      setMostrarContrasena(!mostrarContrasena);
+
+    };
+
+    const handleConfirmarContrasena = () => {
+      setMostrarConfirmar(!mostrarConfirmar);
+    }
 
   const handleReenviarCodigo = async () => {
     try {
@@ -226,22 +238,42 @@ const PA12RecuperarContrasena = () => {
 
             <Form.Field>
               <label>Nueva Contraseña</label>
-              <input
-                type="password"
-                placeholder="Ingrese la nueva contraseña"
+              <Form.Input
+                fluid
+                iconPosition='right'
+                placeholder='Ingrese la nueva contraseña'
+                type={mostrarContrasena ? "text" : "password"}
                 value={nuevaContrasena}
                 onChange={(e) => setNuevaContrasena(e.target.value)}
-              />
+              >
+                <Icon name='lock' />
+                <input />
+                <Icon
+                  name={mostrarContrasena ? "eye" : "eye slash"}
+                  link
+                  onClick={handleMostrarContrasena}
+                />
+              </Form.Input>
             </Form.Field>
 
             <Form.Field>
               <label>Confirmar Contraseña</label>
-              <input
-                type="password"
-                placeholder="Confirme la nueva contraseña"
+              <Form.Input
+                fluid
+                iconPosition='right'
+                placeholder='Confirme la nueva contraseña'
+                type={mostrarConfirmar ? "text" : "password"}
                 value={confirmarContrasena}
                 onChange={(e) => setConfirmarContrasena(e.target.value)}
-              />
+              >
+                <Icon name='lock' />
+                <input />
+                <Icon
+                  name={mostrarConfirmar ? "eye" : "eye slash"}
+                  link
+                  onClick={handleConfirmarContrasena}
+                />
+              </Form.Input>
             </Form.Field>
 
             {tiempoRestante > 0 && (

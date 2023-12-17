@@ -43,8 +43,8 @@ export class CambioContrasenaController {
       const mailOptions = {
         from: "ikinnegameplays@gmail.com", // <- Cambia aquí
         to: correoDestino,
-        subject: "Código de Cambio de Contraseña",
-        text: `Tu código de cambio de contraseña es: ${codigo}. Este código caducará en 10 minutos.`,
+        subject: "Código de Uso Único",
+        text: `Tu código para validación es: ${codigo} .Este código caducará en 10 minutos.`,
       };
 
       // Enviar el correo
@@ -53,6 +53,9 @@ export class CambioContrasenaController {
       console.error("Error al enviar el código por correo:", error);
     }
   }
+
+  
+
 
   // Verificar si el código es válido y actualizar la contraseña
   static async verificarCodigo(req, res) {
@@ -87,7 +90,7 @@ export class CambioContrasenaController {
   
         res.json({ mensaje: "Contraseña actualizada con éxito" });
       } else {
-        res.status(400).json({ mensaje: "Código no válido o expirado" });
+        res.status(400).json({ mensaje: "Correo o código no válido " });
       }
     } catch (error) {
       console.error("Error al verificar el código y actualizar la contraseña:", error);

@@ -1,5 +1,7 @@
 import { usuarioModel } from "../models/usuarioModel.js"
 import jsonwebtoken from "jsonwebtoken";
+import {CambioContrasenaController} from "../controllers/resetpasswordController.js";
+import {CambioContrasenaModel} from "../models/resetpasswordModel.js";
 import bcrypt from 'bcrypt'
 
 export class usuarioController {
@@ -18,9 +20,49 @@ export class usuarioController {
 
    // Crear usuario
    static async create(req, res) {
-      const usuario = await usuarioModel.create(req.body)
-      res.json(usuario)
+      try {
+         const usuario = await usuarioModel.create(req.body);
+   
+         // Generar código de validación y asociarlo con el usuario
+         const { codigo } = await CambioContrasenaModel.createSolicitud(usuario.correo);
+   
+         // Enviar el código de validación por correo electrónico
+         await CambioContrasenaController.enviarCodigoPorCorreo(usuario.correo, codigo);
+   
+         res.json({ mensaje: "Usuario creado exitosamente. Se ha enviado un código de validación al correo electrónico." });
+      } catch (error) {
+         console.error("Error al crear usuario con código de validación:", error);
+         res.status(500).json({ mensaje: "Error interno del servidor." });
+      }
    }
+
+   static async verificarCodigo(req, res) {
+      try {
+        const { correo, codigo } = req.body;
+    
+        // Obtener el usuario y verificar que el código sea válido
+        const esCodigoValido = await CambioContrasenaModel.verificarCodigo(correo, codigo);
+    
+        if (esCodigoValido) {
+          // Actualizar el campo verificado del usuario a true
+          const esStatusActualizado = await CambioContrasenaModel.actualizarStatus(correo, codigo);
+    
+          if (esStatusActualizado) {
+            // Desactivar el código para que no pueda ser utilizado nuevamente
+            await CambioContrasenaModel.desactivarCodigo(correo, codigo);
+    
+            res.json({ mensaje: "Cuenta verificada con éxito" });
+          } else {
+            res.status(400).json({ mensaje: "Error al actualizar el estado de verificación del usuario" });
+          }
+        } else {
+          res.status(400).json({ mensaje: "Código no válido o expirado" });
+        }
+      } catch (error) {
+        console.error("Error al verificar el código y actualizar la contraseña:", error);
+        res.status(500).json({ mensaje: "Error interno del servidor" });
+      }
+    }
 
    // Modificar usuario
    static async update(req, res) {

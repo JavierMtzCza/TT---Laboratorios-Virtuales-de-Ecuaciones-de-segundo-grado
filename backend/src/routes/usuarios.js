@@ -17,7 +17,13 @@ router.get("/:correo/:contrasena", existeCorreo, usuarioController.login)
 router.get("/:correo", existeCorreo, usuarioController.getByEmail)
 
 //PASS: Crear usuario
-router.post("/", validarEsquema, validaErrores, existeUsuario, usuarioController.create)
+//router.post("/", validarEsquema, validaErrores, existeUsuario, usuarioController.create)
+
+// Ruta para crear un usuario con código de validación
+router.post("/", validarEsquema, validaErrores, existeUsuario, usuarioController.create);
+
+// Ruta para verificar el código y marcar la cuenta como verificada
+router.post("/verificar", usuarioController.verificarCodigo);
 
 //PASS: Modificar usuario
 router.patch("/:token", FiltrarToken, usuarioController.update)

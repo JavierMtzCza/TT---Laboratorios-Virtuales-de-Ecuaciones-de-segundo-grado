@@ -1,8 +1,9 @@
-import { Button, Divider, Form, Grid, Header, Icon, Image, Modal, Message, Segment } from 'semantic-ui-react'
+import { Button, Divider, Form, Grid, Header, Icon, Image, Message, Segment } from 'semantic-ui-react'
 import imagen from "../images/undraw_login_re_4vu2 1.svg"
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
+import VerificarCorreo from "../components/ModalVerificación"
 
 
 const PA3Registro = () => {
@@ -11,34 +12,50 @@ const PA3Registro = () => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState(false)
   const [noCoinicide, setNoCoinicide] = useState(false)
-  const navigate = useNavigate();
+  
+  const [openVerificarCorreoModal, setOpenVerificarCorreoModal] = useState(false);
 
   const postData = (data) => {
-
     fetch('http://localhost:3000/usuario', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
       .then((data) => {
         if (data.error) {
-          setError(true)
+          setError(true);
         } else {
-          setOpen(true)
+           // Cambia el estado si el registro fue exitoso
+          setOpen(true);
+          setOpenVerificarCorreoModal(true);
         }
       })
-      .catch((error) => console.log(error))
-  }
+      .catch((error) => console.log(error));
+  };
 
   const onSubmit = handleSubmit((data) => {
-    if (data.confir_contrasena != data.contrasena) {
-      setNoCoinicide(true)
+    if (data.confir_contrasena !== data.contrasena) {
+      setNoCoinicide(true);
     } else {
-      setNoCoinicide(false)
-      postData({ nombre: data.nombre, apellido_paterno: data.ap_paterno, apellido_materno: data.ap_materno, correo: data.correo, contrasena: data.contrasena })
-      reset({ nombre: '', correo: '', ap_paterno: '', ap_materno: '', contrasena: '', confir_contrasena: '' })
+      setNoCoinicide(false);
+      postData({
+        nombre: data.nombre,
+        apellido_paterno: data.ap_paterno,
+        apellido_materno: data.ap_materno,
+        correo: data.correo,
+        contrasena: data.contrasena,
+      });
+      reset({
+        nombre: '',
+        correo: '',
+        ap_paterno: '',
+        ap_materno: '',
+        contrasena: '',
+        confir_contrasena: '',
+      });
     }
-  })
+  });
 
   return (
     <>
@@ -118,7 +135,20 @@ const PA3Registro = () => {
                   <Header as='h4' content="Regresar a Inicio" />
                 </Link>
               </Segment>
-              <Modal
+              
+            </Grid.Row>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+      {openVerificarCorreoModal && <VerificarCorreo />}
+    </>
+  )
+}
+
+export default PA3Registro
+
+
+/*              <Modal
                 centered={false}
                 size='tiny'
                 open={open}
@@ -140,13 +170,4 @@ const PA3Registro = () => {
                 onOpen={() => setError(true)}
                 header="Ocurrio un error al crear el Usuario"
                 content="El correo ya ha sido usado anteriormente"
-              />
-            </Grid.Row>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </>
-  )
-}
-
-export default PA3Registro
+              /> */

@@ -41,6 +41,8 @@ export class usuarioModel {
       return usuario
    }
 
+   
+
    // Modificar usuario
    static update = async (correoUsuario, datosUsuarioActual, datosUsuarioNuevo) => {
 

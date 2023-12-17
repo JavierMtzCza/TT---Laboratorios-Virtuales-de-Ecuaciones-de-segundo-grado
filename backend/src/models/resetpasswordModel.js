@@ -28,7 +28,7 @@ export class CambioContrasenaModel {
       return { CodigoDeValidacion: CodigoDeValidacionActualizado, codigo };
     } else {
       // Si no existe un registro, creamos uno nuevo
-      const fechaCaducidad = addMinutes(new Date(), 1); // Fecha de vencimiento en 10 minutos
+      const fechaCaducidad = addMinutes(new Date(), 10); // Fecha de vencimiento en 10 minutos
   
       const CodigoDeValidacionNuevo = await prisma.CodigoDeValidacion.create({
         data: {
@@ -52,6 +52,7 @@ export class CambioContrasenaModel {
     });
     return usuario;
   }
+
 
   // Verificar si un código de cambio de contraseña es válido
   static verificarCodigo = async (correoUsuario, codigoIngresado) => {
@@ -84,6 +85,36 @@ export class CambioContrasenaModel {
     }
     return codigo;
   };
+
+
+  //actualizar usuario a vertificado 
+  static async actualizarStatus(correoUsuario, codigoIngresado) {
+    try {
+      const esCodigoValido = await this.verificarCodigo(correoUsuario, codigoIngresado);
+  
+      if (esCodigoValido) {
+        // Actualizar el estado de verificación del usuario a true
+        await prisma.usuario.update({
+          where: { correo: correoUsuario },
+          data: { verificado: true },
+        });
+  
+        // Desactivar el código de validación utilizado
+        await prisma.CodigoDeValidacion.updateMany({
+          where: { usuarioCorreo: correoUsuario, codigo: codigoIngresado },
+          data: { estado: false },
+        });
+  
+        return true; // El estado se actualizó correctamente
+      }
+  
+      return false; // El código no es válido o ha expirado
+    } catch (error) {
+      console.error("Error al actualizar el estado de verificación del usuario:", error);
+      return false; // El código no es válido o ha expirado
+    }
+  }
+  
 
   static actualizarContrasena = async (correoUsuario, codigoIngresado, nuevaContrasena) => {
     try {

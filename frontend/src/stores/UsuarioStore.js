@@ -49,7 +49,6 @@ export const useActividadStore = create(persist((set) => {
 }, { name: "act" }
 ))
 
-import { create, persist } from 'zustand';
 
 export const usePreguntaStore = create(persist((set) => {
   return {
