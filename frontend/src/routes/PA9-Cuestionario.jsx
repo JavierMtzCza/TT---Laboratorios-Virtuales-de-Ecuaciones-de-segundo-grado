@@ -1,11 +1,7 @@
-//Este si jala 
-
 import React, { useState } from 'react';
 import { Button, Input, Form, TextArea, Segment, Header, Checkbox } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
-import { useActividadStore,usePreguntaStore  } from '../stores/UsuarioStore';
-
-
+import { useActividadStore } from '../stores/UsuarioStore';
 
 const CrearPregunta = () => {
   const [preguntas, setPreguntas] = useState([]);
@@ -19,8 +15,13 @@ const CrearPregunta = () => {
   const [opcionActual, setOpcionActual] = useState('');
   const [contenido, setContenido] = useState('');
   const [multimedia, setMultimedia] = useState(null);
+
+  
   const actividad = useActividadStore(state => state.actividad);
-  const pregunta = usePreguntaStore(state => state.pregunta);
+
+  const actividadStore = useActividadStore();
+  const preguntaId = actividadStore.preguntaId;
+  const setPreguntaId = actividadStore.setPreguntaId;
 
 
   const manejarTextoPregunta = (valor) => {
@@ -90,7 +91,7 @@ const CrearPregunta = () => {
       formData.append('pregunta', pregunta.texto);
       formData.append('multimedia', pregunta.imagen);
   
-      const response = await fetch(`http://localhost:3000/preguntacues/${actividad.id}`, {
+      const response = await fetch(`http://localhost:3000/preguntacues/${actividadStore.actividad.id}`, {
         method: 'POST',
         body: formData,
       });
@@ -99,6 +100,12 @@ const CrearPregunta = () => {
         const preguntaData = await response.json();
         console.log('Pregunta creada con éxito:', preguntaData);
   
+        // Almacena el ID de la pregunta en el store
+        actividadStore.setActividad({
+          ...actividadStore.actividad,
+          PreguntaCuestionario: [...actividadStore.actividad.PreguntaCuestionario, preguntaData.id],
+        });
+
         return preguntaData.id; // Devolver el ID de la pregunta creada
       } else {
         console.error('Fallo al crear la pregunta:', response.statusText);
@@ -110,31 +117,31 @@ const CrearPregunta = () => {
     }
   };
 
-  const handleCrearOpcion = async (opcion, ) => {
+  const handleCrearOpcion = async (opcion, preguntaId) => {
     try {
-    const formData = new FormData();
-    formData.append('textOpcion', opcion.texto || ''); // Asignar cadena vacía si es undefined
-    formData.append('correcta', opcion.correcta || false); // Asignar falso si es undefined
-    formData.append('multimedia', opcion.multimedia || null); // Asignar null si es undefined
-
-    const response = await fetch(`http://localhost:3000/opcioncues/${pregunta.id}`, {
-      method: 'POST',
-      body: formData,
-    });
+      const formData = new FormData();
+      formData.append('textOpcion', opcion.texto || '');
+      formData.append('correcta', opcion.correcta || false);
+      formData.append('multimedia', opcion.multimedia !== undefined ? opcion.multimedia : null);
+  
+      const response = await fetch(`http://localhost:3000/opcioncues/${preguntaId}`, {
+        method: 'POST',
+        body: formData,
+      });
   
       if (response.ok) {
         const opcionData = await response.json();
-        console.log('Opción agregada con éxito:', opcionData);
+        console.log('Opción creada con éxito:', opcionData);
       } else {
-        console.error('Fallo al agregar la opción:', response.statusText);
-        throw new Error('Error al agregar la opción');
+        console.error('Fallo al crear la opción:', response.statusText);
+        throw new Error('Error al crear la opción');
       }
     } catch (error) {
-      console.error('Error al agregar la opción:', error);
+      console.error('Error al crear la opción:', error);
       throw error;
     }
   };
-
+  
   const handleCrearCuestionario = async () => {
     try {
       // Guardar cada pregunta en la base de datos
@@ -143,7 +150,7 @@ const CrearPregunta = () => {
   
         // Guardar opciones asociadas a la pregunta actual
         for (let j = 0; j < preguntas[i].opciones.length; j++) {
-          await handleCrearOpcion(preguntas[i].opciones[j], preguntaId);
+          await handleCrearOpcion(preguntas[i].opciones[j], preguntaId); // Añadir preguntaId como argumento
         }
       }
   

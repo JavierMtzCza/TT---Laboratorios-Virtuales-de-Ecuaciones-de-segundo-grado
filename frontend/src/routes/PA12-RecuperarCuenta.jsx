@@ -177,7 +177,7 @@ const PA12RecuperarContrasena = () => {
           </Grid.Column>
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: '5% 0 0 5%' }}> Bienvenido a Math Learn Lab</Header>
+              <Header as='h1' style={{ margin: '5% 0 0 5%' }}> Bienvenido a ChicharroneraLab</Header>
               <Header as='h1' style={{ margin: '0 0 10% 10%' }}> Restablecer Contraseña</Header>
             </Grid.Row>
             <Grid.Row>

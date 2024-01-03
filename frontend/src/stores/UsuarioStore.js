@@ -44,19 +44,24 @@ export const useActividadStore = create(persist((set) => {
 			"PreguntaEjercicio": [],
 			"calificacion": 0.0
 		},
-		setActividad: (actividadActual) => set({ actividad: actividadActual })
+	
+		setActividad: (actividadActual) => set({ actividad: actividadActual }),
+		
 	}
 }, { name: "act" }
 ))
 
 
-export const usePreguntaStore = create(persist((set) => {
-  return {
-    pregunta: {
-      id: 0,
-      opciones: [],
-    },
-    setPregunta: (preguntaActual) => set({ pregunta: preguntaActual }),
-  };
-}, { name: 'pregunta' }));
-
+export const usePreguntaActualStore = create(persist((set) => {
+	return {
+		preguntaActual: {
+			id: 0,
+			texto: '',
+			opciones: [],
+			imagen: null,
+			opcionCorrecta: null,
+	},
+	setPreguntaActual: (pregunta) => set({ preguntaActual: pregunta }),
+	resetPreguntaActual: () => set({ preguntaActual: { id: 0, texto: '', opciones: [], imagen: null, opcionCorrecta: null } }),
+	};
+  }, { name: 'preguntaActual' }));

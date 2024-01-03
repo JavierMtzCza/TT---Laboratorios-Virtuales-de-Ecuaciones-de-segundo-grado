@@ -123,6 +123,7 @@ const PA3Registro = () => {
                 {noCoinicide && <Message size='tiny' error content="Las contraseñas no coinciden" />}
 
                 <Button type='submit' icon='right arrow' labelPosition='right' fluid content="Registrarme" />
+                
               </Form>
             </Grid.Row>
             <Grid.Row>
@@ -135,6 +136,7 @@ const PA3Registro = () => {
                   <Header as='h4' content="Regresar a Inicio" />
                 </Link>
               </Segment>
+              
               
             </Grid.Row>
           </Grid.Column>
