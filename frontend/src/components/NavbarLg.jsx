@@ -69,7 +69,10 @@ const NavbarLg = ({ imagen }) => {
       <Modal open={modalOpen} onClose={closePdfModal} size='fullscreen' >
         <Modal.Header>Manual de Usuario</Modal.Header>
         <Modal.Content>
-          <PdfViewer ruta={tipo == "Documentacion" ? "/src/images/TT22023-B120.pdf" : "/src/images/ManualDeUsuario.pdf"} />Z
+          <PdfViewer ruta={
+            //tipo == "Documentacion" ? "/src/images/TT22023-B120.pdf" : 
+            "/src/images/ManualDeUsuario.pdf"
+            } />
         </Modal.Content>
         <Modal.Actions>
           <Button color='black' onClick={closePdfModal}>
