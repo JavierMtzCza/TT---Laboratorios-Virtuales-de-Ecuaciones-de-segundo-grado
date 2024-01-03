@@ -62,7 +62,7 @@ const CalificacionesGrupales = () => {
                       <Table.Cell>{calificacion.apellido_materno}</Table.Cell>
                       {
                         actividades.map((actividad) => (
-                          <Table.Cell error={calificacion[actividad.nombre] == -1 ? true : false} key={actividad.id}>{calificacion[actividad.nombre] == -1 ? "-" : calificacion[actividad.nombre]}</Table.Cell>
+                          <Table.Cell error={calificacion[actividad.nombre] == -1 ? true : false} key={actividad.id}>{calificacion[actividad.nombre] == -1 ? "NP" : calificacion[actividad.nombre]}</Table.Cell>
                         ))
                       }
                     </Table.Row>
