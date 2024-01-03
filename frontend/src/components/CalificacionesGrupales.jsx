@@ -18,7 +18,7 @@ const CalificacionesGrupales = () => {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3000/actividad/calificaciones/${grupo.id}`)
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificaciones/${grupo.id}`)
       .then((response) => response.json())
       .then((data) => {
 

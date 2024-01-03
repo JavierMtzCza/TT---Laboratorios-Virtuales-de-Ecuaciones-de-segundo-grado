@@ -40,7 +40,7 @@ const PA13CrearEjercicio = () => {
         formData.append("OpcionEjercicio[r1]", opciones.r1);
         formData.append("OpcionEjercicio[r2]", opciones.r2);
 
-        fetch(`http://localhost:3000/preguntaejercicio/${actividad.id}`, { method: "POST", body: formData })
+        fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntaejercicio/${actividad.id}`, { method: "POST", body: formData })
           .then(response => response.json())
           .then(data => {
             if (data.error) {

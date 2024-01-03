@@ -18,7 +18,7 @@ const PA15CalificacionesActividad = () => {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3000/actividad/calificacionesActividad/${actividad.id}/${grupo.id}`)
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacionesActividad/${actividad.id}/${grupo.id}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {

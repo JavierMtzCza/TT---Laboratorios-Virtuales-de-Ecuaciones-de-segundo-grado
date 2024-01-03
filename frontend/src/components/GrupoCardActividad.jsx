@@ -13,7 +13,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite, rol })
 
     const dataActividad = () => {
         console.log(rol);
-        fetch(`http://localhost:3000/actividad/actividad/${id}/${usuario.perfil.id}`)
+        fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/actividad/${id}/${usuario.perfil.id}`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.error) {

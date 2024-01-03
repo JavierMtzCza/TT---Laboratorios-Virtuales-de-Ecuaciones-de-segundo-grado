@@ -22,20 +22,20 @@ const PA8Grupo = () => {
   const navigate = useNavigate();
 
   const obtenerActividades = () => {
-    fetch(`http://localhost:3000/actividad/${grupo.id}/actividades`)
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/${grupo.id}/actividades`)
       .then((response) => response.json()).then((data) => setActividades(data)).catch((error) => console.log(error))
   }
 
   useEffect(() => {
     //Consultamos el Rol del usuario
-    fetch(`http://localhost:3000/rol/${usuario.perfil.correo}/${grupo.clave}/`)
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/rol/${usuario.perfil.correo}/${grupo.clave}/`)
       .then((response) => response.json()).then((data) => setRol(data.rolId)).catch((error) => console.log(error))
 
     obtenerActividades()
   }, [])
 
   const salirDeGrupo = () => {
-    fetch(`http://localhost:3000/grupo/${grupo.clave}/${usuario.token}`, { method: 'DELETE' }).then((response) => response.json())
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/${grupo.clave}/${usuario.token}`, { method: 'DELETE' }).then((response) => response.json())
       .then((data) => {
         if (data.error) {
           console.log(error)

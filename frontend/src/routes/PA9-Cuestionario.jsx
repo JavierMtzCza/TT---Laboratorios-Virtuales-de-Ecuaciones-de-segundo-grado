@@ -90,7 +90,7 @@ const CrearPregunta = () => {
       formData.append('pregunta', pregunta.texto);
       formData.append('multimedia', pregunta.imagen);
   
-      const response = await fetch(`http://localhost:3000/preguntacues/${actividad.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/${actividad.id}`, {
         method: 'POST',
         body: formData,
       });
@@ -117,7 +117,7 @@ const CrearPregunta = () => {
     formData.append('correcta', opcion.correcta || false); // Asignar falso si es undefined
     formData.append('multimedia', opcion.multimedia || null); // Asignar null si es undefined
 
-    const response = await fetch(`http://localhost:3000/opcioncues/${pregunta.id}`, {
+    const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/opcioncues/${pregunta.id}`, {
       method: 'POST',
       body: formData,
     });

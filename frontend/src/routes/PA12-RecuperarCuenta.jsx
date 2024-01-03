@@ -70,7 +70,7 @@ const PA12RecuperarContrasena = () => {
   };
   const handleEnviarCodigo = async () => {
     try {
-      const response = await fetch('http://localhost:3000/cambiocontrasena/solicitar', {
+      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/cambiocontrasena/solicitar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const PA12RecuperarContrasena = () => {
       // Resto del código para actualizar la contraseña
 
       try {
-        const response = await fetch('http://localhost:3000/cambiocontrasena/verificar', {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/cambiocontrasena/verificar`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const PA12RecuperarContrasena = () => {
 
   const handleReenviarCodigo = async () => {
     try {
-      const response = await fetch('http://localhost:3000/cambiocontrasena/reenviar', {
+      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/cambiocontrasena/reenviar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

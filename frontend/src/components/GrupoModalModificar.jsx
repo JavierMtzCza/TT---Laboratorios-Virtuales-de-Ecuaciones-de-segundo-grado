@@ -14,7 +14,7 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
 
   const editarGrupo = (data) => {
 
-    fetch(`http://localhost:3000/grupo/${grupo.clave}`, {
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/${grupo.clave}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     }).then((response) => response.json())

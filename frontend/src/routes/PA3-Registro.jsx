@@ -16,7 +16,7 @@ const PA3Registro = () => {
   const [openVerificarCorreoModal, setOpenVerificarCorreoModal] = useState(false);
 
   const postData = (data) => {
-    fetch('http://localhost:3000/usuario', {
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/usuario`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),

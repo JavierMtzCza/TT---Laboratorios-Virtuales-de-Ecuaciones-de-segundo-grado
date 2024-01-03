@@ -30,7 +30,7 @@ const VerificarCorreo = () => {
 
   const handleVerificarCorreo = async () => {
     try {
-      const response = await fetch('http://localhost:3000/usuario/verificar', {
+      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/usuario/verificar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
