@@ -15,7 +15,7 @@ import PA12RecuperarContraseña from "./PA12-RecuperarCuenta.jsx";
 import PA13CrearEjercicio from "./PA13-CrearEjercicio.jsx";
 import PA14ContestarActividad from "./PA14-ContestarActividad.jsx";
 import PA15CalificacionesActividad from "./PA15-CalificacionesActividad.jsx";
-
+import PA16Laberinto from "./PA16-Laberinto.jsx";
 
 const router = createBrowserRouter([
    {
@@ -78,6 +78,10 @@ const router = createBrowserRouter([
    {
       path: "/CalificacionActividad",
       element: <PA15CalificacionesActividad />
+   },
+   {
+      path: "/Laberinto",
+      element: <PA16Laberinto />
    },
 
 ]);

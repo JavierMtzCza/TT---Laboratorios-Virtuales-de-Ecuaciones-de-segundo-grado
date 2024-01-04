@@ -47,9 +47,9 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
               PreguntaEjercicio: []
             })
             reset({ nombre: "", descripcion: "" })
-            navigate('/CrearEjercicio',{ replace: true });
-            //else
-            //navigate('/Formulario')
+            const redirectPath = data.actividad.tipo === 'Ejercicio' ? '/CrearEjercicio' : '/Cuestionario';
+            navigate(redirectPath, { replace: true });            //else
+            //navigate('/Cuestionario')
           }
         })
         .catch((error) => console.log(error))
