@@ -18,7 +18,7 @@ const PA1Inicio = () => {
       {isDesktop ? <NavbarLg imagen={logo} /> : <NavbarMb imagen={logo} />}
       <Grid centered>
         <Grid.Column width={isDesktop ? 6 : 16} verticalAlign='middle'>
-          <Header as='h1' image={school} content='ChicharroneraLab' />
+          <Header as='h1' image={icono} content='ChicharroneraLab' />
           <Header as='h2' content='Pon a prueba tus conocimientos y desarrolla tus habilidades!!' />
           {isDesktop && (
             <Link to="/Labs">
