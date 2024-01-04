@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Segment, Header, Checkbox, Button } from 'semantic-ui-react';
+import { Container, Segment, Header, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const PA11AvisodePrivacidad = () => {

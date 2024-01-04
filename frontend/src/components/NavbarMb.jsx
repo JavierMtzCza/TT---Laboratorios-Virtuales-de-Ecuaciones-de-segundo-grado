@@ -68,8 +68,8 @@ const NavbarMb = ({ imagen }) => {
         }>
           Documentacion
         </Menu.Item>
-        <Menu.Item name='Aviso'>
-          <Link to={"/Aviso"}>Aviso </Link>
+        <Menu.Item name='Aviso de Privacidad'>
+          <Link to={"/Aviso"}>Aviso de Privacidad</Link>
         </Menu.Item>
         
         <Menu.Item name='Condiciones'>

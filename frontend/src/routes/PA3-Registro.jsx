@@ -1,10 +1,11 @@
 import { Button, Divider, Form, Grid, Header, Icon, Image, Message, Segment } from 'semantic-ui-react'
 import imagen from "../images/undraw_login_re_4vu2 1.svg"
+import icono from '../images/Logo.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import { useState } from 'react';
 import VerificarCorreo from "../components/ModalVerificación"
-
+import { useMediaQuery } from 'react-responsive';
 
 const PA3Registro = () => {
 
@@ -12,8 +13,10 @@ const PA3Registro = () => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState(false)
   const [noCoinicide, setNoCoinicide] = useState(false)
-  
+
   const [openVerificarCorreoModal, setOpenVerificarCorreoModal] = useState(false);
+
+  const isDesktopOrTablet = useMediaQuery({ query: "(min-width:768px)" });
 
   const postData = (data) => {
     fetch(`${import.meta.env.VITE_URL_BACKEND}/usuario`, {
@@ -26,7 +29,7 @@ const PA3Registro = () => {
         if (data.error) {
           setError(true);
         } else {
-           // Cambia el estado si el registro fue exitoso
+          // Cambia el estado si el registro fue exitoso
           setOpen(true);
           setOpenVerificarCorreoModal(true);
         }
@@ -59,21 +62,25 @@ const PA3Registro = () => {
 
   return (
     <>
-      <Grid columns={2} style={{ height: "104vh" }}>
+      <Grid columns={isDesktopOrTablet ? 2 : 1} style={{ height: "103vh" }}>
         <Grid.Row>
-          <Grid.Column style={{ background: "#E0DCDC" }} stretched>
-            <Image src={imagen}></Image>
-          </Grid.Column>
+          {
+            isDesktopOrTablet ?
+              <Grid.Column style={{ background: "#E0DCDC" }} stretched>
+                <Image src={imagen}></Image>
+              </Grid.Column>
+              :
+              <></>
+          }
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a  Chicharronera Lab</Header>
-              <Header as='h1' style={{ margin: "0 0 10% 10%" }}> Registro</Header>
+              <Header as='h1' style={{ margin: "5% 0 10% 5%", color: "#55ACEE" }} content="Bienvenido a  Chicharronera Lab" subheader="Registro de usuario" />
             </Grid.Row>
             <Grid.Row>
 
               <Form error style={{ margin: "0 5% 5% 5%" }} onSubmit={onSubmit} >
 
-                <Form.Group widths='equal'>
+                <Form.Group widths='equal' grouped >
                   <Form.Input required label="Nombre" children={<input {...register("nombre", {
                     minLength: { value: 2, message: "El `Nombre` debe tener por lo menos 2 caractres" },
                     maxLength: { value: 20, message: "El `Nombre` debe tener menos de 20 caractres" },
@@ -122,8 +129,14 @@ const PA3Registro = () => {
                 {errors.confir_contrasena && <Message size='tiny' error content={errors.confir_contrasena.message} />}
                 {noCoinicide && <Message size='tiny' error content="Las contraseñas no coinciden" />}
 
-                <Button type='submit' icon='right arrow' labelPosition='right' fluid content="Registrarme" />
-                
+                {/* <Button type='submit' color='twitter' icon='right arrow' labelPosition='right' fluid content="Registrarme" /> */}
+                <Button type='submit' color='twitter' fluid animated >
+                  <Button.Content visible>Registrarme</Button.Content>
+                  <Button.Content hidden>
+                    <Icon name='arrow right' />
+                  </Button.Content>
+                </Button>
+
               </Form>
             </Grid.Row>
             <Grid.Row>
@@ -136,8 +149,8 @@ const PA3Registro = () => {
                   <Header as='h4' content="Regresar a Inicio" />
                 </Link>
               </Segment>
-              
-              
+
+
             </Grid.Row>
           </Grid.Column>
         </Grid.Row>

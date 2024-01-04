@@ -30,8 +30,6 @@ const Plotly = ({ a1, b1, c1 }) => {
          raices = [null, null, null, null]
       }
       setData({ xss: xs, yss: ys, rais: raices })
-      console.log('cambio')
-
    }, [a1, b1, c1, dominio])
 
 

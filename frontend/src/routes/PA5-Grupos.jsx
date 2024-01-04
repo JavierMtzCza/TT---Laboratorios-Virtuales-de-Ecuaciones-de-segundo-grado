@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { Button, Card, Dropdown, Grid, Header, Icon, Image, Input, Menu, Modal, Segment } from 'semantic-ui-react'
+import { useEffect, useState } from 'react'
+import { Button, Card, Dropdown, Header, Icon, Image, Input, Menu } from 'semantic-ui-react'
 import { Grupo } from '../components/Grupo'
 import { useMediaQuery } from 'react-responsive'
 import GrupoModalCreacion from "../components/GrupoModalCreacion";
 import { useGrupoStore, useUsuarioStore } from '../stores/UsuarioStore';
-import iamge from '../images/matematicas.png'
+import logo from '../images/Logo.png'
 import GrupoModalInscripcion from '../components/GrupoModalInscripcion';
 import GrupoModalPerfil from '../components/GrupoModalPerfil';
 import { useNavigate } from 'react-router-dom';
@@ -44,7 +44,7 @@ const PA5Grupos = () => {
     <>
       <Menu secondary pointing widths={3} style={{ margin: "1% 0% 1% 0%" }}>
         <Menu.Item>
-          <Image src={iamge} size='mini' />
+          <Image src={logo} size='mini' />
         </Menu.Item>
         <Menu.Item>
           <Button animated='vertical' color='teal' onClick={() => setShowInscribir(true)}>
@@ -55,7 +55,7 @@ const PA5Grupos = () => {
           </Button>
         </Menu.Item>
         <Menu.Item>
-          <Dropdown text={usuario.perfil.nombre + " " + usuario.perfil.apellido_paterno} >
+          <Dropdown text={usuario.perfil.nombre} >
             <Dropdown.Menu>
               <Dropdown.Item text="Perfil" onClick={() => setShowProfile(true)} />
               <Dropdown.Item text="Cerrar Sesión" onClick={() => {

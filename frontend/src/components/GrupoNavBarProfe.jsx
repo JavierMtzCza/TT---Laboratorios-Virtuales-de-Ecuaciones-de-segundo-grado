@@ -15,7 +15,7 @@ const GrupoNavBarProfe = ({ stateActivo, stateSetActivo }) => {
       <Menu pointing secondary size='massive'>
         <Menu.Item>
           <Link to="/Grupos">
-            <Icon link name='arrow left' circular />
+            <Icon link size='small' name='arrow left' circular />
           </Link>
         </Menu.Item>
         <Menu.Item position='right'

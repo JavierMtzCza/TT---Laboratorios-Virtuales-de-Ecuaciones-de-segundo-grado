@@ -45,7 +45,7 @@ const GrupoModalInscripcion = ({ propOpen, propSetOpen, actualizarGrupos }) => {
       onOpen={() => propSetOpen(true)}
       open={propOpen}
     >
-      <Modal.Header content="Unirse a un grupos por codigo de acceso" />
+      <Modal.Header content="Unirse a un grupo por código de acceso" />
       <Modal.Content>
         {
           mensaje ?

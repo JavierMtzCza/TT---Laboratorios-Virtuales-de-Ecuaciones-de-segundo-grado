@@ -14,6 +14,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 	const actividad = useActividadStore(state => state.actividad)
 
 	//estados adicionales
+	const navigate = useNavigate();
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	//Estados para controlar los mensdajes e informacion
 	const [showModal, setShowModal] = useState(false)
@@ -21,7 +22,6 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 	const [respuestaCorrecta, setRespuestaCorrecta] = useState(false)
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
 	const [final, setFinal] = useState(false)
-	const navigate = useNavigate();
 	//Estaod para controlar la calificcion
 	const [intentos, setIntentos] = useState(3)
 	const [calificacion, setCalificacion] = useState(0)
@@ -182,7 +182,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 		<>
 			<Grid columns={2} stackable>
 				<Grid.Row>
-					<Grid.Column >
+					<Grid.Column>
 						<Grid.Row >
 							<Segment basic>
 								{
@@ -235,8 +235,8 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 									</>
 							}
 
-							<Segment textAlign='center' basic compact>
-								<div id="pasos"></div>
+							<Segment textAlign='center' basic>
+								<div style={isDesktopOrTablet ? { fontSize: "14px" } : { fontSize: "12px" }} id="pasos"></div>
 							</Segment>
 						</Grid.Row>
 					</Grid.Column>

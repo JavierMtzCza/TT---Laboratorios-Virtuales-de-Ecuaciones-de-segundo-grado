@@ -6,7 +6,7 @@ const TermsAndConditions = () => {
   return (
     <div
       style={{
-        backgroundImage: 'linear-gradient(to right, #66a6ff, #89f7fe)',
+        backgroundImage: 'linear-gradient(to right, #a2c1df, #d2e7fe)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',

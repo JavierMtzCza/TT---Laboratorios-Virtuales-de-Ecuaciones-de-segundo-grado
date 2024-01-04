@@ -1,10 +1,9 @@
 import { useMediaQuery } from 'react-responsive'
 
-import logo from '../images/matematicas.png'
 import imagen from '../images/Group 1 (2).svg'
 import icono from '../images/Logo.png'
 
-import { Grid, Header, Image } from 'semantic-ui-react'
+import {Grid, Header, Image } from 'semantic-ui-react'
 import NavbarLg from '../components/NavbarLg.jsx'
 import NavbarMb from '../components/NavbarMb.jsx'
 import { Link } from 'react-router-dom'
@@ -15,14 +14,14 @@ const PA1Inicio = () => {
 
   return (
     <>
-      {isDesktop ? <NavbarLg imagen={logo} /> : <NavbarMb imagen={logo} />}
+      {isDesktop ? <NavbarLg imagen={icono} /> : <NavbarMb imagen={icono} />}
       <Grid centered>
         <Grid.Column width={isDesktop ? 6 : 16} verticalAlign='middle'>
-          <Header as='h1' image={icono} content='ChicharroneraLab' />
+          <Header as='h1' image={icono} content='Chicharronera Lab' />
           <Header as='h2' content='Pon a prueba tus conocimientos y desarrolla tus habilidades!!' />
           {isDesktop && (
             <Link to="/Labs">
-              <button className='button1'>Prueba los laboratorios</button>
+              <button className='button1'>Probar los laboratorios</button>
             </Link>
           )}
         </Grid.Column>

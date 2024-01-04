@@ -4,6 +4,7 @@ import imagen from "../images/undraw_login_re_4vu2 1.svg"
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { useUsuarioStore } from "../stores/UsuarioStore";
+import { useMediaQuery } from 'react-responsive';
 
 const PA2InicioSesion = () => {
 
@@ -12,7 +13,8 @@ const PA2InicioSesion = () => {
   const navigate = useNavigate();
   //Estado global
   const logearUsuario = useUsuarioStore(state => state.setUsuario)
-  const usuario = useUsuarioStore(state => state.usuario)
+
+  const isDesktopOrTablet = useMediaQuery({ query: "(min-width:768px)" })
 
 
   const onSubmit = handleSubmit((formData) => {
@@ -40,20 +42,23 @@ const PA2InicioSesion = () => {
 
   return (
     <>
-      <Grid columns={2} style={{ height: "103vh" }}>
+      <Grid columns={isDesktopOrTablet ? 2 : 1} style={{ height: "103vh" }}>
         <Grid.Row>
-          <Grid.Column style={{ background: "#E0DCDC" }} stretched>
-            <Image src={imagen}></Image>
-          </Grid.Column>
+          {
+            isDesktopOrTablet ?
+              <Grid.Column style={{ background: "#E0DCDC" }} stretched>
+                <Image src={imagen}></Image>
+              </Grid.Column>
+              :
+              <></>
+          }
+
           <Grid.Column>
-            <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a Chicharronera Lab</Header>
-              <Header as='h1' style={{ margin: "2% 0 10% 5%" }}> Inicio de Sesion</Header>
+            <Grid.Row >
+              <Header as='h1' style={{ margin: "5% 0 10% 5%", color:"#55ACEE" }} content="Bienvenido a Chicharronera Lab" subheader="Inicio de Sesión"/>
             </Grid.Row>
             <Grid.Row>
-
               <Form error style={{ margin: "0 10% 5% 10%" }} onSubmit={onSubmit}>
-
                 <Form.Input required iconPosition='left' fluid label="Correo" placeholder="Ingrese su correo" type='email'>
                   <Icon name='at' />
                   <input {...register("correo", { pattern: { value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: "Correo no valido" } })} />
@@ -66,7 +71,7 @@ const PA2InicioSesion = () => {
                 </Form.Input>
                 {noUser && <Message size='tiny' error content="Usuario o contraseña incorrectos" />}
 
-                <Button type='submit' fluid animated>
+                <Button type='submit' color='twitter' fluid animated>
                   <Button.Content visible>Iniciar Sesion</Button.Content>
                   <Button.Content hidden>
                     <Icon name='arrow right' />
