@@ -1,11 +1,14 @@
-import { useMediaQuery } from 'react-responsive';
-import { Grid, Header, Image } from 'semantic-ui-react';
-import NavbarLg from '../components/NavbarLg.jsx';
-import NavbarMb from '../components/NavbarMb.jsx';
-import { Link } from 'react-router-dom';
-import school from '../images/school.png';
-import imagen from '../images/Group 1 (2).svg';
-import logo from '../images/matematicas.png';
+import { useMediaQuery } from 'react-responsive'
+
+import logo from '../images/matematicas.png'
+import imagen from '../images/Group 1 (2).svg'
+import icono from '../images/Logo.png'
+
+import { Grid, Header, Image } from 'semantic-ui-react'
+import NavbarLg from '../components/NavbarLg.jsx'
+import NavbarMb from '../components/NavbarMb.jsx'
+import { Link } from 'react-router-dom'
+
 
 const PA1Inicio = () => {
   const isDesktop = useMediaQuery({ query: "(min-width:1024px)" });
