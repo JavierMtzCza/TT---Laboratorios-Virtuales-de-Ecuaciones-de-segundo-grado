@@ -1,5 +1,4 @@
 import { prisma } from "../conexion.js";
-import { OpcionCuestionarioModel } from "../models/opcioncuesModel.js";
 
 
 export class PreguntaCuestionarioModel {

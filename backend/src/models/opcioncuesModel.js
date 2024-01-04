@@ -4,19 +4,19 @@ import { prisma } from "../conexion.js";
 export class OpcionCuestionarioModel {
   // Crear Opción de Cuestionario
   static create = async (preguntaCuestionarioId, textOpcion, multimedia, correcta) => {
-    const opcionCuestionario = await prisma.opcionCuestionario.create({
-      data: {
-        preguntaCuestionarioId: preguntaCuestionarioId,
-        textOpcion: textOpcion,
-        multimedia: multimedia,
-        correcta: correcta,
-      },
-      include: {
-        PreguntaCuestionario: true,
-      },
-    });
-    return opcionCuestionario;
-  };
+  const opcionCuestionario = await prisma.opcionCuestionario.create({
+    data: {
+      preguntaCuestionarioId: preguntaCuestionarioId,
+      textOpcion: textOpcion,
+      multimedia: multimedia,
+      correcta: correcta,
+    },
+    include: {
+      PreguntaCuestionario: true,
+    },
+  });
+  return opcionCuestionario;
+};
   
 
   // Obtener Opción de Cuestionario por ID

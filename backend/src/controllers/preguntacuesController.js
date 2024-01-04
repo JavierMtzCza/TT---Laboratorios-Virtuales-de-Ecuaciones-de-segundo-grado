@@ -16,6 +16,9 @@ export class PreguntaCuestionarioController {
         
       );
 
+      // Obtener el ID de la pregunta recién creada
+      const preguntaCuestionarioId = preguntaCuestionario.id;
+
       res.json({
         mensaje: 'Pregunta de cuestionario creada con éxito',
         preguntaCuestionario,

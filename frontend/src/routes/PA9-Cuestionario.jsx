@@ -29,12 +29,10 @@ const CrearPregunta = () => {
   };
 
   const manejarOpcionChange = (index, valor) => {
-    setNuevaPregunta((pregunta) => {
-      const nuevasOpciones = [...pregunta.opciones];
-      nuevasOpciones[index] = valor;
-      return { ...pregunta, opciones: nuevasOpciones };
-    });
-  };
+    if (valor !== '') {
+      nuevaPregunta.opciones[index] = valor;
+    }
+};
 
   const manejarImagenChange = (event) => {
     const imagen = event.target.files[0];
@@ -87,35 +85,35 @@ const CrearPregunta = () => {
 
   const handleCrearPregunta = async (pregunta) => {
     try {
-      const formData = new FormData();
-      formData.append('pregunta', pregunta.texto);
-      formData.append('multimedia', pregunta.imagen);
-  
-      const response = await fetch(`http://localhost:3000/preguntacues/${actividadStore.actividad.id}`, {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (response.ok) {
-        const preguntaData = await response.json();
-        console.log('Pregunta creada con éxito:', preguntaData);
-  
-        // Almacena el ID de la pregunta en el store
-        actividadStore.setActividad({
-          ...actividadStore.actividad,
-          PreguntaCuestionario: [...actividadStore.actividad.PreguntaCuestionario, preguntaData.id],
-        });
-
-        return preguntaData.id; // Devolver el ID de la pregunta creada
-      } else {
-        console.error('Fallo al crear la pregunta:', response.statusText);
-        throw new Error('Error al crear la pregunta');
-      }
+       const formData = new FormData();
+       formData.append('pregunta', pregunta.texto);
+       formData.append('multimedia', pregunta.imagen);
+ 
+       const response = await fetch(`http://localhost:3000/preguntacues/${actividadStore.actividad.id}`, {
+          method: 'POST',
+          body: formData,
+       });
+ 
+       if (response.ok) {
+          const preguntaData = await response.json();
+          console.log('Pregunta creada con éxito:', preguntaData);
+ 
+          // Almacena el ID de la pregunta en el store
+          actividadStore.setActividad({
+             ...actividadStore.actividad,
+             PreguntaCuestionario: [...actividadStore.actividad.PreguntaCuestionario, preguntaData.id],
+          });
+ 
+          return preguntaData.id; // Devolver el ID de la pregunta creada
+       } else {
+          console.error('Fallo al crear la pregunta:', response.statusText);
+          throw new Error('Error al crear la pregunta');
+       }
     } catch (error) {
-      console.error('Error al crear la pregunta:', error);
-      throw error;
+       console.error('Error al crear la pregunta:', error);
+       throw error;
     }
-  };
+ };
 
   const handleCrearOpcion = async (opcion, preguntaId) => {
     try {
@@ -144,21 +142,21 @@ const CrearPregunta = () => {
   
   const handleCrearCuestionario = async () => {
     try {
-      // Guardar cada pregunta en la base de datos
-      for (let i = 0; i < preguntas.length; i++) {
-        const preguntaId = await handleCrearPregunta(preguntas[i]);
-  
-        // Guardar opciones asociadas a la pregunta actual
-        for (let j = 0; j < preguntas[i].opciones.length; j++) {
-          await handleCrearOpcion(preguntas[i].opciones[j], preguntaId); // Añadir preguntaId como argumento
-        }
-      }
-  
-      // Lógica adicional después de crear todas las preguntas, si es necesario
+       // Guardar cada pregunta en la base de datos
+       for (let i = 0; i < preguntas.length; i++) {
+          const preguntaId = await handleCrearPregunta(preguntas[i]);
+ 
+          // Guardar opciones asociadas a la pregunta actual
+          for (let j = 0; j < preguntas[i].opciones.length; j++) {
+             await handleCrearOpcion(preguntas[i].opciones[j], preguntaId);
+          }
+       }
+ 
+       // Lógica adicional después de crear todas las preguntas, si es necesario
     } catch (error) {
-      console.error('Error al crear el cuestionario:', error);
+       console.error('Error al crear el cuestionario:', error);
     }
-  };
+ };
 
   return (
     <Segment>
