@@ -10,7 +10,7 @@ const GrupoModalInscripcion = ({ propOpen, propSetOpen, actualizarGrupos }) => {
   const claveGrupo = useRef("")
 
   const inscribir = () => {
-    fetch('http://localhost:3000/grupo/inscripcion', {
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/inscripcion`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

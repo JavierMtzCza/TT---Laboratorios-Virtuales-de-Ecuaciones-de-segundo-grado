@@ -32,6 +32,8 @@ app.use(cors(
 
 const puerto = process.env.port || 3000
 
+app.get('/', (req, res) => {res.send('API funcionando')})
+
 app.use('/usuario/', usuarioRoutes)
 app.use('/grupo/', grupoRoutes)
 //app.use('/actividad/', actividadesRoutes)

@@ -9,7 +9,7 @@ const GrupoModalEliminar = ({ propShow, propSetShow }) => {
   const navigate = useNavigate(); //reac-couter-dom para navegar a otrs ruta
 
   const eliminarGrupo = () => {
-    fetch(`http://localhost:3000/grupo/${grupo.clave}`, { method: 'DELETE' }).then((response) => response.json())
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/${grupo.clave}`, { method: 'DELETE' }).then((response) => response.json())
       .then((data) => {
         if (data.error) {
           console.log(error)

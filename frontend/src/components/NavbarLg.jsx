@@ -21,7 +21,7 @@ const NavbarLg = ({ imagen }) => {
   return (
     <Menu secondary>
       <Menu.Item name='logo'>
-        <img src={imagen} alt="" />
+        <img src={imagen} alt="ChicharroneraLab" />
       </Menu.Item>
 
       <Menu.Menu position='right'>
@@ -76,7 +76,7 @@ const NavbarLg = ({ imagen }) => {
         <Modal.Content>
           <PdfViewer ruta={
             //tipo == "Documentacion" ? "/src/images/TT22023-B120.pdf" : 
-            "/src/images/ManualDeUsuario.pdf"
+            "./src/images/ManualDeUsuario.pdf"
             } />
         </Modal.Content>
         <Modal.Actions>

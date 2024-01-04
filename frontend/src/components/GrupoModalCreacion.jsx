@@ -10,7 +10,7 @@ const GrupoModalCreacion = ({ propShow, propSetShow, actualizarGrupos }) => {
 
 	const postGrupo = async (data) => {
 		try {
-			const response = await fetch(`http://localhost:3000/grupo/crear`, {
+			const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/crear`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({

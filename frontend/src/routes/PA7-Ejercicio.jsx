@@ -43,7 +43,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 	}, []);
 
 	const AsignarCalificacion = () => {
-		fetch('http://localhost:3000/actividad/calificacion', {
+		fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({

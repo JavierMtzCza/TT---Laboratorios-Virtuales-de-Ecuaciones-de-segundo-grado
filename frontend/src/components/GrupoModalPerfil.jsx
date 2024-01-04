@@ -14,7 +14,7 @@ const GrupoModalPerfil = ({ propShow, propSetShow }) => {
 
 
   const actualizarDatos = (dataUsuario) => {
-    fetch(`http://localhost:3000/usuario/${usuario.token}`, {
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/usuario/${usuario.token}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         nombre: dataUsuario.nombre,

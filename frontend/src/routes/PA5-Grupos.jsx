@@ -24,7 +24,7 @@ const PA5Grupos = () => {
   const setGrupo = useGrupoStore(state => state.setGrupo)
 
   const obtenerGrupos = () => {
-    fetch(`http://localhost:3000/usuario/grupos/${usuario.perfil.correo}`)
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/usuario/grupos/${usuario.perfil.correo}`)
       .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
   }
 
@@ -32,7 +32,7 @@ const PA5Grupos = () => {
     if (filtro == "")
       obtenerGrupos()
     else
-      fetch(`http://localhost:3000/grupo/${usuario.token}/${filtro}`)
+      fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/${usuario.token}/${filtro}`)
         .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))
   }
 

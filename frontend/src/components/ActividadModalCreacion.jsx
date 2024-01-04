@@ -22,7 +22,7 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
       reset({ nombre: "" })
     } else {
       const fechaFormateada = moment(data.fechaLimite).toISOString();
-      fetch(`http://localhost:3000/actividad/${grupo.id}/actividad`, {
+      fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/${grupo.id}/actividad`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

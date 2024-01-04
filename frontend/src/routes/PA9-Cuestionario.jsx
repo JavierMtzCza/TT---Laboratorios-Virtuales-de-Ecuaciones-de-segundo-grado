@@ -85,30 +85,24 @@ const CrearPregunta = () => {
 
   const handleCrearPregunta = async (pregunta) => {
     try {
-       const formData = new FormData();
-       formData.append('pregunta', pregunta.texto);
-       formData.append('multimedia', pregunta.imagen);
- 
-       const response = await fetch(`http://localhost:3000/preguntacues/${actividadStore.actividad.id}`, {
-          method: 'POST',
-          body: formData,
-       });
- 
-       if (response.ok) {
-          const preguntaData = await response.json();
-          console.log('Pregunta creada con éxito:', preguntaData);
- 
-          // Almacena el ID de la pregunta en el store
-          actividadStore.setActividad({
-             ...actividadStore.actividad,
-             PreguntaCuestionario: [...actividadStore.actividad.PreguntaCuestionario, preguntaData.id],
-          });
- 
-          return preguntaData.id; // Devolver el ID de la pregunta creada
-       } else {
-          console.error('Fallo al crear la pregunta:', response.statusText);
-          throw new Error('Error al crear la pregunta');
-       }
+      const formData = new FormData();
+      formData.append('pregunta', pregunta.texto);
+      formData.append('multimedia', pregunta.imagen);
+  
+      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/${actividad.id}`, {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (response.ok) {
+        const preguntaData = await response.json();
+        console.log('Pregunta creada con éxito:', preguntaData);
+  
+        return preguntaData.id; // Devolver el ID de la pregunta creada
+      } else {
+        console.error('Fallo al crear la pregunta:', response.statusText);
+        throw new Error('Error al crear la pregunta');
+      }
     } catch (error) {
        console.error('Error al crear la pregunta:', error);
        throw error;
@@ -117,15 +111,15 @@ const CrearPregunta = () => {
 
   const handleCrearOpcion = async (opcion, preguntaId) => {
     try {
-      const formData = new FormData();
-      formData.append('textOpcion', opcion.texto || '');
-      formData.append('correcta', opcion.correcta || false);
-      formData.append('multimedia', opcion.multimedia !== undefined ? opcion.multimedia : null);
-  
-      const response = await fetch(`http://localhost:3000/opcioncues/${preguntaId}`, {
-        method: 'POST',
-        body: formData,
-      });
+    const formData = new FormData();
+    formData.append('textOpcion', opcion.texto || ''); // Asignar cadena vacía si es undefined
+    formData.append('correcta', opcion.correcta || false); // Asignar falso si es undefined
+    formData.append('multimedia', opcion.multimedia || null); // Asignar null si es undefined
+
+    const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/opcioncues/${pregunta.id}`, {
+      method: 'POST',
+      body: formData,
+    });
   
       if (response.ok) {
         const opcionData = await response.json();
