@@ -66,7 +66,7 @@ const PA3Registro = () => {
           </Grid.Column>
           <Grid.Column>
             <Grid.Row>
-              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a Chicharronera Lab</Header>
+              <Header as='h1' style={{ margin: "5% 0 0 5%" }}> Bienvenido a  Chicharronera Lab</Header>
               <Header as='h1' style={{ margin: "0 0 10% 10%" }}> Registro</Header>
             </Grid.Row>
             <Grid.Row>
