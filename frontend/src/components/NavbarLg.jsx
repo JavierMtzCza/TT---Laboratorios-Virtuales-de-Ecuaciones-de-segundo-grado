@@ -1,7 +1,5 @@
-import React from 'react';
 import { Button, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import pdfviewer from './pdfviewer';
 import "../estiloscss/pdf.css";
 import { useUsuarioStore } from '../stores/UsuarioStore';
 
@@ -13,9 +11,9 @@ const NavbarLg = ({ imagen }) => {
         ? "/src/images/ManualdeUsuarioTT2023-B120.pdf"
         : " ";
     window.open(pdfUrl, '_blank');
+  }
 
   const usuario = useUsuarioStore(state => state.usuario)
-  const [tipo, setTipo] = useState('Ayuda')
 
   return (
     <Menu secondary>
@@ -26,7 +24,7 @@ const NavbarLg = ({ imagen }) => {
       <Menu.Menu position='right'>
 
         <Menu.Item name='Ayuda' >
-        <Link to={"/Ayuda"}>Ayuda </Link> 
+          <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
 
         <Menu.Item
@@ -37,11 +35,11 @@ const NavbarLg = ({ imagen }) => {
         </Menu.Item>
 
         <Menu.Item name='Aviso de Privacidad'>
-          <Link to={"/Aviso"}>Aviso de Privacidad</Link>
+          <Link className='link' to={"/Aviso"}>Aviso de Privacidad</Link>
         </Menu.Item>
 
         <Menu.Item name='Condiciones'>
-          <Link to={"/Condiciones"}>Terminos y Condiciones</Link>
+          <Link className='link' to={"/Condiciones"}>Terminos y Condiciones</Link>
         </Menu.Item>
         {
           (usuario.token == "") ?
@@ -64,10 +62,10 @@ const NavbarLg = ({ imagen }) => {
             </>
             :
             <Menu.Item name='Grupos'>
-            <Link to={"/Grupos"}>
-              <Button size='medium' color='twitter' content='Mis grupos' />
-            </Link>
-          </Menu.Item>
+              <Link to={"/Grupos"}>
+                <Button size='medium' color='twitter' content='Mis grupos' />
+              </Link>
+            </Menu.Item>
         }
       </Menu.Menu >
     </Menu >
