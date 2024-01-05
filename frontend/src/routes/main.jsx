@@ -15,10 +15,10 @@ import PA12RecuperarContraseña from "./PA12-RecuperarCuenta.jsx";
 import PA13CrearEjercicio from "./PA13-CrearEjercicio.jsx";
 import PA14ContestarActividad from "./PA14-ContestarActividad.jsx";
 import PA15CalificacionesActividad from "./PA15-CalificacionesActividad.jsx";
-import PA16Laberinto from "./PA16-Laberinto.jsx";
 import ProtectoLogeo from "./ProtectorLogeo.jsx";
 import ProtectorInicio from "./ProtectorInicio.jsx";
 import PA17ModificarActividad from "./PA17-ModificarActividad.jsx";
+import PA16Ayuda from "./PA16-Ayuda.jsx";
 
 const router = createBrowserRouter([
    {
@@ -97,9 +97,10 @@ const router = createBrowserRouter([
       element: <PA11AvisodePrivacidad />
    },
    {
-      path: "/Laberinto",
-      element: <PA16Laberinto />
+      path: "/Ayuda",
+      element: <PA16Ayuda />
    },
+   
 
 ]);
 
