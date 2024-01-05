@@ -9,6 +9,7 @@ import GrupoCardActividad from "../components/GrupoCardActividad.jsx";
 import Confirmacion from '../components/Confirmacion.jsx';
 import CalificacionesGrupales from '../components/CalificacionesGrupales.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 
 const PA8Grupo = () => {
 
@@ -20,6 +21,8 @@ const PA8Grupo = () => {
   const usuario = useUsuarioStore(state => state.usuario)
   const grupo = useGrupoStore(state => state.grupo)
   const navigate = useNavigate();
+
+  const isDesktopOrTablet = useMediaQuery({ query: "(min-width:768px)" })
 
   const obtenerActividades = () => {
     fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/${grupo.id}/actividades`)
@@ -40,7 +43,7 @@ const PA8Grupo = () => {
         if (data.error) {
           console.log(error)
         } else {
-          navigate("/Grupos", { replace: true })
+          navigate("/Grupos")
         }
       })
       .catch((error) => console.log(error))
@@ -64,8 +67,8 @@ const PA8Grupo = () => {
           ?
           <CalificacionesGrupales />
           :
-          <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={2} >
-            {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} rol={rol}  />))}
+          <Card.Group style={{ margin: "1% 15% 0% 15%" }} itemsPerRow={isDesktopOrTablet ? 2 : 1} >
+            {actividades.map((actividad) => (<GrupoCardActividad key={actividad.id} id={actividad.id} descripcion={actividad.descripcion} nombre={actividad.nombre} tipo={actividad.tipo} fechalimite={actividad.fechalimite} rol={rol} refrescar={obtenerActividades}  />))}
           </Card.Group >
       }
       <Confirmacion open={salirGrupo} setOpen={setSalirGrupo} textoPantalla="Esta seguro de salir de este grupo" funcion={salirDeGrupo} />

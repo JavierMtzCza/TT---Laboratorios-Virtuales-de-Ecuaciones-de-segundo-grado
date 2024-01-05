@@ -16,68 +16,85 @@ import PA13CrearEjercicio from "./PA13-CrearEjercicio.jsx";
 import PA14ContestarActividad from "./PA14-ContestarActividad.jsx";
 import PA15CalificacionesActividad from "./PA15-CalificacionesActividad.jsx";
 import PA16Laberinto from "./PA16-Laberinto.jsx";
+import ProtectoLogeo from "./ProtectorLogeo.jsx";
+import ProtectorInicio from "./ProtectorInicio.jsx";
+import PA17ModificarActividad from "./PA17-ModificarActividad.jsx";
 
 const router = createBrowserRouter([
    {
       path: "/",
-      element: <PA1Inicio />,
-   },
-   {
-      path: "/InicioSesion",
-      element: <PA2InicioSesion />
-   },
-   {
-      path: "/Registro",
-      element: <PA3Registro />
+      element: <PA1Inicio />
    },
    {
       path: "/Labs",
       element: <PA4Laboratorios />
    },
    {
-      path: "/Grupos",
-      element: <PA5Grupos />
+      element: <ProtectorInicio />,
+      children: [
+         {
+            path: "/InicioSesion",
+            element: <PA2InicioSesion />
+         },
+         {
+            path: "/Registro",
+            element: <PA3Registro />
+         },
+         {
+            path: "/SingUp",
+            element: <PA12RecuperarContraseña />
+         },
+      ]
    },
+   {
+      element: <ProtectoLogeo />,
+      children: [
+         {
+            path: "/Grupos",
+            element: <PA5Grupos />
+         },
+         {
+            path: "/Graficar",
+            element: <PA7Ejercicio />
+         },
+         {
+            path: "/Grupo",
+            element: <PA8Grupo />
+         },
+         {
+            path: "/Cuestionario",
+            element: <PA9Cuestionario />
+         },
+         {
+            path: "/Formulario",
+            element: <PA10Formulario />
+         },
+         {
+            path: "/CrearEjercicio",
+            element: <PA13CrearEjercicio />
+         },
+         {
+            path: "/ResolverActividad",
+            element: <PA14ContestarActividad />
+         },
+         {
+            path: "/CalificacionActividad",
+            element: <PA15CalificacionesActividad />
+         },
+         {
+            path: "/ModificarActividad",
+            element: <PA17ModificarActividad />
+         },
+      ]
+   },
+   ,
    {
       path: "/Condiciones",
-      element: <PA6Condiciones/>
-   },
-   {
-      path: "/Graficar",
-      element: <PA7Ejercicio />
-   },
-   {
-      path: "/Grupo",
-      element: <PA8Grupo />
-   },
-   {
-      path: "/Cuestionario",
-      element: <PA9Cuestionario />
-   },
-   {
-      path: "/Formulario",
-      element: <PA10Formulario />
-
+      element: <PA6Condiciones />
    },
    {
       path: "/Aviso",
       element: <PA11AvisodePrivacidad />
-   },
-   {
-      path: "/SingUp",
-      element: <PA12RecuperarContraseña />
-   },
-   {
-      path: "/CrearEjercicio",
-      element: <PA13CrearEjercicio />
-   },
-   {
-      path: "/ResolverActividad",
-      element: <PA14ContestarActividad />
-   },
-   {
-      path: "/CalificacionActividad",
-      element: <PA15CalificacionesActividad />
    },
    {
       path: "/Laberinto",

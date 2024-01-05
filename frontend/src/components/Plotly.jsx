@@ -38,6 +38,24 @@ const Plotly = ({ a1, b1, c1 }) => {
          <Grid columns={1}  >
             <Grid.Row>
                <Grid.Column>
+                  <Grid columns={2}>
+                     <Grid.Row style={{margin:"2% 0% 0% 0%"}}>
+                        <Grid.Column stretched>
+                           <Label size='large' content="Cambiar el color de la función." />
+                           <Input type='color'  onChange={(e) => { setColor(e.target.value.toString()) }} />
+                        </Grid.Column>
+                        <Grid.Column stretched>
+                           <Label size='large' content={`Cambiar el dominio de -${dominio} a +${dominio}`} />
+                           <Input
+                              type='range'
+                              min="2"
+                              max="50"
+                              step="2"
+                              onChange={(e) => { setDominio(e.target.value) }}
+                           />
+                        </Grid.Column>
+                     </Grid.Row>
+                  </Grid>
                   <Plot
                      data={[
                         {
@@ -53,7 +71,6 @@ const Plotly = ({ a1, b1, c1 }) => {
                      ]}
 
                      layout={{
-                        //title: termCuadratico + "x^2 " + termLinear + "x + " + termIndependiente,
                         showlegend: false,
                         modebar: { remove: ['lasso2d', 'hoverClosestGl2d', 'select2d', 'resetScale2d'] },
                         xaxis: {
@@ -75,26 +92,6 @@ const Plotly = ({ a1, b1, c1 }) => {
                      config={{ responsive: true, displayModeBar: true, displaylogo: false }}
                      style={{ width: "100%", height: "90vh" }}
                   />
-                  <Grid columns={2}>
-                     <Grid.Row>
-                        <Grid.Column stretched>
-                           <Input
-                              type='color'
-                              onChange={(e) => { setColor(e.target.value.toString()) }} />
-                           <Label size='large' content="Color de la funcion" />
-                        </Grid.Column>
-                        <Grid.Column stretched>
-                           <Input
-                              type='range'
-                              min="2"
-                              max="50"
-                              step="2"
-                              onChange={(e) => { setDominio(e.target.value) }}
-                           />
-                           <Label size='large' content={`Dominio de -${dominio} a +${dominio}`} />
-                        </Grid.Column>
-                     </Grid.Row>
-                  </Grid>
                </Grid.Column>
             </Grid.Row>
          </Grid>

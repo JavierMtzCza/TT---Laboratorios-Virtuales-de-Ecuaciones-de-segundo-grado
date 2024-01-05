@@ -29,7 +29,7 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
           fechaLimite: fechaFormateada == undefined ? null : fechaFormateada,
           tipo: tipo.current,
           nombre: data.nombre,
-          descripcion: data.descripcion == undefined ? null : data.descripcion
+          descripcion: data.descripcion == undefined ? "-" : data.descripcion
         }),
       }).then((response) => response.json())
         .then((data) => {
@@ -47,7 +47,7 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
               PreguntaEjercicio: []
             })
             reset({ nombre: "", descripcion: "" })
-            navigate('/CrearEjercicio',{ replace: true });
+            navigate('/CrearEjercicio');
             //else
             //navigate('/Cuestionario')
           }

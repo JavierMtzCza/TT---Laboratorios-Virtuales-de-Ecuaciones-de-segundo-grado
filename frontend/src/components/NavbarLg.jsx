@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import PdfViewer from './pdfviewer';
 import React, { useState } from 'react';
 import "../estiloscss/pdf.css";
+import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
 const NavbarLg = ({ imagen }) => {
 
   const [modalOpen, setModalOpen] = useState(false);
+  const usuario = useUsuarioStore(state => state.usuario)
   const [tipo, setTipo] = useState('Ayuda')
 
   const openPdfModal = () => {
@@ -47,27 +49,32 @@ const NavbarLg = ({ imagen }) => {
         <Menu.Item name='Condiciones'>
           <Link to={"/Condiciones"}>Terminos y Condiciones</Link>
         </Menu.Item>
-
-        {/* <Menu.Item name='Grafcar'>
-          <Link to={"/Graficar"}>
-            <Button size='medium' color='green' content="Graficar" />
-          </Link>
-        </Menu.Item> */}
-        <Menu.Item name='Registrarme'>
-          <Link to={"/Registro"}>
-            <Button size='medium' basic color='black' content='Registrarse' />
-          </Link>
-        </Menu.Item>
-        <Menu.Item name='login'>
-          <Link to={"/InicioSesion"}>
-            <Button animated size='medium' color='black'>
-              <Button.Content visible>Iniciar Sesion</Button.Content>
-              <Button.Content hidden>
-                <Icon name='arrow right' />
-              </Button.Content>
-            </Button>
-          </Link>
-        </Menu.Item>
+        {
+          (usuario.token == "") ?
+            <>
+              <Menu.Item name='Registrarme'>
+                <Link to={"/Registro"}>
+                  <Button size='medium' basic color='black' content='Registrarse' />
+                </Link>
+              </Menu.Item>
+              <Menu.Item name='login'>
+                <Link to={"/InicioSesion"}>
+                  <Button animated size='medium' color='black'>
+                    <Button.Content visible>Iniciar Sesion</Button.Content>
+                    <Button.Content hidden>
+                      <Icon name='arrow right' />
+                    </Button.Content>
+                  </Button>
+                </Link>
+              </Menu.Item>
+            </>
+            :
+            <Menu.Item name='Grupos'>
+            <Link to={"/Grupos"}>
+              <Button size='medium' color='twitter' content='Mis grupos' />
+            </Link>
+          </Menu.Item>
+        }
       </Menu.Menu >
 
       {/* Modal para visualizar PDF */}
@@ -77,7 +84,7 @@ const NavbarLg = ({ imagen }) => {
           <PdfViewer ruta={
             //tipo == "Documentacion" ? "/src/images/TT22023-B120.pdf" : 
             "./src/images/ManualDeUsuario.pdf"
-            } />
+          } />
         </Modal.Content>
         <Modal.Actions>
           <Button color='black' onClick={closePdfModal}>

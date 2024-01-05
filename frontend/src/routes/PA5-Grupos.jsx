@@ -61,7 +61,7 @@ const PA5Grupos = () => {
               <Dropdown.Item text="Cerrar Sesión" onClick={() => {
                 setUsuario({ token: "", perfil: { id: 0, nombre: "", apellido_paterno: "", apellido_materno: "", correo: "" } })
                 setGrupo({ id: 0, nombre: "", descripcion: "", clave: "" })
-                navigate("/", { replace: true })
+                navigate("/")
               }}
               />
             </Dropdown.Menu>

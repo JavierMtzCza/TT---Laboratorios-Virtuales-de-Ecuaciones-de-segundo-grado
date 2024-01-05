@@ -42,11 +42,11 @@ export const useActividadStore = create(persist((set) => {
 			"tipo": "",
 			"PreguntaCuestionario": [],
 			"PreguntaEjercicio": [],
-			"calificacion": 0.0
+			"prueba": false
 		},
-	
+
 		setActividad: (actividadActual) => set({ actividad: actividadActual }),
-		
+
 	}
 }, { name: "act" }
 ))
@@ -60,8 +60,8 @@ export const usePreguntaActualStore = create(persist((set) => {
 			opciones: [],
 			imagen: null,
 			opcionCorrecta: null,
-	},
-	setPreguntaActual: (pregunta) => set({ preguntaActual: pregunta }),
-	resetPreguntaActual: () => set({ preguntaActual: { id: 0, texto: '', opciones: [], imagen: null, opcionCorrecta: null } }),
+		},
+		setPreguntaActual: (pregunta) => set({ preguntaActual: pregunta }),
+		resetPreguntaActual: () => set({ preguntaActual: { id: 0, texto: '', opciones: [], imagen: null, opcionCorrecta: null } }),
 	};
-  }, { name: 'preguntaActual' }));
+}, { name: 'preguntaActual' }));

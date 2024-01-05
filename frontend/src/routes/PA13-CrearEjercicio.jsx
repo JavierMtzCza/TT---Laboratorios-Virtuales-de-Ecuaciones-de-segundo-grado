@@ -6,11 +6,9 @@ import { useActividadStore } from '../stores/UsuarioStore.js';
 import Confirmacion from "../components/Confirmacion.jsx";
 import { useNavigate } from 'react-router-dom';
 
-
 const PA13CrearEjercicio = () => {
 
   const { register, control, watch, handleSubmit, formState: { errors }, reset, setValue } = useForm()
-
   const preguntas = useRef([])
   const navigate = useNavigate();
   const [showConfirmPregunta, setShowConfirmPregunta] = useState(false)
@@ -20,6 +18,7 @@ const PA13CrearEjercicio = () => {
   const [checkURL, setCheckURL] = useState({ visible: false, deshabilitado: false })
   const [checkRaices, setCheckRaices] = useState({ visible: false, deshabilitado: false })
   const actividad = useActividadStore(state => state.actividad)
+
 
   const Submit = handleSubmit(() => {
     guardarPregunta()
@@ -85,8 +84,8 @@ const PA13CrearEjercicio = () => {
       setError({ show: true, mensaje: "La pregunta debe tener un valor" })
     } else if (checkRaices.visible && ((raiz1 == "" || raiz1 == undefined || raiz1.trim() == "") || (raiz2 == "" || raiz2 == undefined || raiz2.trim() == ""))) {
       setError({ show: true, mensaje: "Debe poner un valor en ambas raices" })
-    } else if (!checkRaices.visible && ((tCuadratico == "" || tCuadratico == undefined || tCuadratico.trim() == "") || (tLineal == "" || tLineal == undefined || tLineal.trim() == "") || (tIndependiente == "" || tIndependiente == undefined || tIndependiente.trim() == ""))) {
-      setError({ show: true, mensaje: "Debe llenar los campos para la respuesta a la pregunta" })
+    } else if (!checkRaices.visible && (tCuadratico == "" || tCuadratico == undefined || tCuadratico.trim() == "")) {
+      setError({ show: true, mensaje: "Debe poner un valor en el término cuadrático." })
     } else {
       guardarPregunta()
       limpiar()
@@ -108,30 +107,26 @@ const PA13CrearEjercicio = () => {
         <Form.Input label="Consejo (Opcional)" placeholder="Agrega un consejo para tus alumnos">
           <input id='consejo' {...register("consejo")} />
         </Form.Input>
-        <Form.Group inline widths='equal' >
-          {/* <Form.Input label="Multimedia de Apoyo (Opcional)" disabled={checkURL.deshabilitado} type="file">
-            <input id='multimedia' {...register("multimedia")} />
-          </Form.Input> */}
-          <Controller name="multimedia" control={control} render={({ field: { onChange, value } }) => (
-            <Form.Input id="multimedia" disabled={checkURL.deshabilitado} type='file' label='Multimedia de Apoyo (Opcional)'
-              onChange={(e) => { onChange(e.target.files[0]) }} selected={value} />)}
-          />
-          <Form.Field>
-            <Checkbox onChange={() => {
-              if (checkURL.visible) {
-                setValue("URL", "")
-                document.getElementById("URL").value = ""
-              } else {
-                setValue("multimedia", null)
-                document.getElementById("multimedia").value = null
-              }
 
-              setCheckURL({ visible: !checkURL.visible, deshabilitado: !checkURL.deshabilitado })
-            }}
-              label='Deseo agregar un video de Youtube como apoyo'
-            />
-          </Form.Field>
-        </Form.Group>
+        <Controller name="multimedia" control={control} render={({ field: { onChange, value } }) => (
+          <Form.Input id="multimedia" disabled={checkURL.deshabilitado} type='file' label='Multimedia de Apoyo (Opcional)'
+            onChange={(e) => { onChange(e.target.files[0]) }} selected={value} />)}
+        />
+        <Form.Field>
+          <Checkbox onChange={() => {
+            if (checkURL.visible) {
+              setValue("URL", "")
+              document.getElementById("URL").value = ""
+            } else {
+              setValue("multimedia", null)
+              document.getElementById("multimedia").value = null
+            }
+
+            setCheckURL({ visible: !checkURL.visible, deshabilitado: !checkURL.deshabilitado })
+          }}
+            label='Deseo agregar un video de Youtube como apoyo'
+          />
+        </Form.Field>
         <Transition visible={checkURL.visible} animation='scale' duration={500}>
           <Form.Field>
             <label>URL</label>
@@ -150,6 +145,9 @@ const PA13CrearEjercicio = () => {
             <input id='tIndependiente' {...register("tIndependiente")} />
           </Form.Input>
         </Form.Group>
+        <Message info hidden={checkRaices.deshabilitado}
+          content='En caso de que su ecuación solo tenga el término cuadrático, no hace falta poner algún valor en los demás campos de la ecuación.'
+        />
         <Checkbox onChange={() => {
           if (checkRaices.visible) {
             document.getElementById("raiz1").value = ""
@@ -179,12 +177,18 @@ const PA13CrearEjercicio = () => {
                 <input id='raiz2' {...register("raiz2")} />
               </Form.Input>
             </Form.Group>
+            <Message compact info size='tiny'
+              header='¿Cómo definir mis raíces?'
+              content='En el caso de que la solución solo tenga una raíz, debe poner el mismo valor en ambos campos.'
+            />
           </Segment>
         </Transition>
         <Form.Group widths="equal" >
         </Form.Group>
-        <Button type="button" onClick={() => setShowConfirmPregunta(true)} content="Agregar otra pregunta a la actividad" />
-        <Button type="button" onClick={() => setShowConfirmEjercicio(true)} content="Terminar Actividad" />
+        <Segment textAlign='center' basic>
+          <Button type="button" onClick={() => setShowConfirmPregunta(true)} content="Agregar otra pregunta a la actividad" />
+          <Button type="button" onClick={() => setShowConfirmEjercicio(true)} content="Terminar Actividad" />
+        </Segment>
       </Form>
 
       <Confirmacion

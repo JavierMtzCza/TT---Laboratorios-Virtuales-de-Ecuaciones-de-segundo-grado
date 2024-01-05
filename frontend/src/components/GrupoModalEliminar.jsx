@@ -14,7 +14,7 @@ const GrupoModalEliminar = ({ propShow, propSetShow }) => {
         if (data.error) {
           console.log(error)
         } else {
-          navigate('/Grupos', { replace: true })
+          navigate('/Grupos')
           setGrupo({
             nombre: "",
             descripcion: "",

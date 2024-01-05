@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button, Icon, Menu, Modal, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import PdfViewer from './pdfviewer'
+import { useUsuarioStore } from '../stores/UsuarioStore'
 
 function HamIcon() {
   return (<i className=" bars icon" />)
@@ -16,6 +17,7 @@ const NavbarMb = ({ imagen }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [tipo, setTipo] = useState('Ayuda')
   const [visible, setVisible] = useState(false)
+  const usuario = useUsuarioStore(state => state.usuario)
   const [icon, setIcon] = useState(HamIcon)
 
   const hideSidebar = () => {
@@ -71,31 +73,35 @@ const NavbarMb = ({ imagen }) => {
         <Menu.Item name='Aviso de Privacidad'>
           <Link to={"/Aviso"}>Aviso de Privacidad</Link>
         </Menu.Item>
-        
         <Menu.Item name='Condiciones'>
           <Link to={"/Condiciones"}>Terminos y Condiciones</Link>
         </Menu.Item>
-
-        {/* <Menu.Item name='Grafcar'>
-          <Link to={"/Graficar"}>
-            <Button size='medium' color='green' content="Graficar" />
-          </Link>
-        </Menu.Item> */}
-        <Menu.Item name='Registrarme'>
-          <Link to={"/Registro"}>
-            <Button size='medium' basic color='black' content='Registrarse' />
-          </Link>
-        </Menu.Item>
-        <Menu.Item name='login'>
-          <Link to={"/InicioSesion"}>
-            <Button animated size='medium' color='black'>
-              <Button.Content visible>Iniciar Sesion</Button.Content>
-              <Button.Content hidden>
-                <Icon name='arrow right' />
-              </Button.Content>
-            </Button>
-          </Link>
-        </Menu.Item>
+        {
+          (usuario.token == "") ?
+            <>
+              <Menu.Item name='Registrarme'>
+                <Link to={"/Registro"}>
+                  <Button size='medium' basic color='black' content='Registrarse' />
+                </Link>
+              </Menu.Item>
+              <Menu.Item name='login'>
+                <Link to={"/InicioSesion"}>
+                  <Button animated size='medium' color='black'>
+                    <Button.Content visible>Iniciar Sesion</Button.Content>
+                    <Button.Content hidden>
+                      <Icon name='arrow right' />
+                    </Button.Content>
+                  </Button>
+                </Link>
+              </Menu.Item>
+            </>
+            :
+            <Menu.Item name='Grupos'>
+              <Link to={"/Grupos"}>
+                <Button size='medium' color='twitter' content='Mis grupos' />
+              </Link>
+            </Menu.Item>
+        }
       </Sidebar>
       <Modal open={modalOpen} onClose={closePdfModal} >
         <Modal.Header>Manual de Usuario</Modal.Header>

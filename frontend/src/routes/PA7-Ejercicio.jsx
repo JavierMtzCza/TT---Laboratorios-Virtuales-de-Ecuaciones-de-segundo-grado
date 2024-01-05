@@ -7,11 +7,14 @@ import EjercicioFormEc from '../components/EjercicioFormEc';
 import ModalEjercicio from '../components/ModalEjercicio';
 import { useNavigate } from 'react-router-dom';
 import { useActividadStore, useUsuarioStore } from '../stores/UsuarioStore';
+import { useMediaQuery } from 'react-responsive';
 
 const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tipo, preguntaActual, long, setPreguntaActual }) => {
 
 	const usuario = useUsuarioStore(state => state.usuario)
 	const actividad = useActividadStore(state => state.actividad)
+	const setActividad = useActividadStore(state => state.setActividad)
+	const isDesktopOrTablet = useMediaQuery({ query: "(min-width:768px)" })
 
 	//estados adicionales
 	const navigate = useNavigate();
@@ -19,19 +22,22 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 	//Estados para controlar los mensdajes e informacion
 	const [showModal, setShowModal] = useState(false)
 	const [mensajeRespuesta, setMensajeRespuesta] = useState({ show: false, texto: "", consejo: consejo })
-	const [respuestaCorrecta, setRespuestaCorrecta] = useState(false)
+	const [respuestaCorrecta, setRespuestaCorrecta] = useState(false) //Saber si la respuesta fue correcta o no
+	const [respuestaIncorrecta, setRespuestaIncorrecta] = useState(false) //Saber si la respuesta fue incorrecta o no
 	const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
-	const [final, setFinal] = useState(false)
+	const [final, setFinal] = useState(false) //Saber si se ha concluido para mostar el modal de la calificacion
 	//Estaod para controlar la calificcion
-	const [intentos, setIntentos] = useState(3)
-	const [calificacion, setCalificacion] = useState(0)
+	const [intentos, setIntentos] = useState(3) //Intentos de cada pregunta
+	const [calificacion, setCalificacion] = useState(0) //Preguntas correctas por actividad
 
-	useEffect(() => {
-		if (intentos == 0) {
-			avanzarActividad()
-			setIntentos(3)
-		}
-	}, [intentos])
+	// useEffect(() => {
+	// 	if (intentos == 0) {
+	// 		resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
+	// 		reset({ a: "", b: "", c: "" })
+	// 		//avanzarActividad()
+	// 		setIntentos(3)
+	// 	}
+	// }, [intentos])
 
 	useEffect(() => {
 		const script = document.createElement('script');
@@ -53,58 +59,66 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 			})
 		}).then((response) => response.json())
 			.then((data) => {
-				console.log(data);
 			})
 			.catch((error) => console.log(error))
 	}
 
 	const onSubmit = handleSubmit((formData) => {
-		if (tipo) {
-			if (formData.a == '' || formData.b == '' || formData.c == '') {
-				alert("Debe poner algo en los campos")
-			} else if (formData.a == respuestas.a && formData.b == respuestas.b && formData.c == respuestas.c) {
-				//PASS: Cuando acierta el ejercicio
-				setRespuestaCorrecta(true)
-				resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
-				reset({ a: "", b: "", c: "" })
-				setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
-				setCalificacion(calificacion + 1)
-			} else {
-				//NOTE: Cuanfo falla el ejercicio
-				setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: "Verifica si la grafica que generaron los valores: " + formData.a + "x^2, " + formData.b + "x, " + formData.c + " es la que deberias obtener" })
-				reset({ a: "", b: "", c: "" })
-				setIntentos(intentos - 1)
-			}
-			setData({ tc: formData.a, tl: formData.b, ti: formData.c })
+		if (intentos == 1) {
+			resolverEcuacionCuadratica(respuestas.a, respuestas.b, respuestas.c)
+			reset({ a: "", b: "", c: "" })
+			setRespuestaIncorrecta(true)
+			setIntentos(3)
 		} else {
-			if (formData.r1 == '' || formData.r2 == '') {
-				alert("Debe poner algo en los campos")
-			} else if (formData.r1 == respuestas.r1 && formData.r2 == respuestas.r2) {
-				//PASS: Cuando acierta el ejercicio
-				setRespuestaCorrecta(true)
-				obtenerEcuacionCuadratica(formData.r1, formData.r2)
-				reset({ a: "", b: "", c: "" })
-				setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
-				setCalificacion(calificacion + 1)
+			if (tipo) {
+				if (formData.a == '') {
+					alert("Debe poner su respuesta")
+				} else if (formData.a == respuestas.a && formData.b == respuestas.b && formData.c == respuestas.c) {
+					//PASS: Cuando acierta el ejercicio
+					setRespuestaCorrecta(true)
+					resolverEcuacionCuadratica(respuestas.a, respuestas.b, respuestas.c)
+					reset({ a: "", b: "", c: "" })
+					setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
+					setCalificacion(calificacion + 1)
+				} else {
+					//NOTE: Cuando falla el ejercicio
+					setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: "Verifica si la grafica que generaron los valores: " + formData.a + "x^2, " + formData.b + "x, " + formData.c + " es la que deberias obtener" })
+					reset({ a: "", b: "", c: "" })
+					setIntentos(intentos - 1)
+				}
+				setData({ tc: formData.a, tl: formData.b, ti: formData.c })
 			} else {
-				//NOTE: Cuanfo falla el ejercicio
-				reset({ r1: "", r2: "" })
-				setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: consejo })
-				setIntentos(intentos - 1)
+				if (formData.r1 == '' || formData.r2 == '') {
+					alert("Debe poner algo en los campos")
+				} else if (formData.r1 == respuestas.r1 && formData.r2 == respuestas.r2) {
+					//PASS: Cuando acierta el ejercicio
+					setRespuestaCorrecta(true)
+					obtenerEcuacionCuadratica(formData.r1, formData.r2)
+					reset({ a: "", b: "", c: "" })
+					setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
+					setCalificacion(calificacion + 1)
+				} else {
+					//NOTE: Cuanfo falla el ejercicio
+					reset({ r1: "", r2: "" })
+					setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: consejo })
+					setIntentos(intentos - 1)
+				}
 			}
-		}
 
+		}
 	})
 
 	const avanzarActividad = () => {
 		if (preguntaActual < long) {
+			setRespuestaIncorrecta(false)
 			setRespuestaCorrecta(false)
 			setMensajeRespuesta({ show: false, texto: "", consejo: "" })
 			document.getElementById('pasos').innerHTML = "";
 			setPreguntaActual(preguntaActual + 1)
 			setIntentos(3)
 		} else {
-			AsignarCalificacion()
+			if (!actividad.prueba)
+				AsignarCalificacion()
 			setFinal(true)
 		}
 	}
@@ -220,19 +234,26 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 									<Segment textAlign='center' basic >
 										<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Solucion paso a paso' />
 										<Message size='mini' color="green" header="Perfecto, esa era la respuesta correcta" content="A continuacion puedes ver el paso a paso de la solucion del problema" />
-										<Button onClick={avanzarActividad} content="Siguiente Actividad" />
+										<Button color='teal' onClick={avanzarActividad} content="Siguiente pregunta" />
 									</Segment>
 									:
-									<>
-										<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Responder' />
-										<EjercicioFormEc
-											registrador={register}
-											graficar={onSubmit}
-											resolver={resolverEcuacionCuadratica}
-											tipo={tipo}
-											mensaje={mensajeRespuesta}
-										/>
-									</>
+									respuestaIncorrecta ?
+										<Segment textAlign='center' basic >
+											<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Solucion paso a paso' />
+											<Message size='mini' color="red" header="Se acabaron los intentos :(" content="A continuacion puedes ver el paso a paso de la solucion del problema" />
+											<Button color='teal' onClick={avanzarActividad} content="Siguiente pregunta" />
+										</Segment>
+										:
+										<>
+											<Divisor tamano='h4' horizontal={true} icono='edit outline' descripcion='Responder' />
+											<EjercicioFormEc
+												registrador={register}
+												graficar={onSubmit}
+												resolver={resolverEcuacionCuadratica}
+												tipo={tipo}
+												mensaje={mensajeRespuesta}
+											/>
+										</>
 							}
 
 							<Segment textAlign='center' basic>
@@ -259,6 +280,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 				onOpen={() => setFinal(true)}
 				onClose={() => {
 					setFinal(false)
+					setActividad({ id: 0, nombre: "", descripcion: "", fechaLimite: "", tipo: "", PreguntaCuestionario: [], PreguntaEjercicio: [], prueba: false })
 					navigate('/Grupo')
 				}}
 			/>

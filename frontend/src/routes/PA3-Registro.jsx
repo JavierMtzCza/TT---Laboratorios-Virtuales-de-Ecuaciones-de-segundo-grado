@@ -58,7 +58,7 @@ const PA3Registro = () => {
         confir_contrasena: '',
       });
     }
-  });
+  })
 
   return (
     <>
@@ -161,28 +161,3 @@ const PA3Registro = () => {
 }
 
 export default PA3Registro
-
-
-/*              <Modal
-                centered={false}
-                size='tiny'
-                open={open}
-                closeIcon
-                onOpen={() => setOpen(true)}
-                onClose={() => {
-                  setOpen(false)
-                  navigate('/InicioSesion',{ replace: true })
-                }}
-                header="Usuario registrado exitosamente!"
-                content="El usuario ha sido registrado correctamente"
-              />
-              <Modal
-                centered={false}
-                size='tiny'
-                open={error}
-                closeIcon
-                onClose={() => { setError(false) }}
-                onOpen={() => setError(true)}
-                header="Ocurrio un error al crear el Usuario"
-                content="El correo ya ha sido usado anteriormente"
-              /> */
