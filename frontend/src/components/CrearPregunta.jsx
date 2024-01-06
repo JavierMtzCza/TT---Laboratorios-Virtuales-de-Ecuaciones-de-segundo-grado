@@ -1,23 +1,81 @@
 // PreguntaForm.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Button, Form, Input } from "semantic-ui-react";
 
-const CrearPregunta = ({ pregunta, multimedia, onChange, onSubmit }) => {
+const Formulario = () => {
+  const [pregunta, setPregunta] = useState("");
   const [imagen, setImagen] = useState(null);
+  const [opciones, setOpciones] = useState([]);
 
-  const handleImagenChange = (e) => {
-    const file = e.target.files[0];
-    setImagen(file);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Enviar la pregunta y la imagen al backend
+    const request = new Request("/api/preguntas", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ pregunta, imagen }),
+    });
+
+    fetch(request)
+      .then((response) => response.json())
+      .then((datos) => {
+        console.log(datos);
+      });
+  };
+
+  const handleCrearOpcion = () => {
+    // Obtener la nueva opción del usuario
+    const nuevaOpcion = prompt("Escribe la nueva opción");
+
+    if (nuevaOpcion) {
+      // Enviar la nueva opción al backend
+      const request = new Request("/api/opciones", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          preguntaId: datos.id,
+          opcion: nuevaOpcion,
+        }),
+      });
+
+      fetch(request)
+        .then((response) => response.json())
+        .then((datos) => {
+          console.log(datos);
+          setOpciones([...opciones, datos]);
+        });
+    }
   };
 
   return (
     <div>
-      <h3>Agregar Pregunta</h3>
-      <input type="text" placeholder="Pregunta" value={pregunta} onChange={(e) => onChange({ pregunta: e.target.value, multimedia })} />
-      <input type="file" accept="image/*" onChange={handleImagenChange} />
-      {/* Agregar lógica para manejar multimedia y cargar la imagen al backend */}
-      <button onClick={() => onSubmit(imagen)}>Agregar Pregunta</button>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          placeholder="Escribe tu pregunta"
+          value={pregunta}
+          onChange={(e) => setPregunta(e.target.value)}
+        />
+        <FileInput
+          label="Agrega una imagen"
+          name="imagen"
+          accept="image/*"
+          onChange={(e) => setImagen(e.target.files[0])}
+        />
+        <Button type="submit">Enviar</Button>
+        <Button onClick={handleCrearOpcion}>Crear opción</Button>
+        <ul>
+          {opciones.map((opcion, index) => (
+            <li key={index}>{opcion.opcion}</li>
+          ))}
+        </ul>
+      </Form>
     </div>
   );
 };
 
-export default CrearPregunta;
+export default Formulario;
