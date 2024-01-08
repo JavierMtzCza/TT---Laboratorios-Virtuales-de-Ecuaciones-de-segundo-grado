@@ -93,8 +93,8 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 				} else if (formData.r1 == respuestas.r1 && formData.r2 == respuestas.r2) {
 					//PASS: Cuando acierta el ejercicio
 					setRespuestaCorrecta(true)
-					obtenerEcuacionCuadratica(formData.r1, formData.r2)
-					reset({ a: "", b: "", c: "" })
+					obtenerEcuacionCuadratica(respuestas.r1, respuestas.r2)
+					reset({ r1: "", r2: "" })
 					setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
 					setCalificacion(calificacion + 1)
 				} else {
@@ -168,22 +168,25 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 
 		console.log(((1 - r1) * (1 - r2)))
 
-		const paso1 = `<br>Paso 1: Las raíces de la ecuación cuadrática son: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
+		const paso1 = `<br>Paso 1: Sean \\(r_1\\) y  \\(r_2\\) las raices de una ecuación de segundo grado: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
 
 		const sumaRaices = r1 + r2;
 		const productoRaices = r1 * r2;
-		const paso2 = `<br>Paso 2: Calculamos la suma y el producto de las raíces:<br><span className="math">\\(r_1 + r_2 = ${r1} + ${r2} = ${sumaRaices}\\)</span> <br> <span className="math">\\(r_1*r_2 = ${r1} \\cdot ${r2} = ${productoRaices}\\)</span>`;
-
 		const a = 1;
 		const b = -sumaRaices;
 		const c = productoRaices;
-		const paso3 = `<br> Paso 3: Usando la fórmula cuadrática, obtenemos los coeficientes de la ecuación cuadrática:
+		const paso2 = `<br>Paso 2: Al desarrollar \\((x-r_1) (x-r_2) = 0\\) <br><span className="math"> genera: \\(ax^2 + bx + c = 0\\)</span></span>`;
+		const paso3 = `<br>Paso 3: Por lo que obtenemos:<br><span className="math"> \\((x-r_1) (x-r_2) = x^2 - (${r1}x) - (${r2}x) + (${r1} * ${r2})\\) <br><span className="math">\\((x-r_1) (x-r_2) = x^2 - (${sumaRaices}x) + (${productoRaices})\\)`
+
+
+		const paso4 = `<br> Paso 4: Usando la fórmula cuadrática, obtenemos los coeficientes de la ecuación cuadrática:
          <br><span className="math">\\(a = ${a}\\)</span>
          <br> <span className="math">\\(b = -(${sumaRaices}) = ${b}\\)</span> 
          <br> <span className="math">\\(c = ${productoRaices}\\)</span>`;
 
-		const paso4 = `<br>Paso 4: La ecuación cuadrática es: <br> <span className="math">\\(x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
-		let pasosHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso4}`;
+		const paso5 = `<br>Paso 5: La ecuación cuadrática es: <br> <span className="math">\\(x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
+		let pasosHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso4}<br>${paso5}`;
+		setData({ tc: a, tl: b, ti: c })
 
 		document.getElementById('pasos').innerHTML = pasosHTML;
 

@@ -62,7 +62,7 @@ const PA4Laboratorios = () => {
   };
 
   const onSubmit = handleSubmit((formData) => {
-    if (formData.a == '' || formData.b == '' || formData.c == '') {
+    if (formData.a == '') {
       alert("Debe poner algo en los campos")
     } else {
       resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
