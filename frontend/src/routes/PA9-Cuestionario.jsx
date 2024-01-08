@@ -1,223 +1,294 @@
 import React, { useState } from 'react';
-import { Button, Input, Form, TextArea, Segment, Header, Checkbox } from 'semantic-ui-react';
+import { Grid, Form, Input, Button, Radio, Label,Modal, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { useActividadStore } from '../stores/UsuarioStore';
+import { useNavigate } from 'react-router-dom';
 
-const CrearPregunta = () => {
+
+const PA9CrearCuestionario = () => {
   const [preguntas, setPreguntas] = useState([]);
-  const [nuevaPregunta, setNuevaPregunta] = useState({
-    texto: '',
-    opciones: [],
-    imagen: null,
-    opcionCorrecta: null,
-  });
-  const [editandoIndice, setEditandoIndice] = useState(null);
-  const [opcionActual, setOpcionActual] = useState('');
-  const [contenido, setContenido] = useState('');
+  const [question, setQuestion] = useState('');
   const [multimedia, setMultimedia] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [selectedPreguntaIndex, setSelectedPreguntaIndex] = useState(null);
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+  const [showConfirmCuestionario, setShowConfirmCuestionario] = useState(false);
+  const [showPortal, setShowPortal] = useState(false);
+  const [guardadoExitoso, setGuardadoExitoso] = useState(false);
 
-  
   const actividad = useActividadStore(state => state.actividad);
+  const navigate = useNavigate();
 
-  const actividadStore = useActividadStore();
-  const preguntaId = actividadStore.preguntaId;
-  const setPreguntaId = actividadStore.setPreguntaId;
-
-
-  const manejarTextoPregunta = (valor) => {
-    setNuevaPregunta((pregunta) => ({ ...pregunta, texto: valor }));
+  const handleCargarImagen = (e) => {
+    const file = e.target.files[0];
+    setMultimedia(file);
   };
 
-  const manejarOpcionChange = (index, valor) => {
-    if (valor !== '') {
-      nuevaPregunta.opciones[index] = valor;
-    }
-};
-
-  const manejarImagenChange = (event) => {
-    const imagen = event.target.files[0];
-    setNuevaPregunta((pregunta) => ({ ...pregunta, imagen }));
+  const handleOpcionChange = (index, field, value) => {
+    const newOptions = [...options];
+    newOptions[index][field] = value;
+    setOptions(newOptions);
   };
 
-  const agregarPregunta = () => {
-    if (editandoIndice !== null) {
-      // Editar la pregunta existente
-      const nuevasPreguntas = [...preguntas];
-      nuevasPreguntas[editandoIndice] = nuevaPregunta;
-      setPreguntas(nuevasPreguntas);
-      setEditandoIndice(null);
-    } else {
-      // Agregar nueva pregunta
-      setPreguntas((preguntasAnteriores) => [...preguntasAnteriores, nuevaPregunta]);
-    }
-    // Limpiar el formulario
-    setNuevaPregunta({ texto: '', opciones: [], imagen: null, opcionCorrecta: null });
-  };
-
-  const editarPregunta = (index) => {
-    const preguntaEditando = preguntas[index];
-    setNuevaPregunta({ ...preguntaEditando });
-    setEditandoIndice(index);
-  };
-
-  const eliminarPregunta = (index) => {
-    const preguntasActualizadas = [...preguntas];
-    preguntasActualizadas.splice(index, 1);
-    setPreguntas(preguntasActualizadas);
-  };
-
-  const agregarOpcion = () => {
-    if (nuevaPregunta.opciones.length < 5) {
-      setNuevaPregunta((pregunta) => ({ ...pregunta, opciones: [...pregunta.opciones, opcionActual] }));
-      setOpcionActual('');
+  const handleAgregarOpcion = () => {
+    if (options.length < 5) {
+      setOptions([...options, { textOpcion: '', multimedia: null }]);
     }
   };
 
-  const eliminarOpcion = (index) => {
-    const nuevasOpciones = [...nuevaPregunta.opciones];
-    nuevasOpciones.splice(index, 1);
-    setNuevaPregunta((pregunta) => ({ ...pregunta, opciones: nuevasOpciones }));
+  const handleAgregarPregunta = () => {
+    setPreguntas([...preguntas, { pregunta: question, multimedia: multimedia, opciones: options }]);
+    setQuestion('');
+    setMultimedia(null);
+    setOptions([]);
   };
 
-  const manejarCheckboxChange = (index) => {
-    setNuevaPregunta((pregunta) => ({ ...pregunta, opcionCorrecta: index }));
+  const handleConfirmarGuardar = async () => {
+    // Mostrar el modal de confirmación
+    setShowConfirmCuestionario(true);
   };
 
-  const handleCrearPregunta = async (pregunta) => {
+  const handleGuardarCuestionario = async () => {
     try {
-      const formData = new FormData();
-      formData.append('pregunta', pregunta.texto);
-      formData.append('multimedia', pregunta.imagen);
+      // Lógica para guardar el cuestionario
+      for (const preguntaData of preguntas) {
+        const formData = new FormData();
+        formData.append('pregunta', preguntaData.pregunta);
+        formData.append('multimedia', preguntaData.multimedia);
   
-      const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/${actividad.id}`, {
-        method: 'POST',
-        body: formData,
-      });
+        const responsePregunta = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/${actividad.id}`, {
+          method: 'POST',
+          body: formData,
+        });
   
-      if (response.ok) {
-        const preguntaData = await response.json();
-        console.log('Pregunta creada con éxito:', preguntaData);
+        const dataPregunta = await responsePregunta.json();
   
-        return preguntaData.id; // Devolver el ID de la pregunta creada
-      } else {
-        console.error('Fallo al crear la pregunta:', response.statusText);
-        throw new Error('Error al crear la pregunta');
-      }
-    } catch (error) {
-       console.error('Error al crear la pregunta:', error);
-       throw error;
-    }
- };
-
-  const handleCrearOpcion = async (opcion, preguntaId) => {
-    try {
-    const formData = new FormData();
-    formData.append('textOpcion', opcion.texto || ''); // Asignar cadena vacía si es undefined
-    formData.append('correcta', opcion.correcta || false); // Asignar falso si es undefined
-    formData.append('multimedia', opcion.multimedia || null); // Asignar null si es undefined
-
-    const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/opcioncues/${pregunta.id}`, {
-      method: 'POST',
-      body: formData,
-    });
+        if (responsePregunta.ok) {
+          const preguntaCuestionarioId = dataPregunta.preguntaCuestionario.id;
   
-      if (response.ok) {
-        const opcionData = await response.json();
-        console.log('Opción creada con éxito:', opcionData);
-      } else {
-        console.error('Fallo al crear la opción:', response.statusText);
-        throw new Error('Error al crear la opción');
-      }
-    } catch (error) {
-      console.error('Error al crear la opción:', error);
-      throw error;
-    }
-  };
+          for (let index = 0; index < preguntaData.opciones.length; index++) {
+            const opcion = preguntaData.opciones[index];
+            const opcionFormData = new FormData();
+            opcionFormData.append('textOpcion', opcion.textOpcion);
+            opcionFormData.append('multimedia', opcion.multimedia);
+            opcionFormData.append('correcta', opcion.correcta);
   
-  const handleCrearCuestionario = async () => {
-    try {
-       // Guardar cada pregunta en la base de datos
-       for (let i = 0; i < preguntas.length; i++) {
-          const preguntaId = await handleCrearPregunta(preguntas[i]);
- 
-          // Guardar opciones asociadas a la pregunta actual
-          for (let j = 0; j < preguntas[i].opciones.length; j++) {
-             await handleCrearOpcion(preguntas[i].opciones[j], preguntaId);
+            const responseOpcion = await fetch(`${import.meta.env.VITE_URL_BACKEND}/opcioncues/${preguntaCuestionarioId}`, {
+              method: 'POST',
+              body: opcionFormData,
+            });
+  
+            const dataOpcion = await responseOpcion.json();
+  
+            // Aquí puedes realizar cualquier acción necesaria con dataOpcion
           }
-       }
- 
-       // Lógica adicional después de crear todas las preguntas, si es necesario
+        } else {
+          console.error('Error al agregar la pregunta:', dataPregunta.mensaje);
+        }
+      }
+  
+      // Marcar el cuestionario como guardado exitosamente
+      setGuardadoExitoso(true);
+      setShowPortal(true);
     } catch (error) {
-       console.error('Error al crear el cuestionario:', error);
+      console.error('Error de red:', error);
     }
- };
+  
+    // Limpiar el estado después de guardar
+    setPreguntas([]);
+    setSelectedPreguntaIndex(null);
+    setSelectedOptionIndex(null);
+  };
+
+  const EditarPregunta = (index) => {
+    const pregunta = preguntas[index];
+    setQuestion(pregunta.pregunta);
+    setMultimedia(pregunta.multimedia);
+    setOptions(pregunta.opciones);
+    setSelectedPreguntaIndex(index);
+  };
+
+  const EliminarPregunta = (index) => {
+    const updatedPreguntas = [...preguntas];
+    updatedPreguntas.splice(index, 1);
+    setPreguntas(updatedPreguntas);
+    setSelectedPreguntaIndex(null);
+    setSelectedOptionIndex(null);
+  };
+
+  const EliminarOpcion = (index) => {
+    const updatedOptions = [...options];
+    updatedOptions.splice(index, 1);
+    setOptions(updatedOptions);
+    setSelectedOptionIndex(null);
+  };
+
+  const ActualizarPregunta = () => {
+    if (selectedPreguntaIndex !== null) {
+      const updatedPreguntas = [...preguntas];
+      updatedPreguntas[selectedPreguntaIndex] = {
+        pregunta: question,
+        multimedia: multimedia,
+        opciones: options,
+      };
+      setPreguntas(updatedPreguntas);
+      setQuestion('');
+      setMultimedia(null);
+      setOptions([]);
+      setSelectedPreguntaIndex(null);
+      setSelectedOptionIndex(null);
+    }
+  };
+
+  
+
+  const OpcionCorrecta = (index) => {
+    const updatedOptions = options.map((option, i) => ({
+      ...option,
+      correcta: i === index,
+    }));
+    setOptions(updatedOptions);
+  };
 
   return (
-    <Segment>
-      <Header as="h2">Cuestionario-Examen</Header>
-      {preguntas.map((pregunta, index) => (
-        <Segment key={index}>
-          <Header as="h3">Pregunta {index + 1}</Header>
-          <p>{pregunta.texto}</p>
-          {pregunta.imagen && <img src={URL.createObjectURL(pregunta.imagen)} alt={`Imagen para Pregunta ${index + 1}`} />}
-          {pregunta.opciones.map((opcion, opcionIndex) => (
-            <p key={opcionIndex}>
-              <Checkbox
-                label={`Opción ${opcionIndex + 1}`}
-                checked={pregunta.opcionCorrecta === opcionIndex}
-                onChange={() => manejarCheckboxChange(opcionIndex)}
-              />
-              {opcion}
-              <Button color="red" onClick={() => eliminarOpcion(opcionIndex)}>
-                Eliminar
-              </Button>
-            </p>
+    <Grid centered columns={2}>
+      <Grid.Column>
+        <Form>
+          <Form.Field>
+            <label>Pregunta:</label>
+            <Input type="text" value={question} onChange={(e) => setQuestion(e.target.value)} />
+          </Form.Field>
+          <Form.Field>
+            <label>Multimedia:</label>
+            <Input type="file" onChange={handleCargarImagen} />
+          </Form.Field>
+          {/* Renderizar campos de opciones */}
+          {options.map((option, index) => (
+            <div key={index}>
+              <Form.Field>
+                <label>
+                  Opción {index + 1}:
+                  <Input
+                    type="text"
+                    value={option.textOpcion}
+                    onChange={(e) => handleOpcionChange(index, 'textOpcion', e.target.value)}
+                  />
+                  <Radio
+                    name={`correctOption${index}`}
+                    checked={option.correcta}
+                    onChange={() => OpcionCorrecta(index)}
+                  />
+                  <Label>Correcta</Label>
+                  <Button type="button" onClick={() => EliminarOpcion(index)}>
+                    Eliminar
+                  </Button>
+                </label>
+              </Form.Field>
+              <Form.Field>
+                <label>Multimedia:</label>
+                <Input
+                  type="file"
+                  onChange={(e) => handleOpcionChange(index, 'multimedia', e.target.files[0])}
+                />
+              </Form.Field>
+            </div>
           ))}
-          <Button color="blue" onClick={() => editarPregunta(index)}>
-            Editar Pregunta
-          </Button>
-          <Button color="red" onClick={() => eliminarPregunta(index)}>
-            Eliminar Pregunta
-          </Button>
-        </Segment>
-      ))}
-      <Form>
-        <Form.Field
-          control={TextArea}
-          label="Pregunta"
-          placeholder="Escribe la pregunta..."
-          value={nuevaPregunta.texto}
-          onChange={(e, { value }) => manejarTextoPregunta(value)}
-        />
-        <Form.Field>
-          <label>Imagen</label>
-          <Input type="file" onChange={manejarImagenChange} accept="image/*" />
-          {nuevaPregunta.imagen && <img src={URL.createObjectURL(nuevaPregunta.imagen)} alt="Vista previa de la imagen" />}
-        </Form.Field>
-        <Form.Field>
-          <label>Opciones</label>
-          <Input
-            placeholder="Escribe una opción..."
-            value={opcionActual}
-            onChange={(e, { value }) => setOpcionActual(value)}
-          />
-          <Button color="green" onClick={agregarOpcion}>
-            Agregar Opción
-          </Button>
-        </Form.Field>
-        <Header as="h4">Opciones</Header>
-        {nuevaPregunta.opciones.map((opcion, index) => (
-          <Form.Field key={index} control={Input} label={`Opción ${index + 1}`} value={opcion} disabled />
-        ))}
-        <Button color="green" onClick={agregarPregunta}>
-          {editandoIndice !== null ? 'Guardar Cambios' : 'Agregar Pregunta'}
-        </Button>
-      </Form>
-      <Button color="teal" onClick={handleCrearCuestionario}>
-        Crear Cuestionario
-      </Button>
-    </Segment>
-  );
-};
+          {options.length < 5 && (
+            <Button type="button" onClick={handleAgregarOpcion}>
+              Agregar Opción
+            </Button>
+          )}
+          {selectedPreguntaIndex !== null ? (
+            <div>
+              <Button type="button" onClick={ActualizarPregunta}>
+                Actualizar Pregunta
+              </Button>
+              <Button type="button" onClick={() => setSelectedPreguntaIndex(null)}>
+                Cancelar Edición
+              </Button>
+            </div>
+          ) : (
+            <Button type="button" onClick={handleAgregarPregunta}>
+              Agregar Pregunta
+            </Button>
+          )}
+        </Form>
+      </Grid.Column>
+      <Grid.Column>
+        {/* Visualizar preguntas agregadas */}
+        <div>
+          <h2>Preguntas Agregadas:</h2>
+          {preguntas.map((pregunta, index) => (
+            <div key={index}>
+              <p>{pregunta.pregunta}</p>
+              <p>Multimedia: {pregunta.multimedia && pregunta.multimedia.name}</p>
+              <p>Opciones:</p>
+              {pregunta.opciones.map((opcion, optionIndex) => (
+                <div key={optionIndex}>
+                  <p>{`Opción ${optionIndex + 1}: ${opcion.textOpcion}`}</p>
+                  <p>Multimedia: {opcion.multimedia && opcion.multimedia.name}</p>
+                  <p>{`Correcta: ${opcion.correcta ? 'Sí' : 'No'}`}</p>
+                </div>
+              ))}
+              <Button type="button" onClick={() => EditarPregunta(index)}>
+                Editar Pregunta
+              </Button>
+              <Button type="button" onClick={() => EliminarPregunta(index)}>
+                Eliminar Pregunta
+              </Button>
+            </div>
+          ))}
+        </div>
+        {selectedOptionIndex !== null && (
+          {/* <div>
+            <Button type="button" onClick={() => ActualizarOpcion()}>
+              Actualizar Opción
+            </Button>
+            <Button type="button" onClick={() => setSelectedOptionIndex(null)}>
+              Cancelar Edición
+            </Button>
+        </div> */}
+        )}
 
-export default CrearPregunta;
+        <Button type="button" onClick={handleConfirmarGuardar}>
+          Guardar Cuestionario
+        </Button>
+
+        {/* Modal de confirmación */}
+        <Modal open={showConfirmCuestionario} onClose={() => setShowConfirmCuestionario(false)}>
+          <Modal.Header>Confirmación</Modal.Header>
+          <Modal.Content>
+            <p>¿Desea guardar el Cuestionario?</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button negative onClick={() => setShowConfirmCuestionario(false)}>
+              Cancelar
+            </Button>
+            <Button positive onClick={handleGuardarCuestionario}>
+              Confirmar
+            </Button>
+          </Modal.Actions>
+        </Modal>
+
+        {/* Modal de éxito y redirección */}
+        <Modal
+          centered={false}
+          size='tiny'
+          content={<Message style={{ textAlign: "center", fontSize: "18px" }} positive header="Cuestionario creado satisfactoriamente" />}
+          open={showPortal}
+          onClose={() => {
+            setShowPortal(false);
+            // Redirigir a la página '/Grupo' solo si el guardado fue exitoso
+            if (guardadoExitoso) {
+              navigate('/Grupo');
+            }
+          }}
+        />
+        
+      
+    </Grid.Column>
+  </Grid>
+  );
+};  
+
+export default PA9CrearCuestionario;

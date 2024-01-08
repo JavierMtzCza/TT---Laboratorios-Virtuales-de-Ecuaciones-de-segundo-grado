@@ -46,10 +46,12 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
               PreguntaCuestionario: [],
               PreguntaEjercicio: []
             })
+            if (tipo.current === 'Ejercicio') {
+              navigate('/CrearEjercicio', { replace: true });
+            } else if (tipo.current === 'Cuestionario') {
+              navigate('/Cuestionario', { replace: true });
+            }
             reset({ nombre: "", descripcion: "" })
-            navigate('/CrearEjercicio');
-            //else
-            //navigate('/Cuestionario')
           }
         })
         .catch((error) => console.log(error))
