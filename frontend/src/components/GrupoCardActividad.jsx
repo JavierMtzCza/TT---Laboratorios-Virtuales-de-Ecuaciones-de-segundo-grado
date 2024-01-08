@@ -31,7 +31,10 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
               PreguntaEjercicio: data.PreguntaEjercicio,
               prueba: tipo
             })
-            navigate('/ResolverActividad')
+            if (data.tipo == "Cuestionario")
+              navigate('/Formulario')
+            else
+              navigate('/ResolverActividad')
           } else {
             setActividadHecha({ show: true, calificacion: data.Calificaciones[0].calificacion })
           }
@@ -55,13 +58,16 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
             PreguntaCuestionario: data.PreguntaCuestionario,
             PreguntaEjercicio: data.PreguntaEjercicio,
           })
-          navigate('/ModificarActividad')
+          if (data.tipo == "Cuestionario")
+            navigate('/Formulario')
+          else
+            navigate('/ResolverActividad')
         }
       }).catch((error) => console.log(error))
   }
 
-  const boton1 = () => {
-    dataActividad(true)
+  const probarActividad = () => {
+    dataActividad1(true)
   }
 
   const boton2 = () => {
@@ -91,7 +97,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
           <Image floated='left' src={Avatar} avatar bordered />
           <Card.Header textAlign='left' content={nombre} />
           <Card.Description content={descripcion} />
-          <Button onClick={boton1} style={{ borderRadius: "1rem", marginTop: "15px" }} color='teal' content="Probar" />
+          <Button onClick={probarActividad} style={{ borderRadius: "1rem", marginTop: "15px" }} color='teal' content="Probar" />
           <Button onClick={boton2} style={{ borderRadius: "1rem", marginTop: "15px" }} color={rol == 1 ? 'twitter' : 'yellow'} content={rol == 1 ? "Ver calificaciones" : "Resolver"} />
           {
             rol == 1 ?
