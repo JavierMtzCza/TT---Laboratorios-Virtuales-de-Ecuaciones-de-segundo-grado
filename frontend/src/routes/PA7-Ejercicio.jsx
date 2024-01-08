@@ -65,7 +65,10 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 
 	const onSubmit = handleSubmit((formData) => {
 		if (intentos == 1) {
-			resolverEcuacionCuadratica(respuestas.a, respuestas.b, respuestas.c)
+			if (tipo)
+				resolverEcuacionCuadratica(respuestas.a, respuestas.b, respuestas.c)
+			else
+				obtenerEcuacionCuadratica(respuestas.r1, respuestas.r2)
 			reset({ a: "", b: "", c: "" })
 			setRespuestaIncorrecta(true)
 			setIntentos(3)
