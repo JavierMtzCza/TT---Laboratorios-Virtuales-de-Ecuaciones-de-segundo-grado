@@ -45,7 +45,7 @@ const PA10Formulario = () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/actividad/${actividad.id}/preguntas`);
         const data = await response.json();
-
+  
         if (response.ok) {
           console.log('Data de preguntas:', data);
           setPreguntasCues(data);
@@ -69,11 +69,17 @@ const PA10Formulario = () => {
     }
   };
 
+  const mostrarPreguntaAnterior = () => {
+    setPreguntaActual((prev) => Math.max(prev - 1, 0));
+    setOpcionSeleccionada([]);
+    setMostrarCalificacion(false); // Asegúrate de ocultar la calificación al retroceder
+  };
+
+
   const AsignarCalificacion = () => {
     const calificacion = (respuestasCorrectas / preguntasCues.length) * 10;
 
     setFinal(true);
-
 
     fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
       method: 'POST',
@@ -113,27 +119,28 @@ const PA10Formulario = () => {
               <Image
                 src={obtenerImagenURL(preguntas[preguntaActual].multimedia)}
                 alt="Imagen de la pregunta"
-                style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+                style={{ cursor: 'pointer', maxWidth: '50%', height: 'auto', margin: 'auto' }}
               />
             </div>
           )}
           {preguntas[preguntaActual]?.OpcionCuestionario && preguntas[preguntaActual]?.OpcionCuestionario.length > 0 ? (
             preguntas[preguntaActual].OpcionCuestionario.map((opcion, optionIndex) => (
-              <div key={optionIndex}>
-                <p>
-                  <Radio
-                    name={`opcion${preguntaActual}`}
-                    checked={opcionSeleccionada === optionIndex}
-                    onChange={() => handleSeleccionarOpcion(optionIndex)}
-                  />
+              <div key={optionIndex} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
+                <Radio
+                  name={`opcion${preguntaActual}`}
+                  checked={opcionSeleccionada === optionIndex}
+                  onChange={() => handleSeleccionarOpcion(optionIndex)}
+                  style={{ marginRight: '10px', fontSize: '20px' }}
+                />
+                <span style={{ fontSize: '18px', fontWeight: 'bold', color: opcionSeleccionada === optionIndex ? '#2185d0' : 'black' }}>
                   {`Opción ${optionIndex + 1}: ${opcion.textOpcion || ''}`}
-                </p>
+                </span>
                 {opcion.multimedia && (
                   <div onClick={() => openModal(obtenerImagenURL(opcion.multimedia))}>
                     <Image
                       src={obtenerImagenURL(opcion.multimedia)}
                       alt={`Imagen de la opción ${optionIndex + 1}`}
-                      style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+                      style={{ cursor: 'pointer', maxWidth: '40%', height: 'auto', margin: 'auto', marginTop: '10px' }}
                     />
                   </div>
                 )}
@@ -144,17 +151,22 @@ const PA10Formulario = () => {
           )}
           {mostrarCalificacion ? (
             <div>
-              {/* Cambiado a Button positivo para activar el modal final */}
               <Button onClick={AsignarCalificacion} positive>
                 Calificar Cuestionario
               </Button>
-              {/* Mostrar la calificación obtenida */}
-              <p>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
+              <p style={{ fontSize: '18px' }}>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
             </div>
           ) : (
-            <Button onClick={mostrarSiguientePregunta} primary>
-              Siguiente Pregunta
-            </Button>
+            <div>
+              {preguntaActual > 0 && (
+                <Button onClick={mostrarPreguntaAnterior} primary>
+                  Pregunta Anterior
+                </Button>
+              )}
+              <Button onClick={mostrarSiguientePregunta} primary>
+                Siguiente Pregunta
+              </Button>
+            </div>
           )}
         </div>
       ) : (
@@ -173,7 +185,7 @@ const PA10Formulario = () => {
         size='tiny'
         content={
           <Message style={{ textAlign: "center", fontSize: "18px" }} positive
-            header={`Haz finalizado el cuestioanrio, has obtenido ${respuestasCorrectas} aciertos, tu calificación es ${(respuestasCorrectas * 10) / preguntasCues.length.toFixed(2)}`}
+            header={`Haz finalizado el cuestionario, has obtenido ${respuestasCorrectas} aciertos, tu calificación es ${(respuestasCorrectas * 10) / preguntasCues.length.toFixed(2)}`}
           />
         }
         open={final}
