@@ -1,66 +1,189 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button, Container, Header, Image, Radio, Modal, Message } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
+import { useActividadStore, useUsuarioStore } from '../stores/UsuarioStore';
 
-const RealizarCuestionario = ({ preguntas }) => {
-  const [respuestas, setRespuestas] = useState(new Array(preguntas.length).fill(null));
-  const [calificacion, setCalificacion] = useState(null);
+const PA10Formulario = () => {
+  const [preguntaActual, setPreguntaActual] = useState(0);
+  const [opcionSeleccionada, setOpcionSeleccionada] = useState([]);
+  const [respuestasCorrectas, setRespuestasCorrectas] = useState(0);
+  const [preguntasCues, setPreguntasCues] = useState([]);
+  const [mostrarCalificacion, setMostrarCalificacion] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState(null);
+  const [final, setFinal] = useState(false); // Nuevo estado para el modal final
 
-  const seleccionarRespuesta = (indicePregunta, indiceOpcion) => {
-    const nuevasRespuestas = [...respuestas];
-    nuevasRespuestas[indicePregunta] = indiceOpcion;
-    setRespuestas(nuevasRespuestas);
-  };
+  const actividad = useActividadStore((state) => state.actividad);
+  const usuario = useUsuarioStore((state) => state.usuario);
+  const preguntas = actividad.PreguntaCuestionario;
 
-  const calcularCalificacion = () => {
-    const totalPreguntas = preguntas.length;
-    let respuestasCorrectas = 0;
+  const navigate = useNavigate();
 
-    for (let i = 0; i < totalPreguntas; i++) {
-      if (respuestas[i] === preguntas[i].opcionCorrecta) {
-        respuestasCorrectas++;
-      }
+  const handleSeleccionarOpcion = (opcionIndex) => {
+    setOpcionSeleccionada(opcionIndex);
+    // Verificar si la opción seleccionada es correcta y actualizar respuestasCorrectas
+    if (preguntasCues[preguntaActual].OpcionCuestionario[opcionIndex].correcta) {
+      setRespuestasCorrectas((prev) => prev + 1);
     }
-
-    const porcentajeCalificacion = (respuestasCorrectas / totalPreguntas) * 100;
-    setCalificacion(porcentajeCalificacion);
   };
+
+  const obtenerImagenURL = (multimedia) => {
+    try {
+      if (multimedia && multimedia.data) {
+        const base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(multimedia.data)));
+        return `data:${multimedia.type};base64,${base64String}`;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error al obtener la URL de la imagen:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchPreguntas = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/actividad/${actividad.id}/preguntas`);
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log('Data de preguntas:', data);
+          setPreguntasCues(data);
+        } else {
+          console.error('Error al obtener preguntas:', data.mensaje);
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      }
+    };
+    fetchPreguntas();
+  }, [actividad.id]);
+
+  
+  const mostrarSiguientePregunta = () => {
+    setPreguntaActual((prev) => Math.min(prev + 1, preguntasCues.length - 1));
+    setOpcionSeleccionada([]);
+
+    if (preguntaActual === preguntasCues.length - 1) {
+      setMostrarCalificacion(true);
+    }
+  };
+
+  const AsignarCalificacion = () => {
+    const calificacion = (respuestasCorrectas / preguntasCues.length) * 10;
+
+    setFinal(true);
+
+
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idActividad: actividad.id,
+        idUsuario: usuario.perfil.id,
+        calificacion: parseFloat(calificacion.toFixed(2)),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const openModal = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImageSrc(null);
+  };
+
 
   return (
-    <div>
-      <h1>Realizar Cuestionario</h1>
-
-      {preguntas.map((pregunta, indice) => (
-        <div key={indice}>
-          <h3>Pregunta {indice + 1}</h3>
-          <p>{pregunta.texto}</p>
-
-          <ul>
-            {pregunta.opciones.map((opcion, indiceOpcion) => (
-              <li key={indiceOpcion}>
-                <label>
-                  <input
-                    type="radio"
-                    name={`pregunta${indice}`}
-                    value={indiceOpcion}
-                    onChange={() => seleccionarRespuesta(indice, indiceOpcion)}
-                    checked={respuestas[indice] === indiceOpcion}
-                  />
-                  {opcion}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-
-      <button onClick={calcularCalificacion}>Calcular Calificación</button>
-
-      {calificacion !== null && (
+    <Container text textAlign="center">
+      <Header as="h2">Preguntas del Cuestionario</Header>
+      {preguntas && preguntas.length > 0 ? (
         <div>
-          <h2>Calificación: {calificacion}%</h2>
+          <Header as="h3">{preguntas[preguntaActual]?.pregunta || ''}</Header>
+          {preguntas[preguntaActual]?.multimedia && (
+            <div onClick={() => openModal(obtenerImagenURL(preguntas[preguntaActual].multimedia))}>
+              <Image
+                src={obtenerImagenURL(preguntas[preguntaActual].multimedia)}
+                alt="Imagen de la pregunta"
+                style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+              />
+            </div>
+          )}
+          {preguntas[preguntaActual]?.OpcionCuestionario && preguntas[preguntaActual]?.OpcionCuestionario.length > 0 ? (
+            preguntas[preguntaActual].OpcionCuestionario.map((opcion, optionIndex) => (
+              <div key={optionIndex}>
+                <p>
+                  <Radio
+                    name={`opcion${preguntaActual}`}
+                    checked={opcionSeleccionada === optionIndex}
+                    onChange={() => handleSeleccionarOpcion(optionIndex)}
+                  />
+                  {`Opción ${optionIndex + 1}: ${opcion.textOpcion || ''}`}
+                </p>
+                {opcion.multimedia && (
+                  <div onClick={() => openModal(obtenerImagenURL(opcion.multimedia))}>
+                    <Image
+                      src={obtenerImagenURL(opcion.multimedia)}
+                      alt={`Imagen de la opción ${optionIndex + 1}`}
+                      style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No hay opciones disponibles.</p>
+          )}
+          {mostrarCalificacion ? (
+            <div>
+              {/* Cambiado a Button positivo para activar el modal final */}
+              <Button onClick={AsignarCalificacion} positive>
+                Calificar Cuestionario
+              </Button>
+              {/* Mostrar la calificación obtenida */}
+              <p>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
+            </div>
+          ) : (
+            <Button onClick={mostrarSiguientePregunta} primary>
+              Siguiente Pregunta
+            </Button>
+          )}
         </div>
+      ) : (
+        <p>No hay preguntas disponibles.</p>
       )}
-    </div>
+
+      {/* Modal para la imagen */}
+      <Modal open={modalOpen} onClose={closeModal} centered={false}>
+        <Modal.Content image>
+          <Image wrapped src={modalImageSrc} alt="Imagen" />
+        </Modal.Content>
+      </Modal>
+      {/* Modal final */}
+      <Modal
+        centered={false}
+        size='tiny'
+        content={
+          <Message style={{ textAlign: "center", fontSize: "18px" }} positive
+            header={`Haz finalizado el cuestioanrio, has obtenido ${respuestasCorrectas} aciertos, tu calificación es ${(respuestasCorrectas * 10) / preguntasCues.length.toFixed(2)}`}
+          />
+        }
+        open={final}
+        onClose={() => {
+          setFinal(false);
+          navigate('/Grupo');
+        }}
+      />
+    </Container>
   );
 };
 
-export default RealizarCuestionario;
+export default PA10Formulario;

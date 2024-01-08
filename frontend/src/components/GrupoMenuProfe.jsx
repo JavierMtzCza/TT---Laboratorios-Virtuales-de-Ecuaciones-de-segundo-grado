@@ -46,7 +46,7 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
             Crear Ejercicio
           </Button>
         </Menu.Item>
-          { /* <Menu.Item>
+           <Menu.Item>
           <Button color='green' onClick={() => {
             tipo.current = 'Cuestionario'
             setCrearActividad(true)
@@ -54,7 +54,7 @@ const GrupoMenuProfe = ({ nombre, descripcion, clave }) => {
           }>
             Crear Cuestionario
           </Button>
-        </Menu.Item> */}
+        </Menu.Item> 
       </Menu >
 
       <ActividadModalCreacion tipo={tipo} propShow={crearActividad} propSetShow={setCrearActividad} />

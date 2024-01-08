@@ -732,3 +732,250 @@ const QuestionForm = () => {
 };
 
 export default QuestionForm;
+
+
+
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Radio, Label } from 'semantic-ui-react';
+import { useActividadStore } from '../stores/UsuarioStore';
+
+const QuestionList = () => {
+  const [preguntas, setPreguntas] = useState([]);
+  const [respuestasUsuario, setRespuestasUsuario] = useState({});
+  const actividad = useActividadStore(state => state.actividad);
+
+  useEffect(() => {
+    const obtenerPreguntasDesdeServidor = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/actividad/${actividad.id}/preguntas`);
+        const data = await response.json();
+
+        console.log('Respuesta del servidor:', data);
+
+        if (response.ok && data) {
+          setPreguntas(data.preguntas || []);
+          // Inicializar las respuestas del usuario con valores predeterminados
+          const respuestasPredeterminadas = {};
+          (data.preguntas || []).forEach((pregunta) => {
+            respuestasPredeterminadas[pregunta.id] = '';
+          });
+          setRespuestasUsuario(respuestasPredeterminadas);
+        } else {
+          console.error('Error al obtener preguntas:', data?.mensaje || 'No hay datos');
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      }
+    };
+
+    obtenerPreguntasDesdeServidor();
+  }, [actividad.id]);
+
+  const handleSelectRespuesta = (preguntaId, opcionIndex) => {
+    const nuevasRespuestas = { ...respuestasUsuario };
+    nuevasRespuestas[preguntaId] = opcionIndex;
+    setRespuestasUsuario(nuevasRespuestas);
+  };
+
+  const handleResponderCuestionario = () => {
+    // Aquí puedes enviar las respuestas del usuario al servidor si es necesario
+    console.log('Respuestas del usuario:', respuestasUsuario);
+  };
+
+  return (
+    <Form>
+      <h2>Responder Cuestionario:</h2>
+      {preguntas.map((pregunta) => (
+        <div key={pregunta.id}>
+          <p>{pregunta.pregunta}</p>
+          {/* Mostrar opciones de pregunta y permitir al usuario seleccionar respuestas */}
+          {pregunta.opciones.map((opcion, index) => (
+            <div key={index}>
+              <Radio
+                name={`opcion${pregunta.id}`}
+                checked={respuestasUsuario[pregunta.id] === index}
+                onChange={() => handleSelectRespuesta(pregunta.id, index)}
+              />
+              <Label>{opcion.text}</Label>
+            </div>
+          ))}
+        </div>
+      ))}
+      <Button type="button" onClick={handleResponderCuestionario}>
+        Enviar Respuestas
+      </Button>
+    </Form>
+  );
+};
+
+export default QuestionList;
+
+
+
+//Este Código si funciona para obtener las preguntas y dar la calificación 
+import React, { useState, useEffect } from 'react';
+import { Button, Container, Header, Image, Radio,Modal } from 'semantic-ui-react';
+import { useActividadStore, useUsuarioStore } from '../stores/UsuarioStore';
+
+const PA10Formulario = () => {
+  const [preguntaActual, setPreguntaActual] = useState(0);
+  const [opcionSeleccionada, setOpcionSeleccionada] = useState([]);
+  const [respuestasCorrectas, setRespuestasCorrectas] = useState(0);
+  const [preguntasCues, setPreguntasCues] = useState([]);
+  const [mostrarCalificacion, setMostrarCalificacion] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState(null);
+
+  const actividad = useActividadStore(state => state.actividad);
+  const usuario = useUsuarioStore(state => state.usuario);
+  const preguntas = actividad.PreguntaCuestionario;
+
+  const handleSeleccionarOpcion = (opcionIndex) => {
+    setOpcionSeleccionada(opcionIndex);
+    // Verificar si la opción seleccionada es correcta y actualizar respuestasCorrectas
+    if (preguntasCues[preguntaActual].OpcionCuestionario[opcionIndex].correcta) {
+      setRespuestasCorrectas((prev) => prev + 1);
+    }
+  };
+
+  const obtenerImagenURL = (multimedia) => {
+    try {
+      if (multimedia && multimedia.data) {
+        const base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(multimedia.data)));
+        return `data:${multimedia.type};base64,${base64String}`;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error al obtener la URL de la imagen:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchPreguntas = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_URL_BACKEND}/preguntacues/actividad/${actividad.id}/preguntas`);
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log('Data de preguntas:', data);
+          setPreguntasCues(data);
+        } else {
+          console.error('Error al obtener preguntas:', data.mensaje);
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      }
+    };
+    fetchPreguntas();
+  }, [actividad.id]);
+
+  
+  const mostrarSiguientePregunta = () => {
+    setPreguntaActual((prev) => Math.min(prev + 1, preguntasCues.length - 1));
+    setOpcionSeleccionada([]);
+
+    if (preguntaActual === preguntasCues.length - 1) {
+      setMostrarCalificacion(true);
+    }
+  };
+
+  const AsignarCalificacion = () => {
+    const calificacion = (respuestasCorrectas / preguntasCues.length) * 10;
+
+    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idActividad: actividad.id,
+        idUsuario: usuario.perfil.id,
+        calificacion: parseFloat(calificacion.toFixed(2)),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const openModal = (imageSrc) => {
+    setModalImageSrc(imageSrc);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImageSrc(null);
+  };
+
+
+  return (
+    <Container text textAlign="center">
+      <Header as="h2">Preguntas del Cuestionario</Header>
+      {preguntas && preguntas.length > 0 ? (
+        <div>
+          <Header as="h3">{preguntas[preguntaActual]?.pregunta || ''}</Header>
+          {preguntas[preguntaActual]?.multimedia && (
+            <div onClick={() => openModal(obtenerImagenURL(preguntas[preguntaActual].multimedia))}>
+              <Image
+                src={obtenerImagenURL(preguntas[preguntaActual].multimedia)}
+                alt="Imagen de la pregunta"
+                style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+              />
+            </div>
+          )}
+          {preguntas[preguntaActual]?.OpcionCuestionario && preguntas[preguntaActual]?.OpcionCuestionario.length > 0 ? (
+            preguntas[preguntaActual].OpcionCuestionario.map((opcion, optionIndex) => (
+              <div key={optionIndex}>
+                <p>
+                  <Radio
+                    name={`opcion${preguntaActual}`}
+                    checked={opcionSeleccionada === optionIndex}
+                    onChange={() => handleSeleccionarOpcion(optionIndex)}
+                  />
+                  {`Opción ${optionIndex + 1}: ${opcion.textOpcion || ''}`}
+                </p>
+                {opcion.multimedia && (
+                  <div onClick={() => openModal(obtenerImagenURL(opcion.multimedia))}>
+                    <Image
+                      src={obtenerImagenURL(opcion.multimedia)}
+                      alt={`Imagen de la opción ${optionIndex + 1}`}
+                      style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No hay opciones disponibles.</p>
+          )}
+          {mostrarCalificacion ? (
+            <div>
+              <Button onClick={AsignarCalificacion} primary>
+                Calificar Cuestionario
+              </Button>
+              {/* Mostrar la calificación obtenida */}
+              <p>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
+            </div>
+          ) : (
+            <Button onClick={mostrarSiguientePregunta} primary>
+              Siguiente Pregunta
+            </Button>
+          )}
+        </div>
+      ) : (
+        <p>No hay preguntas disponibles.</p>
+      )}
+
+      {/* Modal para la imagen */}
+      <Modal open={modalOpen} onClose={closeModal} centered={false}>
+        <Modal.Content image>
+          <Image wrapped src={modalImageSrc} alt="Imagen" />
+        </Modal.Content>
+      </Modal>
+    </Container>
+  );
+};
+
+export default PA10Formulario;

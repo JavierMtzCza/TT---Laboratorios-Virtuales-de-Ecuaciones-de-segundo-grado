@@ -30,7 +30,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, tipo, fechalimite, rol })
                             PreguntaEjercicio: data.PreguntaEjercicio,
                         })
                         if (rol == 2)
-                            navigate('/ResolverActividad')
+                            navigate('/Formulario')
                         else
                             navigate('/CalificacionActividad')
                     } else {
