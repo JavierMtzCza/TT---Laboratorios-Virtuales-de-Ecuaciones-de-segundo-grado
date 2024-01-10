@@ -31,6 +31,8 @@ const PA5Grupos = () => {
   const filtrarGrupos = (filtro) => {
     if (filtro == "")
       obtenerGrupos()
+    else if (filtro.includes("/") || filtro.includes("\\"))
+      obtenerGrupos()
     else
       fetch(`${import.meta.env.VITE_URL_BACKEND}/grupo/${usuario.token}/${filtro}`)
         .then((response) => response.json()).then((data) => setData(data)).catch((error) => console.log(error))

@@ -21,6 +21,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 	const { register, handleSubmit, formState: { errors }, reset } = useForm()
 	//Estados para controlar los mensdajes e informacion
 	const [showModal, setShowModal] = useState(false)
+	const [showPortal, setShowPortal] = useState(false)
 	const [mensajeRespuesta, setMensajeRespuesta] = useState({ show: false, texto: "", consejo: consejo })
 	const [respuestaCorrecta, setRespuestaCorrecta] = useState(false) //Saber si la respuesta fue correcta o no
 	const [respuestaIncorrecta, setRespuestaIncorrecta] = useState(false) //Saber si la respuesta fue incorrecta o no
@@ -75,7 +76,7 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 		} else {
 			if (tipo) {
 				if (formData.a == '') {
-					alert("Debe poner su respuesta")
+					setShowPortal(true)
 				} else if (formData.a == respuestas.a && formData.b == respuestas.b && formData.c == respuestas.c) {
 					//PASS: Cuando acierta el ejercicio
 					setRespuestaCorrecta(true)
@@ -92,18 +93,18 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 				setData({ tc: formData.a, tl: formData.b, ti: formData.c })
 			} else {
 				if (formData.r1 == '' || formData.r2 == '') {
-					alert("Debe poner algo en los campos")
+					setShowPortal(true)
 				} else if (formData.r1 == respuestas.r1 && formData.r2 == respuestas.r2) {
 					//PASS: Cuando acierta el ejercicio
 					setRespuestaCorrecta(true)
 					obtenerEcuacionCuadratica(respuestas.r1, respuestas.r2)
 					reset({ r1: "", r2: "" })
-					setMensajeRespuesta({ show: true, texto: "Perfecto", consejo: consejo })
+					setMensajeRespuesta({ show: true, texto: "Perfecto, eres bueno en esto...", consejo: consejo })
 					setCalificacion(calificacion + 1)
 				} else {
 					//NOTE: Cuanfo falla el ejercicio
 					reset({ r1: "", r2: "" })
-					setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca", consejo: consejo })
+					setMensajeRespuesta({ show: true, texto: "Ouh! Estuviste cerca, sigue intentandolo!", consejo: consejo })
 					setIntentos(intentos - 1)
 				}
 			}
@@ -168,27 +169,40 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 
 		const r1 = parseFloat(raiz1);
 		const r2 = parseFloat(raiz2);
+		let a
+		let b
+		let c
 
-		console.log(((1 - r1) * (1 - r2)))
+		const paso1 = `<br>Paso 1: Sean \\(r_1\\) y  \\(r_2\\) las raíces de una ecuación de segundo grado: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
+		let paso2
+		let paso3
+		let paso4
+		let paso5
+		if (respuestas.a == -1) {
+			a = -1;
+			b = r1 + r2;
+			c = (-1) * (r1 * r2);
+			paso2 = `<br>Paso 2: Como el término cuadrático es negativo, tenemos una parábola con concavidad hacia abajo. <br><span className="math"> Para resolver este ejercicio usaremos:  \\((-1)(x-r_1) (x-r_2) = 0\\)</span></span>`;
+			paso3 = `<br>Paso 3: Por lo que obtenemos:<br><span className="math"> \\((-x+r_1) (x-r_2) = (-x + (${r1}))(x -(${r2}))\\) <br><span className="math">\\((-x ${r1 < 0 ? r1 : '+' + r1}) (x ${r2 > 0 ? '-' + r2 : '+' + r2}) = -x^2 ${r2 < 0 ? r2 : '+' + r2}x ${r1 < 0 ? r1 : '+' + r1}x + (${r1} * ${r2})\\)`
+			// paso4 = `<br> Paso 4: Usando la fórmula cuadrática, obtenemos los coeficientes de la ecuación cuadrática:
+			//    <br><span className="math">\\(a = ${a}\\)</span>
+			//    <br> <span className="math">\\(b = -(${sumaRaices}) = ${b}\\)</span> 
+			//    <br> <span className="math">\\(c = ${productoRaices}\\)</span>`;
+			paso5 = `<br>Paso 4: La ecuación cuadrática es: <br> <span className="math">\\(-x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
+		} else {
+			a = 1;
+			b = -r1 - r2;
+			c = r1 * r2;
+			paso2 = `<br>Paso 2: Al desarrollar \\((x-r_1) (x-r_2) = 0\\) <br><span className="math"> genera: \\(ax^2 + bx + c = 0\\)</span></span>`;
+			paso3 = `<br>Paso 3: Por lo que obtenemos:<br><span className="math"> \\((x-r_1) (x-r_2) = x^2 - (${r2}x) - (${r1}x) + (${r1} * ${r2})\\) <br><span className="math">\\((x-r_1) (x-r_2) = x^2 - (${b}x) + (${c})\\)`
+			// 	paso4 = `<br> Paso 4: Usando la fórmula cuadrática, obtenemos los coeficientes de la ecuación cuadrática:
+			//      <br><span className="math">\\(a = -1\\)</span>
+			//      <br> <span className="math">\\(b = -(${sumaRaices}) = ${b}\\)</span> 
+			//      <br> <span className="math">\\(c = ${productoRaices}\\)</span>`;
+			paso5 = `<br>Paso 4: La ecuación cuadrática es: <br> <span className="math">\\(x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
+		}
 
-		const paso1 = `<br>Paso 1: Sean \\(r_1\\) y  \\(r_2\\) las raices de una ecuación de segundo grado: <br> <span className="math">\\(r_1 = ${r1}\\)</span> y <span className="math">\\(r_2 = ${r2}\\)</span>`;
-
-		const sumaRaices = r1 + r2;
-		const productoRaices = r1 * r2;
-		const a = 1;
-		const b = -sumaRaices;
-		const c = productoRaices;
-		const paso2 = `<br>Paso 2: Al desarrollar \\((x-r_1) (x-r_2) = 0\\) <br><span className="math"> genera: \\(ax^2 + bx + c = 0\\)</span></span>`;
-		const paso3 = `<br>Paso 3: Por lo que obtenemos:<br><span className="math"> \\((x-r_1) (x-r_2) = x^2 - (${r1}x) - (${r2}x) + (${r1} * ${r2})\\) <br><span className="math">\\((x-r_1) (x-r_2) = x^2 - (${sumaRaices}x) + (${productoRaices})\\)`
-
-
-		const paso4 = `<br> Paso 4: Usando la fórmula cuadrática, obtenemos los coeficientes de la ecuación cuadrática:
-         <br><span className="math">\\(a = ${a}\\)</span>
-         <br> <span className="math">\\(b = -(${sumaRaices}) = ${b}\\)</span> 
-         <br> <span className="math">\\(c = ${productoRaices}\\)</span>`;
-
-		const paso5 = `<br>Paso 5: La ecuación cuadrática es: <br> <span className="math">\\(x^2 ${b < 0 ? b : '+' + b}x ${c < 0 ? c : '+' + c} = 0\\)</span>`;
-		let pasosHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso4}<br>${paso5}`;
+		let pasosHTML = `${paso1}<br>${paso2}<br>${paso3}<br>${paso5}`;
 		setData({ tc: a, tl: b, ti: c })
 
 		document.getElementById('pasos').innerHTML = pasosHTML;
@@ -289,6 +303,13 @@ const PA8Pruebas = ({ pregunta, respuestas, claveVideo, multimedia, consejo, tip
 					setActividad({ id: 0, nombre: "", descripcion: "", fechaLimite: "", tipo: "", PreguntaCuestionario: [], PreguntaEjercicio: [], prueba: false })
 					navigate('/Grupo')
 				}}
+			/>
+			<Modal
+				centered={false}
+				size='tiny'
+				content={<Message style={{ textAlign: "center", fontSize: "18px" }} error header="Debe poner algo en los campos de respuesta" />}
+				open={showPortal}
+				onClose={() => { setShowPortal(false) }}
 			/>
 		</>
 	)

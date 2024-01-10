@@ -20,6 +20,14 @@ const NavbarMb = ({ imagen }) => {
   const usuario = useUsuarioStore(state => state.usuario)
   const [icon, setIcon] = useState(HamIcon)
 
+  const openPdfInNewTab = (tipo) => {
+    const pdfUrl =
+      tipo === "Documentacion"
+        ? "/src/images/ManualdeUsuarioTT2023-B120.pdf"
+        : " ";
+    window.open(pdfUrl, '_blank');
+  }
+
   const hideSidebar = () => {
     setIcon(HamIcon)
     setVisible(false)
@@ -56,19 +64,11 @@ const NavbarMb = ({ imagen }) => {
         <Menu.Item>
           <img src={imagen} width="35px" height="35px" style={{ margin: "0 auto" }} alt="" />
         </Menu.Item>
-        <Menu.Item name='Ayuda' onClick={() => {
-          setTipo("Ayuda")
-          openPdfModal()
-        }
-        }>
-          Ayuda
+        <Menu.Item name='Ayuda' >
+          <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
-        <Menu.Item name='Documentacion' onClick={() => {
-          setTipo("Documentacion")
-          openPdfModal()
-        }
-        }>
-          Documentacion
+        <Menu.Item name='Documentacion'>
+          <Link className='link' onClick={() => openPdfInNewTab("Documentacion")} >Documentacion </Link>
         </Menu.Item>
         <Menu.Item name='Aviso de Privacidad'>
           <Link to={"/Aviso"}>Aviso de Privacidad</Link>

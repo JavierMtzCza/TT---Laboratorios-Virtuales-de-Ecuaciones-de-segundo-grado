@@ -27,11 +27,8 @@ const NavbarLg = ({ imagen }) => {
           <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
 
-        <Menu.Item
-          name='Documentacion'
-          onClick={() => openPdfInNewTab("Documentacion")}
-        >
-          Documentacion
+        <Menu.Item name='Documentacion'>
+          <Link className='link' onClick={() => openPdfInNewTab("Documentacion")} >Documentacion </Link>
         </Menu.Item>
 
         <Menu.Item name='Aviso de Privacidad'>

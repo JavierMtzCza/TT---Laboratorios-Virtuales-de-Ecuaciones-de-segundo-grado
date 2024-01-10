@@ -3,17 +3,19 @@ import { useActividadStore, useGrupoStore, useUsuarioStore } from '../stores/Usu
 import { useNavigate } from 'react-router-dom'
 import Avatar from '../images/user_1144709.png'
 import { useState } from 'react'
+import Confirmacion from './Confirmacion'
 
-const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refrescar }) => {
+const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, tipo, refrescar }) => {
 
   const setActividad = useActividadStore(state => state.setActividad)
   const [actividadHecha, setActividadHecha] = useState({ show: false, calificacion: 0.0 })
   const [actividadEliminada, setActividadEliminada] = useState(false)
+  const [confirmEliminar, setConfirmEliminar] = useState(false)
   const usuario = useUsuarioStore(state => state.usuario)
   const grupo = useGrupoStore(state => state.grupo)
   const navigate = useNavigate();
 
-  const dataActividad = (tipo) => {
+  const dataActividad = () => {
     fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/actividad/${id}/${usuario.perfil.id}`)
       .then((response) => response.json())
       .then((data) => {
@@ -29,7 +31,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
               tipo: data.tipo,
               PreguntaCuestionario: data.PreguntaCuestionario,
               PreguntaEjercicio: data.PreguntaEjercicio,
-              prueba: tipo
+              prueba: false
             })
             if (data.tipo == "Cuestionario")
               navigate('/Formulario')
@@ -42,7 +44,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
       }).catch((error) => console.log(error))
   }
 
-  const dataActividad1 = () => {
+  const probarActividad = () => {
     fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/actividad/${id}/${usuario.perfil.id}`)
       .then((response) => response.json())
       .then((data) => {
@@ -57,6 +59,7 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
             tipo: data.tipo,
             PreguntaCuestionario: data.PreguntaCuestionario,
             PreguntaEjercicio: data.PreguntaEjercicio,
+            prueba: true
           })
           if (data.tipo == "Cuestionario")
             navigate('/Formulario')
@@ -64,10 +67,6 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
             navigate('/ResolverActividad')
         }
       }).catch((error) => console.log(error))
-  }
-
-  const probarActividad = () => {
-    dataActividad1(true)
   }
 
   const boton2 = () => {
@@ -95,13 +94,13 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
       <Card>
         <Card.Content textAlign='center'>
           <Image floated='left' src={Avatar} avatar bordered />
-          <Card.Header textAlign='left' content={nombre} />
+          <Card.Header textAlign='left' content={nombre + ` (${tipo})`} />
           <Card.Description content={descripcion} />
           <Button onClick={probarActividad} style={{ borderRadius: "1rem", marginTop: "15px" }} color='teal' content="Probar" />
           <Button onClick={boton2} style={{ borderRadius: "1rem", marginTop: "15px" }} color={rol == 1 ? 'twitter' : 'yellow'} content={rol == 1 ? "Ver calificaciones" : "Resolver"} />
           {
             rol == 1 ?
-              <Button onClick={eliminarActividad} style={{ borderRadius: "1rem", marginTop: "15px" }} color='red' content="Eliminar" />
+              <Button onClick={() => { setConfirmEliminar(true) }} style={{ borderRadius: "1rem", marginTop: "15px" }} color='red' content="Eliminar" />
               :
               <></>
           }
@@ -125,7 +124,13 @@ const GrupoCardActividad = ({ id, nombre, descripcion, fechalimite, rol, refresc
           setActividadEliminada(false)
           refrescar()
         }}
-        header={"Actividad eliminada con exito"}
+        header={"Actividad eliminada con éxito."}
+      />
+      <Confirmacion
+        open={confirmEliminar}
+        setOpen={setConfirmEliminar}
+        funcion={eliminarActividad}
+        textoPantalla="¿Está seguro de eliminar esta actividad? Una vez eliminada, no se podrá recuperar."
       />
     </>
 

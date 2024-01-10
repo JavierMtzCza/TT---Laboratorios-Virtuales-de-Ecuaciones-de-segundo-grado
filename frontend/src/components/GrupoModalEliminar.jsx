@@ -28,12 +28,11 @@ const GrupoModalEliminar = ({ propShow, propSetShow }) => {
   return (
     <Modal
       dimmer
-      size='tiny'
       onClose={() => propSetShow(false)}
       onOpen={() => propSetShow(true)}
       open={propShow}
     >
-      <Modal.Header content="¿Esta deacuerdo de eliminar el grupo y todas las actividades de este?" />
+      <Modal.Header content="¿Está de acuerdo con eliminar el grupo y todas las actividades de este?" />
       <Modal.Actions>
         <Button negative content="Cancelar" onClick={() => propSetShow(false)} />
         <Button positive content="Aceptar"

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Button, Form, Message, Modal } from 'semantic-ui-react'
+import { Button, Form, Message, Modal, Segment } from 'semantic-ui-react'
 import { useGrupoStore } from "../stores/UsuarioStore";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const GrupoModalModificar = ({ propShow, propSetShow }) => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
-  const [correcto, setCorrecto] = useState({ modificado: false, deshabilitado: false })
+  const [status, setStatus] = useState({ error: false, mensaje: "" })
+  const [showPortal, setShowPortal] = useState(false)
   const navigate = useNavigate();
   const grupo = useGrupoStore(state => state.grupo) //estado global del grupo
   const setGrupo = useGrupoStore(state => state.setGrupo)
@@ -22,13 +23,13 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
         if (data.error) {
           console.log(error)
         } else {
-          setCorrecto({ modificado: true, deshabilitado: true })
+          setShowPortal(true)
+          setStatus({ error: false, mensaje: "" })
           setGrupo({
             nombre: data.nombre,
             descripcion: data.descripcion,
             ...grupo
           })
-          reset({nombre:'',descripcion:''})
         }
       })
       .catch((error) => console.log(error))
@@ -37,7 +38,7 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
 
   const onSubmit = handleSubmit((formData) => {
     if (formData.nombre == "" && formData.descripcion == "") {
-      alert("no se puede modificar le grupo")
+      setStatus({ error: true, mensaje: "No se puede modificar el grupo sino hay datos nuevos" })
     } else {
       const data = {
         nombre: formData.nombre == '' ? grupo.nombre : formData.nombre,
@@ -48,31 +49,47 @@ const GrupoModalModificar = ({ propShow, propSetShow }) => {
   })
 
   return (
-    <Modal
-      onClose={() => {
-        propSetShow(false)
-        setCorrecto({ modificado: false, deshabilitado: false })
-        navigate('/Grupos')
-      }}
-      closeIcon
-      onOpen={() => propSetShow(true)}
-      open={propShow}
-      size='tiny'
-    >
-      <Modal.Header>Editar datos del Grupo</Modal.Header>
-      <Modal.Content>
-        <Form style={{ margin: "0 1% 15% 1%" }} error onSubmit={onSubmit}>
-          <Form.Input disabled={correcto.deshabilitado} fluid label="Nombre" placeholder="Nuevo nombre del grupo">
-            <input {...register("nombre")} />
-          </Form.Input>
-          <Form.Input disabled={correcto.deshabilitado} fluid label="Descripción" placeholder="Nueva descripcion del grupo">
-            <input {...register("descripcion")} />
-          </Form.Input>
-          {correcto.modificado ? <Message positive header="Grupo Modificado Correctamente" /> : <></>}
-          <Button type="submit" disabled={correcto.deshabilitado} floated='right' content="Modificar Grupo" color='green' />
-        </Form>
-      </Modal.Content>
-    </Modal>
+    <>
+      <Modal
+        onClose={() => { 
+          propSetShow(false)
+          setStatus({ error: false, mensaje: "" })
+          reset({ nombre: '', descripcion: '' })
+         }}
+        open={propShow}
+        size='tiny'
+      >
+        <Modal.Header>Editar datos del Grupo</Modal.Header>
+        <Modal.Content>
+          <Form style={{ margin: "0 1% 15% 1%" }} error onSubmit={onSubmit}>
+            <Form.Input fluid label="Nombre" placeholder="Nuevo nombre del grupo">
+              <input {...register("nombre")} />
+            </Form.Input>
+            <Form.Input fluid label="Descripción" placeholder="Nueva descripcion del grupo">
+              <input {...register("descripcion")} />
+            </Form.Input>
+            {status.error ? <Segment basic textAlign="center"><Message size="mini" error content={status.mensaje} /></Segment> : <></>}
+            <Button type="submit" floated='right' content="Modificar Grupo" color='green' />
+            <Button type="button" floated='left' content="Cancelar" color='red' onClick={() => {
+              propSetShow(false)
+              setStatus({ error: false, mensaje: "" })
+              reset({ nombre: '', descripcion: '' })
+            }} />
+          </Form>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        centered={false}
+        size='tiny'
+        content={<Message style={{ textAlign: "center", fontSize: "18px" }} positive header="Grupo editado con con éxito" />}
+        open={showPortal}
+        onClose={() => {
+          propSetShow(false)
+          setShowPortal(false)
+          navigate('/Grupos')
+        }}
+      />
+    </>
   )
 }
 

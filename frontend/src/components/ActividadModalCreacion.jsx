@@ -79,8 +79,8 @@ const ActividadModalCreacion = ({ propShow, propSetShow, tipo }) => {
             <Form.Input type='datetime-local' min={time.current} label="Fecha Limite (Opcional)" placeholder="Ingrese una descripción a la actividad"
               onChange={onChange} selected={value} />)}
           /> */}
-            <Button color="black" type='button' content="Cancelar" onClick={() => propSetShow(false)} />
-            <Button content="Crear Actividad" type='submit' labelPosition="right" icon="checkmark" onClick={handleCrearActividad} positive />
+            <Button color="red" type='button' content="Cancelar" onClick={() => propSetShow(false)} />
+            <Button content="Crear Actividad" type='submit' labelPosition="right" floated='right' icon="checkmark" onClick={handleCrearActividad} positive />
           </Form>
         </Modal.Content>
       </Modal>
