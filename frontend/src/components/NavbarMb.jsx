@@ -14,20 +14,19 @@ function CloseIcon() {
 
 const NavbarMb = ({ imagen }) => {
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [tipo, setTipo] = useState('Ayuda')
   const [visible, setVisible] = useState(false)
   const usuario = useUsuarioStore(state => state.usuario)
   const [icon, setIcon] = useState(HamIcon)
 
-  const openPdfInNewTab = (tipo) => {
-    const pdfUrl =
-      tipo === "Documentacion"
-        ? "/src/images/ManualdeUsuarioTT2023-B120.pdf"
-        : " ";
-    window.open(pdfUrl, '_blank');
-  }
-
+  const DescargarPDF = () => {
+    const pdfUrl = "./src/images/ManualdeUsuarioTT2023-B120.pdf";
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'ManualdeUsuarioTT2023-B120.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const hideSidebar = () => {
     setIcon(HamIcon)
     setVisible(false)
@@ -40,13 +39,6 @@ const NavbarMb = ({ imagen }) => {
     visible ? hideSidebar() : showSidebar()
   }
 
-  const openPdfModal = () => {
-    setModalOpen(true);
-  };
-
-  const closePdfModal = () => {
-    setModalOpen(false);
-  };
 
   return (
     <>
@@ -68,7 +60,7 @@ const NavbarMb = ({ imagen }) => {
           <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
         <Menu.Item name='Documentacion'>
-          <Link className='link' onClick={() => openPdfInNewTab("Documentacion")} >Documentacion </Link>
+          <Link onClick={DescargarPDF}>Documentación </Link>
         </Menu.Item>
         <Menu.Item name='Aviso de Privacidad'>
           <Link to={"/Aviso"}>Aviso de Privacidad</Link>
@@ -103,18 +95,6 @@ const NavbarMb = ({ imagen }) => {
             </Menu.Item>
         }
       </Sidebar>
-      <Modal open={modalOpen} onClose={closePdfModal} >
-        <Modal.Header>Manual de Usuario</Modal.Header>
-        <Modal.Content>
-          <PdfViewer ruta={tipo == "Documentacion" ? "/src/images/TT22023-B120.pdf" : "/src/images/ManualDeUsuario.pdf"} />Z
-        </Modal.Content>
-        <Modal.Actions>
-          <Button color='black' onClick={closePdfModal}>
-            Cerrar
-          </Button>
-        </Modal.Actions>
-      </Modal >
-
     </>
   )
 }
