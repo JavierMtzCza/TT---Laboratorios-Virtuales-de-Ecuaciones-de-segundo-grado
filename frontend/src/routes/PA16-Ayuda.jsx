@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Accordion, Container, Segment, Header, Checkbox, Button } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Accordion, Container, Segment, Header } from 'semantic-ui-react';
 
 const PA16Ayuda = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -79,7 +78,7 @@ const PA16Ayuda = () => {
   return (
     <div
       style={{
-        backgroundImage: 'linear-gradient(to right, #e3e6e8, #c9cbd0)',
+        backgroundImage: 'linear-gradient(90deg, rgba(255,251,217,1) 32%, rgba(255,248,185,1) 86%)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',

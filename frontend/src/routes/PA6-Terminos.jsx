@@ -6,7 +6,7 @@ const TermsAndConditions = () => {
   return (
     <div
       style={{
-        backgroundImage: 'linear-gradient(to right, #a2c1df, #d2e7fe)',
+        backgroundImage: 'linear-gradient(45deg, rgba(215,255,215,1) 46%, rgba(152,255,193,1) 86%)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -194,19 +194,6 @@ const TermsAndConditions = () => {
         <p>
         El usuario se compromete a utilizar la Aplicación de forma adecuada, conforme a las leyes y reglamentos aplicables.
         </p>
-
-
-
-        {/* Agrega el resto de los términos y condiciones aquí */}
-
-        {/* <Checkbox label="Acepto los términos y condiciones" style={{ marginBottom: '15px' }} />
-        
-          <Button primary as={Link} to="/">
-            Aceptar
-          </Button> */}
-          <Button primary as={Link} to="/">
-            Aceptar
-          </Button>
       </Segment>
     </Container>
     </div>
