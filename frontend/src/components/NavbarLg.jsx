@@ -1,7 +1,7 @@
 import { Button, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import "../estiloscss/pdf.css";
-import doc from "../images/ManualdeUsuario.pdf"
+import doc from "../images/Manual.pdf"
 import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
@@ -11,7 +11,7 @@ const NavbarLg = ({ imagen }) => {
     const pdfUrl = { doc };
     const link = document.createElement('a');
     link.href = pdfUrl;
-    link.download = 'ManualdeUsuario.pdf';
+    link.download = 'Manual.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

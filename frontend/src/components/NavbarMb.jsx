@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Icon, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import doc from "../images/ManualdeUsuario.pdf"
+import doc from "../images/Manual.pdf"
 import { useUsuarioStore } from '../stores/UsuarioStore'
 
 function HamIcon() {
@@ -22,7 +22,7 @@ const NavbarMb = ({ imagen }) => {
     const pdfUrl = { doc };
     const link = document.createElement('a');
     link.href = pdfUrl;
-    link.download = 'ManualdeUsuario.pdf';
+    link.download = 'Manual.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
