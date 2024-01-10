@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form, Icon, Modal, Message } from 'semantic-ui-react';
 
-const VerificarCorreo = () => {
+const VerificarCorreo = ({ correoRegistro, setOpenVerificarCorreoModal }) => {
   const [mensaje, setMensaje] = useState('');
   const [openModal, setOpenModal] = useState(true);
   const [codigo, setCodigo] = useState('');
   const [tiempoRestante, setTiempoRestante] = useState(600);
-  const [correo, setCorreo] = useState('');
+  const [correo, setCorreo] = useState(correoRegistro);
   const [mensajeExito, setMensajeExito] = useState('');
 
   useEffect(() => {
@@ -52,12 +52,16 @@ const VerificarCorreo = () => {
   };
 
   const handleCerrarModal = () => {
+    // Cierra el modal y restablece el estado del correo
     setOpenModal(false);
+    setCorreo('');
+    // Cierra el modal superior que está en PA3Registro
+    setOpenVerificarCorreoModal(false);
   };
 
   return (
     <Modal open={openModal} onClose={handleCerrarModal} size='tiny'>
-      <Modal.Header>Código enviado , Ingrese su código de verificación para finalizar el registro</Modal.Header>
+      <Modal.Header>Código enviado, ingrese su código de verificación para finalizar el registro</Modal.Header>
       <Modal.Content>
         <Form>
           <Form.Field>

@@ -5,13 +5,24 @@ import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
 const NavbarLg = ({ imagen }) => {
-  const openPdfInNewTab = (tipo) => {
+  
+  const DescargarPDF = () => {
+    const pdfUrl = "/src/images/ManualdeUsuarioTT2023-B120.pdf";
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'ManualdeUsuarioTT2023-B120.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
+  {/*const abrirPDF = (tipo) => {
     const pdfUrl =
       tipo === "Documentacion"
         ? "/src/images/ManualdeUsuarioTT2023-B120.pdf"
         : " ";
     window.open(pdfUrl, '_blank');
-  }
+  } */}
 
   const usuario = useUsuarioStore(state => state.usuario)
 
@@ -27,9 +38,16 @@ const NavbarLg = ({ imagen }) => {
           <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
 
-        <Menu.Item name='Documentacion'>
-          <Link className='link' onClick={() => openPdfInNewTab("Documentacion")} >Documentacion </Link>
+        <Menu.Item name='Documentacion'
+          onClick={DescargarPDF}> Documentacion
         </Menu.Item>
+
+        {/*<Menu.Item
+          name='Documentacion'
+          onClick={() => abrirPDF("Documentacion")}
+        >
+          Documentacion
+        </Menu.Item> */}
 
         <Menu.Item name='Aviso de Privacidad'>
           <Link className='link' to={"/Aviso"}>Aviso de Privacidad</Link>

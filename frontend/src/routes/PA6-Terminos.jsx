@@ -204,6 +204,9 @@ const TermsAndConditions = () => {
           <Button primary as={Link} to="/">
             Aceptar
           </Button> */}
+          <Button primary as={Link} to="/">
+            Aceptar
+          </Button>
       </Segment>
     </Container>
     </div>

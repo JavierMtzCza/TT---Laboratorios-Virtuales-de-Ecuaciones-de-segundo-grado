@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Form, Input, Button, Radio, Label,Modal, Message } from 'semantic-ui-react';
+import { Grid, Form, Input, Button, Radio, Label,Modal, Message,Image,Segment } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { useActividadStore } from '../stores/UsuarioStore';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,8 @@ const PA9CrearCuestionario = () => {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
   const [showConfirmCuestionario, setShowConfirmCuestionario] = useState(false);
   const [showPortal, setShowPortal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [guardadoExitoso, setGuardadoExitoso] = useState(false);
 
   const actividad = useActividadStore(state => state.actividad);
@@ -50,6 +52,12 @@ const PA9CrearCuestionario = () => {
 
   const handleGuardarCuestionario = async () => {
     try {
+
+      if (preguntas.length === 0) {
+        // Mostrar un mensaje indicando que no se puede guardar sin preguntas
+        setShowPortal(true);  // Mostrar el mensaje de error en pantalla
+        return;
+      }
       // Lógica para guardar el cuestionario
       for (const preguntaData of preguntas) {
         const formData = new FormData();
@@ -79,8 +87,7 @@ const PA9CrearCuestionario = () => {
             });
   
             const dataOpcion = await responseOpcion.json();
-  
-            // Aquí puedes realizar cualquier acción necesaria con dataOpcion
+
           }
         } else {
           console.error('Error al agregar la pregunta:', dataPregunta.mensaje);
@@ -140,14 +147,17 @@ const PA9CrearCuestionario = () => {
     }
   };
 
-  
-
   const OpcionCorrecta = (index) => {
     const updatedOptions = options.map((option, i) => ({
       ...option,
       correcta: i === index,
     }));
     setOptions(updatedOptions);
+  };
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    setShowImageModal(true);
   };
 
   return (
@@ -161,8 +171,16 @@ const PA9CrearCuestionario = () => {
           <Form.Field>
             <label>Multimedia:</label>
             <Input type="file" onChange={handleCargarImagen} />
+            {multimedia && (
+              <div>
+                <Image
+                  src={URL.createObjectURL(multimedia)}
+                  size="small"
+                  onClick={() => handleImageClick(URL.createObjectURL(multimedia))}
+                />
+              </div>
+            )}
           </Form.Field>
-          {/* Renderizar campos de opciones */}
           {options.map((option, index) => (
             <div key={index}>
               <Form.Field>
@@ -190,6 +208,15 @@ const PA9CrearCuestionario = () => {
                   type="file"
                   onChange={(e) => handleOpcionChange(index, 'multimedia', e.target.files[0])}
                 />
+                {option.multimedia && (
+                  <div>
+                    <Image
+                      src={URL.createObjectURL(option.multimedia)}
+                      size="small"
+                      onClick={() => handleImageClick(URL.createObjectURL(option.multimedia))}
+                    />
+                  </div>
+                )}
               </Form.Field>
             </div>
           ))}
@@ -215,28 +242,36 @@ const PA9CrearCuestionario = () => {
         </Form>
       </Grid.Column>
       <Grid.Column>
-        {/* Visualizar preguntas agregadas */}
         <div>
           <h2>Preguntas Agregadas:</h2>
           {preguntas.map((pregunta, index) => (
-            <div key={index}>
-              <p>{pregunta.pregunta}</p>
-              <p>Multimedia: {pregunta.multimedia && pregunta.multimedia.name}</p>
-              <p>Opciones:</p>
+            <Segment key={index}>
+              <p><strong>Pregunta:</strong> {pregunta.pregunta}</p>
+              {pregunta.multimedia && (
+                <p><strong>Multimedia:</strong> {pregunta.multimedia.name}</p>
+              )}
+
+              <p><strong>Opciones:</strong></p>
               {pregunta.opciones.map((opcion, optionIndex) => (
                 <div key={optionIndex}>
                   <p>{`Opción ${optionIndex + 1}: ${opcion.textOpcion}`}</p>
-                  <p>Multimedia: {opcion.multimedia && opcion.multimedia.name}</p>
+                  {opcion.multimedia && (
+                    <p><strong>Multimedia:</strong> {opcion.multimedia.name}</p>
+                  )}
                   <p>{`Correcta: ${opcion.correcta ? 'Sí' : 'No'}`}</p>
+                  <p></p>
                 </div>
               ))}
-              <Button type="button" onClick={() => EditarPregunta(index)}>
-                Editar Pregunta
-              </Button>
-              <Button type="button" onClick={() => EliminarPregunta(index)}>
-                Eliminar Pregunta
-              </Button>
-            </div>
+
+              <Button.Group>
+                <Button type="button" onClick={() => EditarPregunta(index)}>
+                  Editar Pregunta
+                </Button>
+                <Button type="button" onClick={() => EliminarPregunta(index)}>
+                  Eliminar Pregunta
+                </Button>
+              </Button.Group>
+            </Segment>
           ))}
         </div>
         {selectedOptionIndex !== null && (
@@ -247,14 +282,21 @@ const PA9CrearCuestionario = () => {
             <Button type="button" onClick={() => setSelectedOptionIndex(null)}>
               Cancelar Edición
             </Button>
-        </div> */}
+          </div> */}
         )}
 
         <Button type="button" onClick={handleConfirmarGuardar}>
           Guardar Cuestionario
         </Button>
 
-        {/* Modal de confirmación */}
+        <Modal
+          centered={false}
+          size='tiny'
+          content={<Message style={{ textAlign: "center", fontSize: "18px" }} negative header="Error" content="Debe agregar al menos una pregunta antes de guardar el cuestionario." />}
+          open={showPortal && !guardadoExitoso}
+          onClose={() => setShowPortal(false)}
+        />
+
         <Modal open={showConfirmCuestionario} onClose={() => setShowConfirmCuestionario(false)}>
           <Modal.Header>Confirmación</Modal.Header>
           <Modal.Content>
@@ -270,25 +312,29 @@ const PA9CrearCuestionario = () => {
           </Modal.Actions>
         </Modal>
 
-        {/* Modal de éxito y redirección */}
         <Modal
           centered={false}
           size='tiny'
           content={<Message style={{ textAlign: "center", fontSize: "18px" }} positive header="Cuestionario creado satisfactoriamente" />}
-          open={showPortal}
+          open={showPortal && guardadoExitoso}
           onClose={() => {
             setShowPortal(false);
-            // Redirigir a la página '/Grupo' solo si el guardado fue exitoso
             if (guardadoExitoso) {
               navigate('/Grupo');
             }
           }}
         />
-        
-      
-    </Grid.Column>
-  </Grid>
+
+        {showImageModal && (
+          <Modal open={showImageModal} onClose={() => setShowImageModal(false)}>
+            <Modal.Content>
+              <Image src={selectedImage} size="large" centered />
+            </Modal.Content>
+          </Modal>
+        )}
+      </Grid.Column>
+    </Grid>
   );
-};  
+};
 
 export default PA9CrearCuestionario;

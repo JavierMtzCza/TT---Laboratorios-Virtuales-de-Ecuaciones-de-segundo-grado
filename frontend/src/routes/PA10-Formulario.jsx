@@ -11,7 +11,10 @@ const PA10Formulario = () => {
   const [mostrarCalificacion, setMostrarCalificacion] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState(null);
+  const [calificacionAsignada, setCalificacionAsignada] = useState(false);
   const [final, setFinal] = useState(false); // Nuevo estado para el modal final
+
+  
 
   const actividad = useActividadStore((state) => state.actividad);
   const usuario = useUsuarioStore((state) => state.usuario);
@@ -77,24 +80,29 @@ const PA10Formulario = () => {
 
 
   const AsignarCalificacion = () => {
-    const calificacion = (respuestasCorrectas / preguntasCues.length) * 10;
-
-    setFinal(true);
-
-    fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        idActividad: actividad.id,
-        idUsuario: usuario.perfil.id,
-        calificacion: parseFloat(calificacion.toFixed(2)),
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
+    // Verifica si la calificación ya ha sido asignada
+    if (!calificacionAsignada) {
+      const calificacion = (respuestasCorrectas / preguntasCues.length) * 10;
+  
+      setFinal(true);
+  
+      fetch(`${import.meta.env.VITE_URL_BACKEND}/actividad/calificacion`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          idActividad: actividad.id,
+          idUsuario: usuario.perfil.id,
+          calificacion: parseFloat(calificacion.toFixed(2)),
+        }),
       })
-      .catch((error) => console.log(error));
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // Marca la calificación como asignada
+          setCalificacionAsignada(true);
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   const openModal = (imageSrc) => {
@@ -110,64 +118,67 @@ const PA10Formulario = () => {
 
   return (
     <Container text textAlign="center">
-      <Header as="h2">Preguntas del Cuestionario</Header>
+      <Header as="h1">Preguntas del Cuestionario</Header>
       {preguntas && preguntas.length > 0 ? (
         <div>
-          <Header as="h3">{preguntas[preguntaActual]?.pregunta || ''}</Header>
-          {preguntas[preguntaActual]?.multimedia && (
-            <div onClick={() => openModal(obtenerImagenURL(preguntas[preguntaActual].multimedia))}>
-              <Image
-                src={obtenerImagenURL(preguntas[preguntaActual].multimedia)}
-                alt="Imagen de la pregunta"
-                style={{ cursor: 'pointer', maxWidth: '50%', height: 'auto', margin: 'auto' }}
-              />
-            </div>
-          )}
-          {preguntas[preguntaActual]?.OpcionCuestionario && preguntas[preguntaActual]?.OpcionCuestionario.length > 0 ? (
-            preguntas[preguntaActual].OpcionCuestionario.map((opcion, optionIndex) => (
-              <div key={optionIndex} style={{ marginBottom: '15px', display: 'flex', alignItems: 'center' }}>
-                <Radio
-                  name={`opcion${preguntaActual}`}
-                  checked={opcionSeleccionada === optionIndex}
-                  onChange={() => handleSeleccionarOpcion(optionIndex)}
-                  style={{ marginRight: '10px', fontSize: '20px' }}
+          <div>
+            <Header as="h2">{preguntas[preguntaActual]?.pregunta || ''}</Header>
+            {preguntas[preguntaActual]?.multimedia && (
+              <div onClick={() => openModal(obtenerImagenURL(preguntas[preguntaActual].multimedia))}>
+                <Image
+                  src={obtenerImagenURL(preguntas[preguntaActual].multimedia)}
+                  alt="Imagen de la pregunta"
+                  style={{ cursor: 'pointer', maxWidth: '50%', height: 'auto', margin: 'auto' }}
                 />
-                <span style={{ fontSize: '18px', fontWeight: 'bold', color: opcionSeleccionada === optionIndex ? '#2185d0' : 'black' }}>
-                  {`Opción ${optionIndex + 1}: ${opcion.textOpcion || ''}`}
-                </span>
-                {opcion.multimedia && (
-                  <div onClick={() => openModal(obtenerImagenURL(opcion.multimedia))}>
-                    <Image
-                      src={obtenerImagenURL(opcion.multimedia)}
-                      alt={`Imagen de la opción ${optionIndex + 1}`}
-                      style={{ cursor: 'pointer', maxWidth: '40%', height: 'auto', margin: 'auto', marginTop: '10px' }}
-                    />
-                  </div>
-                )}
               </div>
-            ))
-          ) : (
-            <p>No hay opciones disponibles.</p>
-          )}
-          {mostrarCalificacion ? (
-            <div>
-              <Button onClick={AsignarCalificacion} positive>
-                Calificar Cuestionario
-              </Button>
-              <p style={{ fontSize: '18px' }}>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
-            </div>
-          ) : (
-            <div>
-              {preguntaActual > 0 && (
-                <Button onClick={mostrarPreguntaAnterior} primary>
-                  Pregunta Anterior
+            )}
+            {preguntas[preguntaActual]?.OpcionCuestionario && preguntas[preguntaActual]?.OpcionCuestionario.length > 0 ? (
+              preguntas[preguntaActual].OpcionCuestionario.map((opcion, optionIndex) => (
+                <div key={optionIndex} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '5px', display: 'flex', alignItems: 'center' }}>
+                  <Radio
+                    name={`opcion${preguntaActual}`}
+                    checked={opcionSeleccionada === optionIndex}
+                    onChange={() => handleSeleccionarOpcion(optionIndex)}
+                    style={{ marginRight: '10px', fontSize: '20px' }}
+                  />
+                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: opcionSeleccionada === optionIndex ? '#2185d0' : 'black' }}>
+                    {`Opción ${optionIndex + 1}: ${opcion.textOpcion || ''}`}
+                  </span>
+                  {opcion.multimedia && (
+                    <div onClick={() => openModal(obtenerImagenURL(opcion.multimedia))}>
+                      <Image
+                        src={obtenerImagenURL(opcion.multimedia)}
+                        alt={`Imagen de la opción ${optionIndex + 1}`}
+                        style={{ cursor: 'pointer', maxWidth: '40%', height: 'auto', margin: 'auto', marginTop: '10px' }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No hay opciones disponibles.</p>
+            )}
+
+            {mostrarCalificacion && !calificacionAsignada ? (
+              <div>
+                <Button onClick={AsignarCalificacion} positive>
+                  Calificar Cuestionario
                 </Button>
-              )}
-              <Button onClick={mostrarSiguientePregunta} primary>
-                Siguiente Pregunta
-              </Button>
-            </div>
-          )}
+                <p style={{ fontSize: '18px' }}>Calificación obtenida: {((respuestasCorrectas / preguntasCues.length) * 10).toFixed(2)}</p>
+              </div>
+            ) : (
+              <div>
+                {preguntaActual > 0 && (
+                  <Button onClick={mostrarPreguntaAnterior} primary>
+                    Pregunta Anterior
+                  </Button>
+                )}
+                <Button onClick={mostrarSiguientePregunta} primary>
+                  Siguiente Pregunta
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <p>No hay preguntas disponibles.</p>

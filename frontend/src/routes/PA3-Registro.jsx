@@ -13,6 +13,7 @@ const PA3Registro = () => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState(false)
   const [noCoinicide, setNoCoinicide] = useState(false)
+  const [correoRegistro, setCorreoRegistro] = useState('');
 
   const [openVerificarCorreoModal, setOpenVerificarCorreoModal] = useState(false);
 
@@ -42,6 +43,7 @@ const PA3Registro = () => {
       setNoCoinicide(true);
     } else {
       setNoCoinicide(false);
+      setCorreoRegistro(data.correo);
       postData({
         nombre: data.nombre,
         apellido_paterno: data.ap_paterno,
@@ -155,8 +157,7 @@ const PA3Registro = () => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-      {openVerificarCorreoModal && <VerificarCorreo />}
-    </>
+      {openVerificarCorreoModal && <VerificarCorreo correoRegistro={correoRegistro} setOpenVerificarCorreoModal={setOpenVerificarCorreoModal} />}    </>
   )
 }
 
