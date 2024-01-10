@@ -1,19 +1,20 @@
 import { Button, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import doc from "../images/Manual.pdf";
+
 import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
 const NavbarLg = ({ imagen }) => {
 
   const DescargarPDF = () => {
-    const pdfUrl = { doc };
     const link = document.createElement('a');
-    link.href = pdfUrl;
+    link.href = "../images/Manual.pdf";
     link.download = 'Manual.pdf';
     document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    setTimeout(() => {
+      link.click();
+      document.body.removeChild(link);
+    }, 1000);
   };
 
   const usuario = useUsuarioStore(state => state.usuario)
