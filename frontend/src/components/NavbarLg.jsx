@@ -1,13 +1,14 @@
 import { Button, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import "../estiloscss/pdf.css";
+import doc from "../images/ManualdeUsuarioTT2023-B120.pdf"
 import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
 const NavbarLg = ({ imagen }) => {
 
   const DescargarPDF = () => {
-    const pdfUrl = "./src/images/ManualdeUsuarioTT2023-B120.pdf";
+    const pdfUrl = { doc };
     const link = document.createElement('a');
     link.href = pdfUrl;
     link.download = 'ManualdeUsuarioTT2023-B120.pdf';
