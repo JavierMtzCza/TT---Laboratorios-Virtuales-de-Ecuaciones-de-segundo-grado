@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Grid, Icon, Image, Input, Item, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Icon, Image, Input, Item, Message, Modal, Segment } from 'semantic-ui-react';
 import Plotly from '../components/Plotly';
 import logo from "../images/Logo.png"
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 const PA4Laboratorios = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [data, setData] = useState({ tc: 0.0, tl: 0.0, ti: 0.0 })
+  const [showPortal, setShowPortal] = useState(false)
   const isDesktopOrTablet = useMediaQuery({ query: "(min-width:768px)" })
 
   useEffect(() => {
@@ -63,7 +64,7 @@ const PA4Laboratorios = () => {
 
   const onSubmit = handleSubmit((formData) => {
     if (formData.a == '') {
-      alert("Debe poner algo en los campos")
+      setShowPortal(true)
     } else {
       resolverEcuacionCuadratica(formData.a, formData.b, formData.c)
     }
@@ -138,6 +139,13 @@ const PA4Laboratorios = () => {
           />
         </Grid.Column>
       </Grid.Row>
+      <Modal
+        centered={false}
+        size='tiny'
+        content={<Message style={{ textAlign: "center", fontSize: "18px" }} error header="Debe poner algo en los campos" />}
+        open={showPortal}
+        onClose={() => { setShowPortal(false) }}
+      />
     </Grid>
   )
 }

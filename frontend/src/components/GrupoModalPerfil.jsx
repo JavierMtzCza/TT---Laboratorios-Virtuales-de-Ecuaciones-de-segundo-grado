@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { Button, Form, Icon, Message, Modal } from "semantic-ui-react"
+import { Button, Form, Icon, Message, Modal, TransitionGroup } from "semantic-ui-react"
 import { useUsuarioStore } from "../stores/UsuarioStore"
 
 const GrupoModalPerfil = ({ propShow, propSetShow }) => {
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [showPortal, setShowPortal] = useState(false)
+  const [showError, setShowError] = useState(false)
   const [noCoinicide, setNoCoinicide] = useState(false)   //Se usa para saber si las contrsenas coinciden
   const [noPass, setNoPass] = useState(false)             //Se usa para saber si el usuario puso la contrasena actual
   //Datos del usaurio
@@ -40,9 +41,9 @@ const GrupoModalPerfil = ({ propShow, propSetShow }) => {
 
   const onSubmit = handleSubmit((formData) => {
 
-    const { nombre, ap_paterno, ap_materno, correo, contrasena, confir_contrasena, contra_actual } = formData
-    if (nombre == "" && ap_paterno == "" && ap_materno == "" && correo == "" && contrasena == "" && confir_contrasena == "") {
-      alert("No hay modificaiones que hacer")
+    const { nombre, ap_paterno, ap_materno, contrasena, confir_contrasena, contra_actual } = formData
+    if (nombre == "" && ap_paterno == "" && ap_materno == "" && contrasena == "" && confir_contrasena == "") {
+      setShowError(true)
     } else if (contra_actual == "") {
       setNoPass(true)
     } else if (contrasena != confir_contrasena) {
@@ -132,6 +133,13 @@ const GrupoModalPerfil = ({ propShow, propSetShow }) => {
           propSetShow(false)
           setShowPortal(false)
         }}
+      />
+       <Modal
+        centered={false}
+        size='tiny'
+        content={<Message style={{ textAlign: "center", fontSize: "18px" }} error header="No hay modificaiones que hacer" />}
+        open={showError}
+        onClose={() => { setShowError(false) }}
       />
     </>
   )
