@@ -1,7 +1,6 @@
 import { Button, Icon, Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import "../estiloscss/pdf.css";
-import doc from "../images/Manual.pdf"
+import doc from "../images/Manual.pdf";
 import { useUsuarioStore } from '../stores/UsuarioStore';
 
 
