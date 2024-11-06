@@ -1,10 +1,9 @@
 generator client {
     provider = "prisma-client-js"
-    binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -78,7 +77,7 @@ model Actividad {
 model PreguntaCuestionario {
     id                 Int                  @id @default(autoincrement())
     pregunta           String
-    multimedia         Bytes?               @db.LongBlob
+    multimedia         Bytes?               
     actividadId        Int
     Actividad          Actividad            @relation(fields: [actividadId], references: [id], onDelete: Cascade)
     OpcionCuestionario OpcionCuestionario[]
@@ -87,7 +86,7 @@ model PreguntaCuestionario {
 model OpcionCuestionario {
     id         Int     @id @default(autoincrement())
     textOpcion String
-    multimedia Bytes?  @db.LongBlob
+    multimedia Bytes?  
     correcta   Boolean
 
     PreguntaCuestionario   PreguntaCuestionario? @relation(fields: [preguntaCuestionarioId], references: [id])
@@ -97,7 +96,7 @@ model OpcionCuestionario {
 model PreguntaEjercicio {
     id         Int     @id @default(autoincrement())
     pregunta   String
-    multimedia Bytes?  @db.LongBlob // Datos binarios de la imagen
+    multimedia Bytes?   // Datos binarios de la imagen
     consejo    String?
     ClaveVideo String?
 

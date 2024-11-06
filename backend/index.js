@@ -8,8 +8,8 @@ import rols from "./src/routes/rol.js";
 import preguntascuesRoutes from "./src/routes/preguntacues.js";
 import respuestascuesRoutes from "./src/routes/opcioncues.js";
 import cambiocontraseñaRoutes from "./src/routes/resetpassword.js";
-import actividadRoutes from "./src/routes/actividades.js"; 
-import preguntaEjercicioRoutes from "./src/routes/preguntas.js";  
+import actividadRoutes from "./src/routes/actividades.js";
+import preguntaEjercicioRoutes from "./src/routes/preguntas.js";
 import calificacionesRoutes from "./src/routes/calificaciones.js";
 
 
@@ -32,19 +32,19 @@ app.use(cors(
 
 const puerto = process.env.port || 3000
 
-app.get('/', (req, res) => {res.send('API funcionando')})
+app.get('/', (req, res) => { res.send('API funcionando') })
 
 app.use('/usuario/', usuarioRoutes)
 app.use('/grupo/', grupoRoutes)
 //app.use('/actividad/', actividadesRoutes)
 app.use('/rol', rols)
 app.use('/preguntacues', preguntascuesRoutes)
-app.use('/cambiocontrasena',cambiocontraseñaRoutes)
+app.use('/cambiocontrasena', cambiocontraseñaRoutes)
 app.use('/actividad', actividadRoutes);
 app.use('/preguntaejercicio', preguntaEjercicioRoutes);  // Agregar esta línea
 app.use('/opcioncues', respuestascuesRoutes)
 
-app.use('/calificaciones',calificacionesRoutes);
+app.use('/calificaciones', calificacionesRoutes);
 
 
 
