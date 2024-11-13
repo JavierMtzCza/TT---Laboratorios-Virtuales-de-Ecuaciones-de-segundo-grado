@@ -3,7 +3,7 @@ import { useMediaQuery } from 'react-responsive'
 import imagen from '../images/Group 1 (2).svg'
 import icono from '../images/Logo.png'
 
-import {Grid, Header, Image } from 'semantic-ui-react'
+import { Grid, Header, Image } from 'semantic-ui-react'
 import NavbarLg from '../components/NavbarLg.jsx'
 import NavbarMb from '../components/NavbarMb.jsx'
 import { Link } from 'react-router-dom'

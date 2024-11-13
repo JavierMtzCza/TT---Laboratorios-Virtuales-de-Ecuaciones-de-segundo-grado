@@ -59,9 +59,6 @@ const NavbarMb = ({ imagen }) => {
         <Menu.Item name='Ayuda' >
           <Link className='link' to={"/Ayuda"}>Ayuda </Link>
         </Menu.Item>
-        <Menu.Item name='Documentacion'>
-          <Link onClick={DescargarPDF}>Documentación </Link>
-        </Menu.Item>
         <Menu.Item name='Aviso de Privacidad'>
           <Link to={"/Aviso"}>Aviso de Privacidad</Link>
         </Menu.Item>

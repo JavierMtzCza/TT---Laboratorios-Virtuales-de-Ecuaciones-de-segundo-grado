@@ -55,7 +55,15 @@ const PA2InicioSesion = () => {
 
           <Grid.Column>
             <Grid.Row >
-              <Header as='h1' style={{ margin: "5% 0 10% 5%", color:"#55ACEE" }} content="Bienvenido a Chicharronera Lab" subheader="Inicio de Sesión"/>
+              <Header as='h1' style={{ margin: "5% 0 10% 5%", color: "#55ACEE" }} content="Bienvenido a Chicharronera Lab" subheader="Inicio de Sesión" />
+            </Grid.Row>
+            <Grid.Row style={{ margin: "0% 15% 10% 15%", color: "#55ACEE" }}>
+              <Message
+                size='mini'
+                color='yellow'
+                icon='exclamation triangle'
+                content='Esta página está alojada en un servidor gratuito, tanto el backend, la base de datos y el frontend, por lo que algunas fuciones pueden demorar un poco en reflejarse.'
+              />
             </Grid.Row>
             <Grid.Row>
               <Form error style={{ margin: "0 10% 5% 10%" }} onSubmit={onSubmit}>
